@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ThirdParty">
+      <UniqueIdentifier>{b5497a0e-2086-4151-9e47-b3b229d30de6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\fmt">
+      <UniqueIdentifier>{c090dda1-8120-4394-926f-a6034fff3cb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Nene">
+      <UniqueIdentifier>{e2ba7802-31a2-4241-82f7-f93af27fa9a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Nene\Logger">
+      <UniqueIdentifier>{dde570d9-b9d5-4978-9492-8380111ab03a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Nene\Exceptions">
+      <UniqueIdentifier>{462d89ab-8fb5-4477-9bba-8834acf1f77f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Nene\Exceptions\Windows">
+      <UniqueIdentifier>{56aaac1b-74e7-4b8d-9b48-796cc3e6eee5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.gitignore" />
+    <None Include="..\LICENSE.md" />
+    <None Include="..\README.md" />
+    <None Include="..\.editorconfig" />
+    <None Include="..\ThirdParty\.gitignore">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\ThirdParty\fmt\.keep">
+      <Filter>ThirdParty\fmt</Filter>
+    </None>
+    <None Include="..\ThirdParty\fmt\LICENSE.rst">
+      <Filter>ThirdParty\fmt</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\ThirdParty\fmt\printf.h">
+      <Filter>ThirdParty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\fmt\string.h">
+      <Filter>ThirdParty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\fmt\time.h">
+      <Filter>ThirdParty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\fmt\format.h">
+      <Filter>ThirdParty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\fmt\ostream.h">
+      <Filter>ThirdParty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\fmt\posix.h">
+      <Filter>ThirdParty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\ArrayView.hpp">
+      <Filter>Source\Nene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Color.hpp">
+      <Filter>Source\Nene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Encoding.hpp">
+      <Filter>Source\Nene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Engine.hpp">
+      <Filter>Source\Nene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Matrix3x2.hpp">
+      <Filter>Source\Nene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Platform.hpp">
+      <Filter>Source\Nene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Rectangle.hpp">
+      <Filter>Source\Nene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Rotation.hpp">
+      <Filter>Source\Nene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Size2D.hpp">
+      <Filter>Source\Nene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Uncopyable.hpp">
+      <Filter>Source\Nene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Vector2D.hpp">
+      <Filter>Source\Nene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Vertex2D.hpp">
+      <Filter>Source\Nene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Logger\MultiLogger.hpp">
+      <Filter>Source\Nene\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Logger\NullLogger.hpp">
+      <Filter>Source\Nene\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Logger\StreamLogger.hpp">
+      <Filter>Source\Nene\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Logger\FileLogger.hpp">
+      <Filter>Source\Nene\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Logger\FormatLogger.hpp">
+      <Filter>Source\Nene\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Logger\LogEntry.hpp">
+      <Filter>Source\Nene\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Logger\Logger.hpp">
+      <Filter>Source\Nene\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Logger\Logger.inl.hpp">
+      <Filter>Source\Nene\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Logger\LogLevel.hpp">
+      <Filter>Source\Nene\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Exceptions\Windows\WindowsApiException.hpp">
+      <Filter>Source\Nene\Exceptions\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Exceptions\Windows\DirectXException.hpp">
+      <Filter>Source\Nene\Exceptions\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Exceptions\Windows\SystemErrorMessage.hpp">
+      <Filter>Source\Nene\Exceptions\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Nene\Exceptions\EngineException.hpp">
+      <Filter>Source\Nene\Exceptions</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\ThirdParty\fmt\format.cc">
+      <Filter>ThirdParty\fmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\fmt\ostream.cc">
+      <Filter>ThirdParty\fmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\fmt\posix.cc">
+      <Filter>ThirdParty\fmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\fmt\printf.cc">
+      <Filter>ThirdParty\fmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Nene\Encoding.cpp">
+      <Filter>Source\Nene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Nene\Exceptions\Windows\SystemErrorMessage.cpp">
+      <Filter>Source\Nene\Exceptions\Windows</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
