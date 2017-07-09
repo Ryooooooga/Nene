@@ -1021,9 +1021,9 @@ namespace Nene
 		return !(a == b);
 	}
 
-	using Vector2Di = Vector2D<std::int32_t>;
-	using Vector2Df = Vector2D<float>;
-	using Vector2Dd = Vector2D<double>;
+	using Vector2Di = Vector2D<Int32>;
+	using Vector2Df = Vector2D<Float32>;
+	using Vector2Dd = Vector2D<Float64>;
 }
 
 #endif  // #ifndef INCLUDE_NENE_VECTOR2D_HPP

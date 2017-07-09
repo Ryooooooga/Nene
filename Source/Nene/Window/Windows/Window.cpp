@@ -56,7 +56,7 @@ namespace Nene::Windows
 				{
 					self->destroy();
 				}
-				
+
 				return 0;
 			}
 
@@ -90,8 +90,8 @@ namespace Nene::Windows
 					{
 						case SIZE_RESTORED:
 						{
-							const auto width  = static_cast<std::int32_t>((wParam >>  0) & 0xffff);
-							const auto height = static_cast<std::int32_t>((wParam >> 16) & 0xffff);
+							const auto width  = static_cast<Int32>((wParam >>  0) & 0xffff);
+							const auto height = static_cast<Int32>((wParam >> 16) & 0xffff);
 
 							self->state_ = State::shown;
 							self->client_.set(width, height);
@@ -165,7 +165,7 @@ namespace Nene::Windows
 
 		// Calculate window size.
 		const DWORD style = WS_OVERLAPPEDWINDOW;
-		
+
 		::RECT rect = { 0, 0, static_cast<LONG>(size.width), static_cast<LONG>(size.height) };
 		::AdjustWindowRectEx(&rect, style, FALSE, 0);
 
@@ -206,7 +206,7 @@ namespace Nene::Windows
 
 		// Clear-and-minimize idiom.
 		std::string {}.swap(title_);
-		
+
 		if (handle_)
 		{
 			::DestroyWindow(handle_);
@@ -216,7 +216,7 @@ namespace Nene::Windows
 		if (!className_.empty())
 		{
 			::UnregisterClassW(className_.c_str(), ::GetModuleHandleW(nullptr));
-			
+
 			// Clear-and-minimize idiom.
 			std::wstring {}.swap(className_);
 		}
@@ -382,8 +382,8 @@ namespace Nene::Windows
 
 		return Vector2Di
 		{
-			static_cast<std::int32_t>(rect.left ),
-			static_cast<std::int32_t>(rect.top  ),
+			static_cast<Int32>(rect.left ),
+			static_cast<Int32>(rect.top  ),
 		};
 	}
 
@@ -399,8 +399,8 @@ namespace Nene::Windows
 
 		return Size2Di
 		{
-			static_cast<std::int32_t>(rect.left - rect.right  ),
-			static_cast<std::int32_t>(rect.top  - rect.bottom ),
+			static_cast<Int32>(rect.left - rect.right  ),
+			static_cast<Int32>(rect.top  - rect.bottom ),
 		};
 	}
 
@@ -416,10 +416,10 @@ namespace Nene::Windows
 
 		return Rectanglei
 		{
-			static_cast<std::int32_t>(rect.left   ),
-			static_cast<std::int32_t>(rect.top    ),
-			static_cast<std::int32_t>(rect.right  ),
-			static_cast<std::int32_t>(rect.bottom ),
+			static_cast<Int32>(rect.left   ),
+			static_cast<Int32>(rect.top    ),
+			static_cast<Int32>(rect.right  ),
+			static_cast<Int32>(rect.bottom ),
 		};
 	}
 

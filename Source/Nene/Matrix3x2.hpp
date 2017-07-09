@@ -743,9 +743,9 @@ namespace Nene
 		return *this = a.transform(*this);
 	}
 
-	using Matrix3x2i = Matrix3x2<std::int32_t>;
-	using Matrix3x2f = Matrix3x2<float>;
-	using Matrix3x2d = Matrix3x2<double>;
+	using Matrix3x2i = Matrix3x2<Int32>;
+	using Matrix3x2f = Matrix3x2<Float32>;
+	using Matrix3x2d = Matrix3x2<Float64>;
 }
 
 #endif  // #ifndef INCLUDE_NENE_MATRIX3X2_HPP

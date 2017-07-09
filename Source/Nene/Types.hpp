@@ -21,64 +21,27 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_LOGGER_LOGLEVEL_HPP
-#define INCLUDE_NENE_LOGGER_LOGLEVEL_HPP
+#ifndef INCLUDE_NENE_TYPES_HPP
+#define INCLUDE_NENE_TYPES_HPP
 
-#include "../Types.hpp"
+#include <cstdint>
 
 namespace Nene
 {
-	/**
-	 * @brief      Log level.
-	 */
-	enum class LogLevel: Int32
-	{
-		all,
-		trace,
-		debug,
-		info,
-		warning,
-		error,
-		fatal,
-		off,
-	};
+	using Byte    = std::uint8_t;
 
-	/**
-	 * @brief      Converts log level into string.
-	 *
-	 * @param[in]  level  Log level to convert.
-	 *
-	 * @return     String representation of log level.
-	 */
-	[[nodiscard]]
-	constexpr const char* toString(LogLevel level) noexcept
-	{
-		switch (level)
-		{
-			case LogLevel::all    : return u8"ALL";
-			case LogLevel::trace  : return u8"TRACE";
-			case LogLevel::debug  : return u8"DEBUG";
-			case LogLevel::info   : return u8"INFO";
-			case LogLevel::warning: return u8"WARN";
-			case LogLevel::error  : return u8"ERROR";
-			case LogLevel::fatal  : return u8"FATAL";
-			case LogLevel::off    : return u8"OFF";
-			default               : return u8"UNKNOWN";
-		}
-	}
+	using Int8    = std::int8_t;
+	using Int16   = std::int16_t;
+	using Int32   = std::int32_t;
+	using Int64   = std::int64_t;
+	using UInt8   = std::uint8_t;
+	using UInt16  = std::uint16_t;
+	using UInt32  = std::uint32_t;
+	using UInt64  = std::uint64_t;
 
-	/**
-	 * @brief      Binary operator `<<`.
-	 *
-	 * @param      stream  Left hand side operand.
-	 * @param[in]  level   Right hand side operand.
-	 *
-	 * @return     `stream << level`.
-	 */
-	inline std::ostream& operator<<(std::ostream& stream, LogLevel level)
-	{
-		return stream << toString(level);
-	}
+	using Float32 = float;
+	using Float64 = double;
+	using Float   = Float32;
 }
 
-#endif  // #ifndef INCLUDE_NENE_LOGGER_LOGLEVEL_HPP
+#endif  // #ifndef INCLUDE_NENE_TYPES_HPP

@@ -25,7 +25,7 @@
 #define INCLUDE_NENE_ROTATION_HPP
 
 #include <cmath>
-#include <cstdint>
+#include "Types.hpp"
 
 namespace Nene
 {
@@ -297,9 +297,9 @@ namespace Nene
 		return a.rotated(-b);
 	}
 
-	using Rotationi = Rotation<std::int32_t>;
-	using Rotationf = Rotation<float>;
-	using Rotationd = Rotation<double>;
+	using Rotationi = Rotation<Int32>;
+	using Rotationf = Rotation<Float32>;
+	using Rotationd = Rotation<Float64>;
 }
 
 #endif  // #ifndef INCLUDE_NENE_ROTATION_HPP

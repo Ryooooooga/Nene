@@ -175,9 +175,9 @@ namespace Nene
 		return !(a == b);
 	}
 
-	using Rectanglei = Rectangle<std::int32_t>;
-	using Rectanglef = Rectangle<float>;
-	using Rectangled = Rectangle<double>;
+	using Rectanglei = Rectangle<Int32>;
+	using Rectanglef = Rectangle<Float32>;
+	using Rectangled = Rectangle<Float64>;
 }
 
 #endif  // #ifndef INCLUDE_NENE_RECTANGLE_HPP

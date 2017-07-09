@@ -25,6 +25,7 @@
 #define INCLUDE_NENE_COLOR_HPP
 
 #include <algorithm>
+#include "Types.hpp"
 
 namespace Nene
 {
@@ -34,7 +35,7 @@ namespace Nene
 	class Color
 	{
 	public:
-		float red, green, blue, alpha;
+		Float32 red, green, blue, alpha;
 
 		/**
 		 * @brief      Returns gray scaled color.
@@ -45,7 +46,7 @@ namespace Nene
 		 * @return     Gray color.
 		 */
 		[[nodiscard]]
-		constexpr static Color gray(float gray, float alpha = 1.f) noexcept
+		constexpr static Color gray(Float32 gray, Float32 alpha = 1.f) noexcept
 		{
 			return { gray, gray, gray, alpha };
 		}
@@ -68,7 +69,7 @@ namespace Nene
 		 * @param[in]  blue   Initial `blue` value.
 		 * @param[in]  alpha  Initial `alpha` value.
 		 */
-		constexpr Color(float red, float green, float blue, float alpha = 1.f) noexcept
+		constexpr Color(Float32 red, Float32 green, Float32 blue, Float32 alpha = 1.f) noexcept
 			: red(red), green(green), blue(blue), alpha(alpha) {}
 
 		/**
@@ -76,7 +77,7 @@ namespace Nene
 		 *
 		 * @param[in]  color  Color code (0xAARRGGBB style).
 		 */
-		constexpr Color(std::uint32_t color) noexcept
+		constexpr Color(UInt32 color) noexcept
 			: red  (((color >> 16) & 0xff) / 255.f)
 			, green(((color >>  8) & 0xff) / 255.f)
 			, blue (((color >>  0) & 0xff) / 255.f)
@@ -88,7 +89,7 @@ namespace Nene
 		 * @param[in]  color  Color code (0xRRGGBB style).
 		 * @param[in]  alpha  Initial `alpha` value.
 		 */
-		constexpr Color(std::uint32_t color, float alpha) noexcept
+		constexpr Color(UInt32 color, Float32 alpha) noexcept
 			: red  (((color >> 16) & 0xff) / 255.f)
 			, green(((color >>  8) & 0xff) / 255.f)
 			, blue (((color >>  0) & 0xff) / 255.f)
@@ -100,7 +101,7 @@ namespace Nene
 		 * @param[in]  color  Color.
 		 * @param[in]  alpha  Initial `alpha` value.
 		 */
-		constexpr Color(const Color& color, float alpha) noexcept
+		constexpr Color(const Color& color, Float32 alpha) noexcept
 			: red(color.red), green(color.green), blue(color.blue), alpha(alpha) {}
 
 		/**
@@ -134,7 +135,7 @@ namespace Nene
 		 *
 		 * @return     `*this`.
 		 */
-		Color& set(float _red, float _green, float _blue, float _alpha = 1.f) noexcept
+		Color& set(Float32 _red, Float32 _green, Float32 _blue, Float32 _alpha = 1.f) noexcept
 		{
 			red   = _red;
 			green = _green;
@@ -152,7 +153,7 @@ namespace Nene
 		 *
 		 * @return     `*this`.
 		 */
-		Color& set(const Color& color, float _alpha) noexcept
+		Color& set(const Color& color, Float32 _alpha) noexcept
 		{
 			red   = color.red;
 			green = color.green;
@@ -277,7 +278,7 @@ namespace Nene
 		 *
 		 * @return     `*this *= a`.
 		 */
-		constexpr Color& operator*=(float a) noexcept
+		constexpr Color& operator*=(Float32 a) noexcept
 		{
 			red   *= a;
 			green *= a;
@@ -311,7 +312,7 @@ namespace Nene
 		 *
 		 * @return     `*this /= a`.
 		 */
-		constexpr Color& operator/=(float a) noexcept
+		constexpr Color& operator/=(Float32 a) noexcept
 		{
 			red   /= a;
 			green /= a;
@@ -369,7 +370,7 @@ namespace Nene
 	 * @return     `a * b`.
 	 */
 	[[nodiscard]]
-	constexpr Color operator*(const Color& a, float b) noexcept
+	constexpr Color operator*(const Color& a, Float32 b) noexcept
 	{
 		return {
 			a.red   * b,
@@ -407,7 +408,7 @@ namespace Nene
 	 * @return     `a / b`.
 	 */
 	[[nodiscard]]
-	constexpr Color operator/(const Color& a, float b) noexcept
+	constexpr Color operator/(const Color& a, Float32 b) noexcept
 	{
 		return {
 			a.red   / b,

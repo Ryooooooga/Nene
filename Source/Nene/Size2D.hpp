@@ -24,7 +24,7 @@
 #ifndef INCLUDE_NENE_SIZE2D_HPP
 #define INCLUDE_NENE_SIZE2D_HPP
 
-#include <cstdint>
+#include "Types.hpp"
 
 namespace Nene
 {
@@ -292,9 +292,9 @@ namespace Nene
 		return !(a == b);
 	}
 
-	using Size2Di = Size2D<std::int32_t>;
-	using Size2Df = Size2D<float>;
-	using Size2Dd = Size2D<double>;
+	using Size2Di = Size2D<Int32>;
+	using Size2Df = Size2D<Float32>;
+	using Size2Dd = Size2D<Float64>;
 }
 
 #endif  // #ifndef INCLUDE_NENE_SIZE2D_HPP
