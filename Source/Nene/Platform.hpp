@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // Copyright (c) 2017 Ryooooooga
 // https://github.com/Ryooooooga
 //
@@ -21,21 +21,19 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#include "Nene/Platform.hpp"
-#if defined(NENE_OS_WINDOWS)
+#ifndef INCLUDE_NENE_PLATFORM_HPP
+#define INCLUDE_NENE_PLATFORM_HPP
 
-#include <Windows.h>
-#include <crtdbg.h>
-
-int WINAPI wWinMain([[maybe_unused]] HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance, [[maybe_unused]] LPWSTR lpCmdLine, [[maybe_unused]] int nCmdShow)
-{
-#ifdef NENE_DEBUG
-	::_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#if defined(_WIN32) || defined(_WIN64)
+#  define NENE_OS_WINDOWS
+#else
+#  error Unsupported platform
 #endif
 
-	::MessageBoxW(nullptr, L"Hello, world!", L"Nene", MB_OK);
-
-	return 0;
-}
-
+#if defined(_DEBUG) || defined(DEBUG) || !defined(NDEBUG)
+#  define NENE_DEBUG
+#else
+#  define NENE_RELEASE
 #endif
+
+#endif  // #ifndef INCLUDE_NENE_PLATFORM_HPP

@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // Copyright (c) 2017 Ryooooooga
 // https://github.com/Ryooooooga
 //
@@ -21,21 +21,10 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#include "Nene/Platform.hpp"
-#if defined(NENE_OS_WINDOWS)
+#ifndef INCLUDE_NENE_ENGINE_HPP
+#define INCLUDE_NENE_ENGINE_HPP
 
-#include <Windows.h>
-#include <crtdbg.h>
+#include "Engine/Engine.hpp"
+#include "Engine/IEngine.hpp"
 
-int WINAPI wWinMain([[maybe_unused]] HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance, [[maybe_unused]] LPWSTR lpCmdLine, [[maybe_unused]] int nCmdShow)
-{
-#ifdef NENE_DEBUG
-	::_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
-
-	::MessageBoxW(nullptr, L"Hello, world!", L"Nene", MB_OK);
-
-	return 0;
-}
-
-#endif
+#endif  // #ifndef INCLUDE_NENE_ENGINE_HPP

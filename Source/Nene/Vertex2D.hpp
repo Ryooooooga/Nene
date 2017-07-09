@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // Copyright (c) 2017 Ryooooooga
 // https://github.com/Ryooooooga
 //
@@ -21,21 +21,49 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#include "Nene/Platform.hpp"
-#if defined(NENE_OS_WINDOWS)
+#ifndef INCLUDE_NENE_VERTEX2D_HPP
+#define INCLUDE_NENE_VERTEX2D_HPP
 
-#include <Windows.h>
-#include <crtdbg.h>
+#include "Color.hpp"
+#include "Vector2D.hpp"
 
-int WINAPI wWinMain([[maybe_unused]] HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance, [[maybe_unused]] LPWSTR lpCmdLine, [[maybe_unused]] int nCmdShow)
+namespace Nene
 {
-#ifdef NENE_DEBUG
-	::_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
+	/**
+	 * @brief      2D vertex.
+	 */
+	class Vertex2D
+	{
+	public:
+		Vector2Df position;
+		Color     color;
+		Vector2Df uv;
 
-	::MessageBoxW(nullptr, L"Hello, world!", L"Nene", MB_OK);
+		/**
+		 * @brief      Default constructor.
+		 */
+		constexpr Vertex2D() noexcept =default;
 
-	return 0;
+		/**
+		 * @brief      Copy constructor.
+		 */
+		constexpr Vertex2D(const Vertex2D&) noexcept =default;
+
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  position  The vertex location.
+		 * @param[in]  color     The vertex color.
+		 * @param[in]  uv        The vertex texture UV position.
+		 */
+		constexpr Vertex2D(const Vector2Df& position, const Color& color, const Vector2Df& uv = Vector2Df::zero()) noexcept
+			: position(position), color(color), uv(uv) {}
+
+		/**
+		 * @brief      Destructor.
+		 */
+		~Vertex2D() =default;
+	};
 }
 
-#endif
+#endif  // #ifndef INCLUDE_NENE_VERTEX2D_HPP

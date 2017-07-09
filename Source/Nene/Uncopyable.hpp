@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // Copyright (c) 2017 Ryooooooga
 // https://github.com/Ryooooooga
 //
@@ -21,21 +21,23 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#include "Nene/Platform.hpp"
-#if defined(NENE_OS_WINDOWS)
+#ifndef INCLUDE_NENE_UNCOPYABLE_HPP
+#define INCLUDE_NENE_UNCOPYABLE_HPP
 
-#include <Windows.h>
-#include <crtdbg.h>
-
-int WINAPI wWinMain([[maybe_unused]] HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance, [[maybe_unused]] LPWSTR lpCmdLine, [[maybe_unused]] int nCmdShow)
+namespace Nene
 {
-#ifdef NENE_DEBUG
-	::_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
+	/**
+	 * @brief      Uncopyable class utility.
+	 */
+	class Uncopyable
+	{
+	protected:
+		Uncopyable() =default;
+		~Uncopyable() =default;
 
-	::MessageBoxW(nullptr, L"Hello, world!", L"Nene", MB_OK);
-
-	return 0;
+		Uncopyable(const Uncopyable&) =delete;
+		Uncopyable& operator=(const Uncopyable&) =delete;
+	};
 }
 
-#endif
+#endif  // #ifndef INCLUDE_NENE_UNCOPYABLE_HPP
