@@ -32,7 +32,7 @@
 
 namespace Nene
 {
-	// Forward declaration.
+	// Forward declarations.
 	class Logger;
 
 	/**

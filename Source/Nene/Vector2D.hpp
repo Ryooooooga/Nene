@@ -28,7 +28,7 @@
 
 namespace Nene
 {
-	// Forward declaration.
+	// Forward declarations.
 	template <typename T>
 	class Matrix3x2;
 
