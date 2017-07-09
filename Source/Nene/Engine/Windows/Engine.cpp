@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // Copyright (c) 2017 Ryooooooga
 // https://github.com/Ryooooooga
 //
@@ -21,41 +21,37 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#include "Nene/Platform.hpp"
+#include "../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include <memory>
-#include <Windows.h>
-#include <crtdbg.h>
-#include "Nene/Engine/Windows/Engine.hpp"
-#include "Nene/Window/IWindow.hpp"
+#include "Engine.hpp"
+#include "../../Graphics/Windows/Direct3D11/Graphics.hpp"
+#include "../../Logger/FileLogger.hpp"
+#include "../../Window/Windows/Window.hpp"
 
-int WINAPI wWinMain([[maybe_unused]] HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance, [[maybe_unused]] LPWSTR lpCmdLine, [[maybe_unused]] int nCmdShow)
+namespace Nene::Windows
 {
-	try
+	Engine::Engine()
+		: logger_   ()
+		, graphics_ ()
 	{
-#ifdef NENE_DEBUG
-		::_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
-
-		auto engine   = std::make_shared<Nene::Windows::Engine>();
-		auto graphics = engine->graphics();
-		auto window   = engine->window(u8"ねねっち", { 640, 480 });
-
-		window->show();
-
-		while (window->update())
-		{
-			::Sleep(1);
-		}
-
-		return 0;
+		logger_   = std::make_shared<FileLogger>("log.txt");
+		graphics_ = std::make_shared<Direct3D11::Graphics>();
 	}
-	catch (const std::exception& e)
-	{
-		::MessageBoxA(nullptr, e.what(), typeid(e).name(), MB_ICONSTOP);
 
-		return -1;
+	const std::shared_ptr<Logger>& Engine::logger() const noexcept
+	{
+		return logger_;
+	}
+
+	const std::shared_ptr<IGraphics>& Engine::graphics() const noexcept
+	{
+		return graphics_;
+	}
+
+	std::shared_ptr<IWindow> Engine::window(const std::string& title, const Size2Di& size)
+	{
+		return std::make_shared<Window>(title, size);
 	}
 }
 

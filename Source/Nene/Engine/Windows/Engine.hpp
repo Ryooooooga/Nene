@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // Copyright (c) 2017 Ryooooooga
 // https://github.com/Ryooooooga
 //
@@ -21,42 +21,58 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#include "Nene/Platform.hpp"
+#ifndef INCLUDE_NENE_ENGINE_WINDOWS_ENGINE_HPP
+#define INCLUDE_NENE_ENGINE_WINDOWS_ENGINE_HPP
+
+#include "../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include <memory>
-#include <Windows.h>
-#include <crtdbg.h>
-#include "Nene/Engine/Windows/Engine.hpp"
-#include "Nene/Window/IWindow.hpp"
+#include "../../Uncopyable.hpp"
+#include "../IEngine.hpp"
 
-int WINAPI wWinMain([[maybe_unused]] HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance, [[maybe_unused]] LPWSTR lpCmdLine, [[maybe_unused]] int nCmdShow)
+namespace Nene::Windows
 {
-	try
+	/**
+	 * @brief      Windows engine implementation.
+	 */
+	class Engine final
+		: public  IEngine
+		, private Uncopyable
 	{
-#ifdef NENE_DEBUG
-		::_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
+		std::shared_ptr<Logger>    logger_;
+		std::shared_ptr<IGraphics> graphics_;
 
-		auto engine   = std::make_shared<Nene::Windows::Engine>();
-		auto graphics = engine->graphics();
-		auto window   = engine->window(u8"ねねっち", { 640, 480 });
+	public:
+		/**
+		 * @brief      Constructor.
+		 */
+		explicit Engine();
 
-		window->show();
+		/**
+		 * @brief      Destructor.
+		 */
+		~Engine() =default;
 
-		while (window->update())
-		{
-			::Sleep(1);
-		}
+		/**
+		 * @see        `Nene::IEngine::logger()`.
+		 */
+		[[nodiscard]]
+		const std::shared_ptr<Logger>& logger() const noexcept override;
 
-		return 0;
-	}
-	catch (const std::exception& e)
-	{
-		::MessageBoxA(nullptr, e.what(), typeid(e).name(), MB_ICONSTOP);
+		/**
+		 * @see        `Nene::IEngine::graphics()`.
+		 */
+		[[nodiscard]]
+		const std::shared_ptr<IGraphics>& graphics() const noexcept override;
 
-		return -1;
-	}
+		/**
+		 * @see        `Nene::IEngine::window()`.
+		 */
+		[[nodiscard]]
+		std::shared_ptr<IWindow> window(const std::string& title, const Size2Di& size) override;
+	};
 }
 
 #endif
+
+#endif  // #ifndef INCLUDE_NENE_ENGINE_WINDOWS_ENGINE_HPP
