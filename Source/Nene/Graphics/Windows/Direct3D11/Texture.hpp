@@ -59,11 +59,12 @@ namespace Nene::Windows::Direct3D11
 		/**
 		 * @brief      Constructor.
 		 *
-		 * @param[in]  device  Direct3D11 device.
-		 * @param[in]  size    The texture size.
-		 * @param[in]  format  The texture pixel format.
+		 * @param[in]  device   Direct3D11 device.
+		 * @param[in]  size     The texture size.
+		 * @param[in]  format   The texture pixel format.
+		 * @param[in]  dynamic  The dynamic texture flag.
 		 */
-		explicit Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, PixelFormat format);
+		explicit Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, PixelFormat format, bool dynamic);
 
 		/**
 		 * @brief      Destructor.
@@ -75,6 +76,22 @@ namespace Nene::Windows::Direct3D11
 		 */
 		[[nodiscard]]
 		const Size2Di& size() const noexcept override;
+
+		/**
+		 * @brief      Returns Direct3D11 texture2D.
+		 *
+		 * @return     Direct3D11 texture2D.
+		 */
+		[[nodiscard]]
+		const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture2D() const noexcept;
+
+		/**
+		 * @brief      Returns Direct3D11 shader resource view.
+		 *
+		 * @return     Direct3D11 shader resource view.
+		 */
+		[[nodiscard]]
+		const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& shaderResourceView() const noexcept;
 	};
 }
 

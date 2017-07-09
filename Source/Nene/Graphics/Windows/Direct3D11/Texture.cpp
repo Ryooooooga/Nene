@@ -79,7 +79,7 @@ namespace Nene::Windows::Direct3D11
 		}
 	}
 
-	Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, PixelFormat format)
+	Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, PixelFormat format, bool dynamic)
 		: device_(device)
 		, texture_()
 		, shaderResource_()
@@ -98,9 +98,9 @@ namespace Nene::Windows::Direct3D11
 		texDesc.Format             = toDxgiFormat(format);
 		texDesc.SampleDesc.Count   = 1;
 		texDesc.SampleDesc.Quality = 0;
-		texDesc.Usage              = D3D11_USAGE_DYNAMIC;
-		texDesc.BindFlags          = D3D11_BIND_SHADER_RESOURCE;
-		texDesc.CPUAccessFlags     = D3D11_CPU_ACCESS_WRITE;
+		texDesc.Usage              = D3D11_USAGE_DEFAULT;
+		texDesc.BindFlags          = (dynamic ? D3D11_BIND_RENDER_TARGET : 0) | D3D11_BIND_SHADER_RESOURCE;
+		texDesc.CPUAccessFlags     = 0;
 		texDesc.MiscFlags          = 0;
 
 		hr = device_->CreateTexture2D(&texDesc, nullptr, texture_.GetAddressOf());
@@ -108,12 +108,12 @@ namespace Nene::Windows::Direct3D11
 		if (FAILED(hr))
 		{
 			const auto message = fmt::format(
-					u8"Failed to create Direct3D11 texture2D.\n"
-					u8"Size: {}x{}\n"
-					u8"Dynamic: {}",
-					size.width,
-					size.height,
-					true);
+				u8"Failed to create Direct3D11 texture2D.\n"
+				u8"Size: {}x{}\n"
+				u8"Dynamic: {}",
+				size.width,
+				size.height,
+				dynamic);
 
 			throw DirectXException { hr, message };
 		}
@@ -136,6 +136,16 @@ namespace Nene::Windows::Direct3D11
 	const Size2Di& Texture::size() const noexcept
 	{
 		return size_;
+	}
+
+	const Microsoft::WRL::ComPtr<ID3D11Texture2D>& Texture::texture2D() const noexcept
+	{
+		return texture_;
+	}
+
+	const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& Texture::shaderResourceView() const noexcept
+	{
+		return shaderResource_;
 	}
 }
 

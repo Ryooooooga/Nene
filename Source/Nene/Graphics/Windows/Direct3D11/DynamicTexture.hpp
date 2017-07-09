@@ -48,6 +48,8 @@ namespace Nene::Windows::Direct3D11
 	{
 		std::unique_ptr<Texture> texture_;
 
+		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTarget_;
+
 	public:
 		/**
 		 * @brief      Constructor.
