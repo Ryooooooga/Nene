@@ -293,7 +293,7 @@ namespace Nene::Windows
 		// Process message.
 		::MSG msg;
 
-		while (::PeekMessageW(&msg, handle_, 0, 0, PM_REMOVE))
+		while (isAlive() && ::PeekMessageW(&msg, handle_, 0, 0, PM_REMOVE))
 		{
 			::TranslateMessage(&msg);
 			::DispatchMessageW(&msg);
