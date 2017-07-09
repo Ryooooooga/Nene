@@ -24,7 +24,6 @@
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include <fmt/ostream.h>
 #include "Texture.hpp"
 #include "../../../Exceptions/Windows/DirectXException.hpp"
 
