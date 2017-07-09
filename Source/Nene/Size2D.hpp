@@ -116,6 +116,37 @@ namespace Nene
 		}
 
 		/**
+		 * @brief      Sets the size value.
+		 *
+		 * @param[in]  _width   New width value.
+		 * @param[in]  _height  New height value.
+		 *
+		 * @return     `*this`.
+		 */
+		constexpr Size2D& set(T _width, T _height) noexcept
+		{
+			width  = _width;
+			height = _height;
+
+			return *this;
+		}
+
+		/**
+		 * @brief      Sets the size value.
+		 *
+		 * @param[in]  s     New size value.
+		 *
+		 * @return     `*this`.
+		 */
+		constexpr Size2D& set(const Size2D& s) noexcept
+		{
+			width  = v.width;
+			height = v.height;
+
+			return *this;
+		}
+
+		/**
 		 * @brief      Scales the size.
 		 *
 		 * @param[in]  s     Scaling.
