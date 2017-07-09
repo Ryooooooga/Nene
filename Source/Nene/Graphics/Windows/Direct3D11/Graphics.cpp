@@ -28,6 +28,7 @@
 #pragma comment(lib, "dxgi.lib")
 
 #include "Graphics.hpp"
+#include "Monitor.hpp"
 #include "../../../Exceptions/Windows/DirectXException.hpp"
 
 namespace Nene::Windows::Direct3D11
@@ -35,6 +36,8 @@ namespace Nene::Windows::Direct3D11
 	Graphics::Graphics()
 		: device_()
 		, immediateContext_()
+		, adapter_()
+		, factory_()
 		, driverType_()
 		, featureLevel_()
 	{
@@ -85,6 +88,45 @@ namespace Nene::Windows::Direct3D11
 		{
 			throw DirectXException { hr, u8"Failed to create Direct3D11 device." };
 		}
+
+		// Get DXGI device.
+		Microsoft::WRL::ComPtr<IDXGIDevice> dxgiDevice;
+		
+		hr = device_->QueryInterface(dxgiDevice.GetAddressOf());
+
+		if (FAILED(hr))
+		{
+			throw DirectXException { hr, u8"Failed to aquire DXGI device." };
+		}
+
+		// Get DXGI adapter.
+		hr = dxgiDevice->GetAdapter(adapter_.GetAddressOf());
+
+		if (FAILED(hr))
+		{
+			throw DirectXException { hr, u8"Failed to aquire DXGI adapter." };
+		}
+
+		// Get DXGI factory.
+		hr = adapter_->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(factory_.GetAddressOf()));
+
+		if (FAILED(hr))
+		{
+			throw DirectXException { hr, u8"Failed to aquire DXGI factory." };
+		}
+	}
+
+	std::vector<std::shared_ptr<IMonitor>> Graphics::monitors() const
+	{
+		std::vector<std::shared_ptr<IMonitor>> monitors;
+		Microsoft::WRL::ComPtr<IDXGIOutput> output;
+
+		for (UINT i = 0; SUCCEEDED(adapter_->EnumOutputs(i, output.ReleaseAndGetAddressOf())); i++)
+		{
+			monitors.emplace_back(std::make_shared<Monitor>(output));
+		}
+
+		return monitors;
 	}
 }
 

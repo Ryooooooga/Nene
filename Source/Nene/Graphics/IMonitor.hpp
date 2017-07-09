@@ -21,54 +21,62 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
-#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_IMONITOR_HPP
+#define INCLUDE_NENE_GRAPHICS_IMONITOR_HPP
 
-#include "../../../Platform.hpp"
-#if defined(NENE_OS_WINDOWS)
+#include <string>
+#include "../../../Rectangle.hpp"
 
-#include <memory>
-#include <d3d11.h>
-#include <wrl/client.h>
-#include "../../../Uncopyable.hpp"
-#include "../../IGraphics.hpp"
-
-namespace Nene::Windows::Direct3D11
+namespace Nene
 {
 	/**
-	 * @brief      Direct3D11 graphics implementation.
+	 * @brief      Monitor interface.
 	 */
-	class Graphics final
-		: public  IGraphics
-		, private Uncopyable
+	class IMonitor
 	{
-		Microsoft::WRL::ComPtr<ID3D11Device>        device_;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
-		Microsoft::WRL::ComPtr<IDXGIAdapter>        adapter_;
-		Microsoft::WRL::ComPtr<IDXGIFactory>        factory_;
-
-		D3D_DRIVER_TYPE   driverType_;
-		D3D_FEATURE_LEVEL featureLevel_;
-
 	public:
 		/**
 		 * @brief      Constructor.
 		 */
-		explicit Graphics();
+		IMonitor() noexcept =default;
 
 		/**
 		 * @brief      Destructor.
 		 */
-		~Graphics() =default;
+		virtual ~IMonitor() =default;
 
 		/**
-		 * @see        `Nene::IGraphics::monitors()`.
+		 * @brief      Returns the monitor name.
+		 *
+		 * @return     The monitor name.
 		 */
 		[[nodiscard]]
-		std::vector<std::shared_ptr<IMonitor>> monitors() const override;
+		virtual const std::string& name() const noexcept =0;
+
+		/**
+		 * @brief      Returns the monitor coordinate.
+		 *
+		 * @return     The monitor coordinate.
+		 */
+		[[nodiscard]]
+		virtual const Rectanglei& coordinate() const noexcept =0;
+
+		/**
+		 * @brief      Returns the monitor position.
+		 *
+		 * @return     The monitor position.
+		 */
+		[[nodiscard]]
+		virtual const Vector2Di& position() const noexcept =0;
+
+		/**
+		 * @brief      Returns the monitor size.
+		 *
+		 * @return     The monitor size.
+		 */
+		[[nodiscard]]
+		virtual const Size2Di& size() const noexcept =0;
 	};
 }
 
-#endif
-
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_IMONITOR_HPP

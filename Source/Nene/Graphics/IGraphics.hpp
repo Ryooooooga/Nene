@@ -24,8 +24,14 @@
 #ifndef INCLUDE_NENE_GRAPHICS_IGRAPHICS_HPP
 #define INCLUDE_NENE_GRAPHICS_IGRAPHICS_HPP
 
+#include <memory>
+#include <vector>
+
 namespace Nene
 {
+	// Forward declarations.
+	class IMonitor;
+
 	/**
 	 * @brief      Graphics interface.
 	 */
@@ -41,6 +47,14 @@ namespace Nene
 		 * @brief      Destructor.
 		 */
 		virtual ~IGraphics() =default;
+
+		/**
+		 * @brief      Enumerates the monitors.
+		 *
+		 * @return     The list of monitors.
+		 */
+		[[nodiscard]]
+		virtual std::vector<std::shared_ptr<IMonitor>> monitors() const =0;
 	};
 }
 

@@ -21,54 +21,70 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
-#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_MONITOR_HPP
+#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_MONITOR_HPP
 
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include <memory>
 #include <d3d11.h>
 #include <wrl/client.h>
 #include "../../../Uncopyable.hpp"
-#include "../../IGraphics.hpp"
+#include "../../IMonitor.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
 	/**
-	 * @brief      Direct3D11 graphics implementation.
+	 * @brief      Direct3D monitor implementation.
 	 */
-	class Graphics final
-		: public  IGraphics
+	class Monitor final
+		: public  IMonitor
 		, private Uncopyable
 	{
-		Microsoft::WRL::ComPtr<ID3D11Device>        device_;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
-		Microsoft::WRL::ComPtr<IDXGIAdapter>        adapter_;
-		Microsoft::WRL::ComPtr<IDXGIFactory>        factory_;
+		Microsoft::WRL::ComPtr<IDXGIOutput> output_;
 
-		D3D_DRIVER_TYPE   driverType_;
-		D3D_FEATURE_LEVEL featureLevel_;
+		std::string name_;
+		Rectanglei  coordinate_;
 
 	public:
 		/**
 		 * @brief      Constructor.
+		 *
+		 * @param[in]  output  DXGI output.
 		 */
-		explicit Graphics();
+		explicit Monitor(const Microsoft::WRL::ComPtr<IDXGIOutput>& output);
 
 		/**
 		 * @brief      Destructor.
 		 */
-		~Graphics() =default;
+		~Monitor() =default;
 
 		/**
-		 * @see        `Nene::IGraphics::monitors()`.
+		 * @see        `Nene::IMonitor::name()`.
 		 */
 		[[nodiscard]]
-		std::vector<std::shared_ptr<IMonitor>> monitors() const override;
+		const std::string& name() const noexcept override;
+
+		/**
+		 * @see        `Nene::IMonitor::coordinate()`.
+		 */
+		[[nodiscard]]
+		const Rectanglei& coordinate() const noexcept override;
+
+		/**
+		 * @see        `Nene::IMonitor::position()`.
+		 */
+		[[nodiscard]]
+		const Vector2Di& position() const noexcept override;
+
+		/**
+		 * @see        `Nene::IMonitor::size()`.
+		 */
+		[[nodiscard]]
+		const Size2Di& size() const noexcept override;
 	};
 }
 
 #endif
 
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_MONITOR_HPP

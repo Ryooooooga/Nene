@@ -21,54 +21,51 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
-#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
-
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include <memory>
-#include <d3d11.h>
-#include <wrl/client.h>
-#include "../../../Uncopyable.hpp"
-#include "../../IGraphics.hpp"
+#include "Monitor.hpp"
+#include "../../../Encoding.hpp"
+#include "../../../Exceptions/Windows/DirectXException.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
-	/**
-	 * @brief      Direct3D11 graphics implementation.
-	 */
-	class Graphics final
-		: public  IGraphics
-		, private Uncopyable
+	Monitor::Monitor(const Microsoft::WRL::ComPtr<IDXGIOutput>& output)
+		: output_(output)
+		, name_()
+		, coordinate_()
 	{
-		Microsoft::WRL::ComPtr<ID3D11Device>        device_;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
-		Microsoft::WRL::ComPtr<IDXGIAdapter>        adapter_;
-		Microsoft::WRL::ComPtr<IDXGIFactory>        factory_;
+		assert(output);
 
-		D3D_DRIVER_TYPE   driverType_;
-		D3D_FEATURE_LEVEL featureLevel_;
+		DXGI_OUTPUT_DESC desc;
+		output->GetDesc(&desc);
 
-	public:
-		/**
-		 * @brief      Constructor.
-		 */
-		explicit Graphics();
+		name_                   = Encoding::toUtf8(desc.DeviceName);
+		coordinate_.position.x  = static_cast<Int32>(desc.DesktopCoordinates.left );
+		coordinate_.position.y  = static_cast<Int32>(desc.DesktopCoordinates.top  );
+		coordinate_.size.width  = static_cast<Int32>(desc.DesktopCoordinates.right  - desc.DesktopCoordinates.left );
+		coordinate_.size.height = static_cast<Int32>(desc.DesktopCoordinates.bottom - desc.DesktopCoordinates.top  );
+	}
 
-		/**
-		 * @brief      Destructor.
-		 */
-		~Graphics() =default;
+	const std::string& Monitor::name() const noexcept
+	{
+		return name_;
+	}
 
-		/**
-		 * @see        `Nene::IGraphics::monitors()`.
-		 */
-		[[nodiscard]]
-		std::vector<std::shared_ptr<IMonitor>> monitors() const override;
-	};
+	const Rectanglei& Monitor::coordinate() const noexcept
+	{
+		return coordinate_;
+	}
+
+	const Vector2Di& Monitor::position() const noexcept
+	{
+		return coordinate_.position;
+	}
+
+	const Size2Di& Monitor::size() const noexcept
+	{
+		return coordinate_.size;
+	}
 }
 
 #endif
-
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
