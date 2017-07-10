@@ -24,12 +24,15 @@
 #include "Nene/Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include <memory>
-#include <Windows.h>
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+
 #include <crtdbg.h>
+#include <Windows.h>
 #include "Nene/Engine/Windows/Engine.hpp"
 #include "Nene/Graphics/IGraphics.hpp"
 #include "Nene/Window/IWindow.hpp"
+#include "Nene/Color.hpp"
 
 int WINAPI wWinMain([[maybe_unused]] HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance, [[maybe_unused]] LPWSTR lpCmdLine, [[maybe_unused]] int nCmdShow)
 {
