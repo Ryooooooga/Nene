@@ -151,10 +151,10 @@ namespace Nene
 	{
 		return
 		{
-			static_cast<UInt8>(std::min(a.red   + b.red   , 255)),
-			static_cast<UInt8>(std::min(a.green + b.green , 255)),
-			static_cast<UInt8>(std::min(a.blue  + b.blue  , 255)),
-			static_cast<UInt8>(std::min(a.alpha + b.alpha , 255)),
+			static_cast<UInt8>((std::min)(a.red   + b.red   , 255)),
+			static_cast<UInt8>((std::min)(a.green + b.green , 255)),
+			static_cast<UInt8>((std::min)(a.blue  + b.blue  , 255)),
+			static_cast<UInt8>((std::min)(a.alpha + b.alpha , 255)),
 		};
 	}
 
@@ -162,10 +162,10 @@ namespace Nene
 	{
 		return
 		{
-			static_cast<UInt8>(std::max(a.red   - b.red   , 0)),
-			static_cast<UInt8>(std::max(a.green - b.green , 0)),
-			static_cast<UInt8>(std::max(a.blue  - b.blue  , 0)),
-			static_cast<UInt8>(std::max(a.alpha - b.alpha , 0)),
+			static_cast<UInt8>((std::max)(a.red   - b.red   , 0)),
+			static_cast<UInt8>((std::max)(a.green - b.green , 0)),
+			static_cast<UInt8>((std::max)(a.blue  - b.blue  , 0)),
+			static_cast<UInt8>((std::max)(a.alpha - b.alpha , 0)),
 		};
 	}
 
@@ -173,10 +173,10 @@ namespace Nene
 	{
 		return
 		{
-			static_cast<UInt8>(std::min(a.red   * b, 255)),
-			static_cast<UInt8>(std::min(a.green * b, 255)),
-			static_cast<UInt8>(std::min(a.blue  * b, 255)),
-			static_cast<UInt8>(std::min(a.alpha * b, 255)),
+			static_cast<UInt8>((std::min)(a.red   * b, 255)),
+			static_cast<UInt8>((std::min)(a.green * b, 255)),
+			static_cast<UInt8>((std::min)(a.blue  * b, 255)),
+			static_cast<UInt8>((std::min)(a.alpha * b, 255)),
 		};
 	}
 
@@ -184,10 +184,10 @@ namespace Nene
 	{
 		return
 		{
-			static_cast<UInt8>(std::min(a * b.red   , 255)),
-			static_cast<UInt8>(std::min(a * b.green , 255)),
-			static_cast<UInt8>(std::min(a * b.blue  , 255)),
-			static_cast<UInt8>(std::min(a * b.alpha , 255)),
+			static_cast<UInt8>((std::min)(a * b.red   , 255)),
+			static_cast<UInt8>((std::min)(a * b.green , 255)),
+			static_cast<UInt8>((std::min)(a * b.blue  , 255)),
+			static_cast<UInt8>((std::min)(a * b.alpha , 255)),
 		};
 	}
 
@@ -195,10 +195,10 @@ namespace Nene
 	{
 		return
 		{
-			static_cast<UInt8>(std::min(a.red   * b.red   , 255)),
-			static_cast<UInt8>(std::min(a.green * b.green , 255)),
-			static_cast<UInt8>(std::min(a.blue  * b.blue  , 255)),
-			static_cast<UInt8>(std::min(a.alpha * b.alpha , 255)),
+			static_cast<UInt8>((std::min)(a.red   * b.red   , 255)),
+			static_cast<UInt8>((std::min)(a.green * b.green , 255)),
+			static_cast<UInt8>((std::min)(a.blue  * b.blue  , 255)),
+			static_cast<UInt8>((std::min)(a.alpha * b.alpha , 255)),
 		};
 	}
 
