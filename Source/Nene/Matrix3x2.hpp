@@ -54,7 +54,8 @@ namespace Nene
 		[[nodiscard]]
 		constexpr static Matrix3x2 zero() noexcept
 		{
-			return {
+			return
+			{
 				0, 0,
 				0, 0,
 				0, 0,
@@ -69,7 +70,8 @@ namespace Nene
 		[[nodiscard]]
 		constexpr static Matrix3x2 identity() noexcept
 		{
-			return {
+			return
+			{
 				1, 0,
 				0, 1,
 				0, 0,
@@ -87,7 +89,8 @@ namespace Nene
 		[[nodiscard]]
 		constexpr static Matrix3x2 translation(T x, T y) noexcept
 		{
-			return {
+			return
+			{
 				1, 0,
 				0, 1,
 				x, y,
@@ -133,7 +136,8 @@ namespace Nene
 		[[nodiscard]]
 		constexpr static Matrix3x2 scaling(T sx, T sy, const Vector2D<T>& center = {0, 0}) noexcept
 		{
-			return {
+			return
+			{
 				sx, 0,
 				0, sy,
 				center.x - sx*center.x, center.y - sy*center.y,
@@ -179,7 +183,8 @@ namespace Nene
 		[[nodiscard]]
 		constexpr static Matrix3x2 rotation(const Rotation<T>& _rotation, const Vector2D<T>& center = {0, 0}) noexcept
 		{
-			return {
+			return
+			{
 				+_rotation.cos(), +_rotation.sin(),
 				-_rotation.sin(), +_rotation.cos(),
 				center.x - center.x*_rotation.cos() + center.y*_rotation.sin(),
@@ -420,7 +425,8 @@ namespace Nene
 		[[nodiscard]]
 		constexpr Matrix3x2 operator+() const noexcept
 		{
-			return {
+			return
+			{
 				+_11, +_12,
 				+_21, +_22,
 				+_31, +_32,
@@ -435,7 +441,8 @@ namespace Nene
 		[[nodiscard]]
 		constexpr Matrix3x2 operator-() const noexcept
 		{
-			return {
+			return
+			{
 				-_11, -_12,
 				-_21, -_22,
 				-_31, -_32,
@@ -544,7 +551,8 @@ namespace Nene
 	constexpr auto operator+(const Matrix3x2<T>& a, const Matrix3x2<U>& b) noexcept
 		-> Matrix3x2<decltype(a._11 + b._11)>
 	{
-		return {
+		return
+		{
 			a._11 + b._11, a._12 + b._12,
 			a._21 + b._21, a._22 + b._22,
 			a._31 + b._31, a._32 + b._32,
@@ -567,7 +575,8 @@ namespace Nene
 	constexpr auto operator-(const Matrix3x2<T>& a, const Matrix3x2<U>& b) noexcept
 		-> Matrix3x2<decltype(a._11 - b._11)>
 	{
-		return {
+		return
+		{
 			a._11 - b._11, a._12 - b._12,
 			a._21 - b._21, a._22 - b._22,
 			a._31 - b._31, a._32 - b._32,
@@ -590,7 +599,8 @@ namespace Nene
 	constexpr auto operator*(const Matrix3x2<T>& a, U b) noexcept
 		-> Matrix3x2<decltype(a._11 * b)>
 	{
-		return {
+		return
+		{
 			a._11 * b, a._12 * b,
 			a._21 * b, a._22 * b,
 			a._31 * b, a._32 * b,
@@ -613,7 +623,8 @@ namespace Nene
 	constexpr auto operator*(T& a, const Matrix3x2<U>& b) noexcept
 		-> Matrix3x2<decltype(a * b._11)>
 	{
-		return {
+		return
+		{
 			a * b._11, a * b._12,
 			a * b._21, a * b._22,
 			a * b._31, a * b._32,
@@ -636,7 +647,8 @@ namespace Nene
 	constexpr auto operator*(const Matrix3x2<T>& a, const Matrix3x2<U>& b) noexcept
 		-> Matrix3x2<decltype(a._11*b._11 + a._12*b._21)>
 	{
-		return {
+		return
+		{
 			a._11*b._11 + a._12*b._21,
 			a._11*b._12 + a._12*b._22,
 			a._21*b._11 + a._22*b._21,
@@ -662,7 +674,8 @@ namespace Nene
 	constexpr auto operator*(const Vector2D<T>& a, const Matrix3x2<U>& b) noexcept
 		-> Vector2D<decltype(a.x*b._11 + a.y*b._21 + b._31)>
 	{
-		return {
+		return
+		{
 			a.x*b._11 + a.y*b._21 + b._31,
 			a.x*b._12 + a.y*b._22 + b._32,
 		};
@@ -684,7 +697,8 @@ namespace Nene
 	constexpr auto operator/(const Matrix3x2<T>& a, U b) noexcept
 		-> Matrix3x2<decltype(a._11 / b)>
 	{
-		return {
+		return
+		{
 			a._11 / b, a._12 / b,
 			a._21 / b, a._22 / b,
 			a._31 / b, a._32 / b,
