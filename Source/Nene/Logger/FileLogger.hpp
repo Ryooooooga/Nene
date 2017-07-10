@@ -44,7 +44,10 @@ namespace Nene
 		 * @param[in]  path  Log file path.
 		 */
 		explicit FileLogger(const std::string& path)
-			: file_(path) {}
+			: file_(path)
+		{
+			// TODO: Error.
+		}
 
 		/**
 		 * @brief      Destructor.
