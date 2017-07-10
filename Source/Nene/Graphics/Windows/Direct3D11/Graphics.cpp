@@ -28,8 +28,12 @@
 #pragma comment(lib, "dxgi.lib")
 
 #include "Graphics.hpp"
+#include "DynamicTexture.hpp"
 #include "Monitor.hpp"
+#include "Screen.hpp"
+#include "Texture.hpp"
 #include "../../../Exceptions/Windows/DirectXException.hpp"
+#include "../../../Window/Windows/Window.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
@@ -37,7 +41,6 @@ namespace Nene::Windows::Direct3D11
 		: device_()
 		, immediateContext_()
 		, adapter_()
-		, factory_()
 		, driverType_()
 		, featureLevel_()
 	{
@@ -91,7 +94,7 @@ namespace Nene::Windows::Direct3D11
 
 		// Get DXGI device.
 		Microsoft::WRL::ComPtr<IDXGIDevice> dxgiDevice;
-		
+
 		hr = device_->QueryInterface(dxgiDevice.GetAddressOf());
 
 		if (FAILED(hr))
@@ -106,14 +109,6 @@ namespace Nene::Windows::Direct3D11
 		{
 			throw DirectXException { hr, u8"Failed to aquire DXGI adapter." };
 		}
-
-		// Get DXGI factory.
-		hr = adapter_->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(factory_.GetAddressOf()));
-
-		if (FAILED(hr))
-		{
-			throw DirectXException { hr, u8"Failed to aquire DXGI factory." };
-		}
 	}
 
 	std::vector<std::shared_ptr<IMonitor>> Graphics::monitors() const
@@ -127,6 +122,25 @@ namespace Nene::Windows::Direct3D11
 		}
 
 		return monitors;
+	}
+
+	std::shared_ptr<IScreen> Graphics::screen(const std::shared_ptr<IWindow>& window)
+	{
+		assert(window);
+
+		// Cast to Windows window.
+		const auto window_Windows = std::dynamic_pointer_cast<Window>(window);
+
+		if (!window_Windows)
+		{
+			throw EngineException { u8"Nene::Windows::Direct3D11::Graphics::screen(): Parameter must be a Windows API window." };
+		}
+		else if (window_Windows->isDestroyed())
+		{
+			throw EngineException { u8"Nene::Windows::Direct3D11::Graphics::screen(): Window has already been destroyed." };
+		}
+
+		return std::make_shared<Screen>(device_, adapter_, window_Windows);
 	}
 }
 

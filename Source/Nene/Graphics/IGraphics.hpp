@@ -31,6 +31,8 @@ namespace Nene
 {
 	// Forward declarations.
 	class IMonitor;
+	class IScreen;
+	class IWindow;
 
 	/**
 	 * @brief      Graphics interface.
@@ -55,6 +57,14 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		virtual std::vector<std::shared_ptr<IMonitor>> monitors() const =0;
+
+		/**
+		 * @brief      Creates the screen from the window.
+		 *
+		 * @return     The screen of `window`.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IScreen> screen(const std::shared_ptr<IWindow>& window) =0;
 	};
 }
 

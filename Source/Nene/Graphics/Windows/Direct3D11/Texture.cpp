@@ -138,6 +138,11 @@ namespace Nene::Windows::Direct3D11
 		return size_;
 	}
 
+	const Microsoft::WRL::ComPtr<ID3D11Device>& Texture::device() const noexcept
+	{
+		return device_;
+	}
+
 	const Microsoft::WRL::ComPtr<ID3D11Texture2D>& Texture::texture2D() const noexcept
 	{
 		return texture_;

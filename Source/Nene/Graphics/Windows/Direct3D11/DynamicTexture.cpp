@@ -30,6 +30,41 @@
 
 namespace Nene::Windows::Direct3D11
 {
+	DynamicTexture::DynamicTexture(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture)
+		: texture_()
+		, renderTarget_()
+	{
+		assert(texture);
+
+		// Create texture.
+		texture_ = std::make_unique<Texture>(texture);
+
+		// Create render target view.
+		D3D11_TEXTURE2D_DESC texDesc;
+		texture_->texture2D()->GetDesc(&texDesc);
+
+		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+		rtvDesc.Format             = texDesc.Format;
+		rtvDesc.ViewDimension      = D3D11_RTV_DIMENSION_TEXTURE2D;
+		rtvDesc.Texture2D.MipSlice = 0;
+
+		HRESULT hr = texture_->device()->CreateRenderTargetView(
+			texture_->texture2D().Get(),
+			&rtvDesc,
+			renderTarget_.GetAddressOf());
+
+		if (FAILED(hr))
+		{
+			const auto message = fmt::format(
+				u8"Failed to create Direct3D11 render target view from dynamic texture.\n"
+				u8"Size: {}x{}\n",
+				texture_->size().width,
+				texture_->size().height);
+
+			throw DirectXException { hr, message };
+		}
+	}
+
 	DynamicTexture::DynamicTexture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, PixelFormat format)
 		: texture_()
 		, renderTarget_()
@@ -44,8 +79,8 @@ namespace Nene::Windows::Direct3D11
 		texture_->texture2D()->GetDesc(&texDesc);
 
 		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
-		rtvDesc.Format = texDesc.Format;
-		rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		rtvDesc.Format             = texDesc.Format;
+		rtvDesc.ViewDimension      = D3D11_RTV_DIMENSION_TEXTURE2D;
 		rtvDesc.Texture2D.MipSlice = 0;
 
 		HRESULT hr = device->CreateRenderTargetView(
@@ -60,7 +95,7 @@ namespace Nene::Windows::Direct3D11
 				u8"Size: {}x{}\n",
 				size.width,
 				size.height);
-			
+
 			throw DirectXException { hr, message };
 		}
 	}

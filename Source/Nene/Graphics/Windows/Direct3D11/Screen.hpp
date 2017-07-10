@@ -21,8 +21,8 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
-#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_SCREEN_HPP
+#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_SCREEN_HPP
 
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
@@ -31,49 +31,56 @@
 #include <d3d11.h>
 #include <wrl/client.h>
 #include "../../../Uncopyable.hpp"
-#include "../../IGraphics.hpp"
+#include "../../IScreen.hpp"
+
+namespace Nene::Windows
+{
+	// Forward declarations.
+	class Window;
+}
 
 namespace Nene::Windows::Direct3D11
 {
+	// Forward declarations.
+	class DynamicTexture;
+
 	/**
-	 * @brief      Direct3D11 graphics implementation.
+	 * @brief      Direct3D11 screen implemenation.
 	 */
-	class Graphics final
-		: public  IGraphics
+	class Screen final
+		: public  IScreen
 		, private Uncopyable
 	{
-		Microsoft::WRL::ComPtr<ID3D11Device>        device_;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
-		Microsoft::WRL::ComPtr<IDXGIAdapter>        adapter_;
+		Microsoft::WRL::ComPtr<ID3D11Device>   device_;
+		Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain_;
 
-		D3D_DRIVER_TYPE   driverType_;
-		D3D_FEATURE_LEVEL featureLevel_;
+		std::shared_ptr<Window>         window_;
+		std::shared_ptr<DynamicTexture> texture_;
+
 
 	public:
 		/**
 		 * @brief      Constructor.
+		 *
+		 * @param[in]  device   Direct3D11 device.
+		 * @param[in]  adapter  DXGI adater.
+		 * @param[in]  window   The rendering target window.
 		 */
-		explicit Graphics();
+		explicit Screen(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Microsoft::WRL::ComPtr<IDXGIAdapter>& adapter, const std::shared_ptr<Window>& window);
 
 		/**
 		 * @brief      Destructor.
 		 */
-		~Graphics() =default;
+		~Screen() =default;
 
 		/**
-		 * @see        `Nene::IGraphics::monitors()`.
+		 * @see        `Nene::IScreen::size()`.
 		 */
 		[[nodiscard]]
-		std::vector<std::shared_ptr<IMonitor>> monitors() const override;
-
-		/**
-		 * @see        `Nene::IGraphics::screen()`.
-		 */
-		[[nodiscard]]
-		std::shared_ptr<IScreen> screen(const std::shared_ptr<IWindow>& window) override;
+		const Size2Di& size() const noexcept override;
 	};
 }
 
 #endif
 
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_SCREEN_HPP

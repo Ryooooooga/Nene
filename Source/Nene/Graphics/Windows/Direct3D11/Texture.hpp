@@ -78,6 +78,14 @@ namespace Nene::Windows::Direct3D11
 		const Size2Di& size() const noexcept override;
 
 		/**
+		 * @brief      Returns Direct3D11 device.
+		 *
+		 * @return     Direct3D11 device.
+		 */
+		[[nodiscard]]
+		const Microsoft::WRL::ComPtr<ID3D11Device>& device() const noexcept;
+
+		/**
 		 * @brief      Returns Direct3D11 texture2D.
 		 *
 		 * @return     Direct3D11 texture2D.

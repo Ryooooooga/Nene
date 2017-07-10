@@ -42,7 +42,7 @@ namespace Nene::Windows::Direct3D11
 	/**
 	 * @brief      Directr3D11 dynamic texture implementation.
 	 */
-	class DynamicTexture
+	class DynamicTexture final
 		: public  IDynamicTexture
 		, private Uncopyable
 	{
@@ -51,6 +51,13 @@ namespace Nene::Windows::Direct3D11
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTarget_;
 
 	public:
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  texture  Direct3D11 texture.
+		 */
+		explicit DynamicTexture(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture);
+
 		/**
 		 * @brief      Constructor.
 		 *
