@@ -65,14 +65,14 @@ namespace Nene::Windows::Direct3D11
 		}
 	}
 
-	DynamicTexture::DynamicTexture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, PixelFormat format)
+	DynamicTexture::DynamicTexture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size)
 		: texture_()
 		, renderTarget_()
 	{
 		assert(device);
 
 		// Create texture.
-		texture_ = std::make_unique<Texture>(device, size, format, true);
+		texture_ = std::make_unique<Texture>(device, size, true);
 
 		// Create render target view.
 		D3D11_TEXTURE2D_DESC texDesc;

@@ -29,22 +29,6 @@
 
 namespace Nene::Windows::Direct3D11
 {
-	namespace
-	{
-		// Converts pixel format to DXGI format.
-		constexpr DXGI_FORMAT toDxgiFormat(PixelFormat format)
-		{
-			switch (format)
-			{
-				case PixelFormat::R8G8B8A8: return DXGI_FORMAT_R8G8B8A8_UNORM;
-
-				default:
-					assert(!"Unknown pixel format.");
-					return DXGI_FORMAT_UNKNOWN;
-			}
-		}
-	}
-
 	Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture)
 		: device_()
 		, texture_(texture)
@@ -79,7 +63,7 @@ namespace Nene::Windows::Direct3D11
 		}
 	}
 
-	Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, PixelFormat format, bool dynamic)
+	Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, bool dynamic)
 		: device_(device)
 		, texture_()
 		, shaderResource_()
@@ -95,7 +79,7 @@ namespace Nene::Windows::Direct3D11
 		texDesc.Height             = static_cast<UINT>(size_.height );
 		texDesc.MipLevels          = 1;
 		texDesc.ArraySize          = 1;
-		texDesc.Format             = toDxgiFormat(format);
+		texDesc.Format             = DXGI_FORMAT_R8G8B8A8_UNORM;
 		texDesc.SampleDesc.Count   = 1;
 		texDesc.SampleDesc.Quality = 0;
 		texDesc.Usage              = D3D11_USAGE_DEFAULT;

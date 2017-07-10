@@ -32,7 +32,6 @@
 #include <wrl/client.h>
 #include "../../../Uncopyable.hpp"
 #include "../../IDynamicTexture.hpp"
-#include "../../PixelFormat.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
@@ -65,7 +64,7 @@ namespace Nene::Windows::Direct3D11
 		 * @param[in]  size    The texture size.
 		 * @param[in]  format  The texture pixel format.
 		 */
-		explicit DynamicTexture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, PixelFormat format);
+		explicit DynamicTexture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size);
 
 		/**
 		 * @brief      Destructor.
