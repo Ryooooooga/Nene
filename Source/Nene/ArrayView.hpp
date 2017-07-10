@@ -296,7 +296,7 @@ namespace Nene
 		 *
 		 * @return     Copy of the array.
 		 */
-		template <typename Allocator>
+		template <typename Allocator = std::allocator<T>>
 		[[nodiscard]]
 		std::vector<T, Allocator> to_vector() const
 		{
