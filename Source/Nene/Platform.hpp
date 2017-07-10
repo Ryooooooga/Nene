@@ -30,6 +30,16 @@
 #  error Unsupported platform
 #endif
 
+#if defined(_MSC_VER)
+#  define NENE_COMPILER_MSVC
+#elif defined(__clang__)
+#  define NENE_COMPILER_CLANG
+#elif defined(__GNUC__)
+#  define NENE_COMPILER_GCC
+#else
+#  define NENE_COMPILER_UNKNOWN
+#endif
+
 #if defined(_DEBUG) || defined(DEBUG) || !defined(NDEBUG)
 #  define NENE_DEBUG
 #else
