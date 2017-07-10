@@ -24,15 +24,280 @@
 #ifndef INCLUDE_NENE_COLOR_HPP
 #define INCLUDE_NENE_COLOR_HPP
 
-#include <algorithm>
 #include "Types.hpp"
 
 namespace Nene
 {
+	// Forward declarations.
+	class Color4;
+	class Color4f;
+
 	/**
-	 * @brief      Color.
+	 * @brief      Integer RGBA color.
 	 */
-	class Color
+	class Color4
+	{
+	public:
+		UInt8 red, green, blue, alpha;
+
+		/**
+		 * @brief      Returns gray scaled color.
+		 *
+		 * @param[in]  gray   Gray scale.
+		 * @param[in]  alpha  Alpha.
+		 *
+		 * @return     Gray color.
+		 */
+		[[nodiscard]]
+		constexpr static Color4 gray(UInt8 gray, UInt8 alpha = 255) noexcept;
+
+		/**
+		 * @brief      Default constructor.
+		 */
+		constexpr Color4() noexcept =default;
+
+		/**
+		 * @brief      Copy constructor.
+		 */
+		constexpr Color4(const Color4&) noexcept =default;
+
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  red
+		 * @param[in]  green
+		 * @param[in]  blue
+		 * @param[in]  alpha
+		 */
+		constexpr Color4(UInt8 red, UInt8 green, UInt8 blue, UInt8 alpha = 255) noexcept;
+
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  color  Color code (0xAARRGGBB style).
+		 */
+		constexpr Color4(UInt32 color) noexcept;
+
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  color  Color code (0xRRGGBB style).
+		 * @param[in]  alpha  Initial `alpha` value.
+		 */
+		constexpr Color4(UInt32 color, UInt8 alpha) noexcept;
+
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  color
+		 * @param[in]  alpha
+		 */
+		constexpr Color4(const Color4& color, UInt8 alpha) noexcept;
+
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  color
+		 * @param[in]  alpha
+		 */
+		constexpr explicit Color4(const Color4f& color) noexcept;
+
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  color
+		 * @param[in]  alpha
+		 */
+		constexpr Color4(const Color4f& color, UInt8 alpha) noexcept;
+
+		/**
+		 * @brief      Destructor.
+		 */
+		~Color4() =default;
+
+		/**
+		 * @brief      Sets the color values.
+		 *
+		 * @param[in]  _red
+		 * @param[in]  _green
+		 * @param[in]  _blue
+		 * @param[in]  _alpha
+		 *
+		 * @return     `*this`.
+		 */
+		constexpr Color4& set(UInt8 _red, UInt8 _green, UInt8 _blue, UInt8 _alpha = 255) noexcept;
+
+		/**
+		 * @brief      Sets the color values.
+		 *
+		 * @param[in]  color
+		 *
+		 * @return     `*this`.
+		 */
+		constexpr Color4& set(const Color4& color) noexcept;
+
+		/**
+		 * @brief      Sets the color values.
+		 *
+		 * @param[in]  color
+		 * @param[in]  _alpha
+		 *
+		 * @return     `*this`.
+		 */
+		constexpr Color4& set(const Color4& color, UInt8 _alpha) noexcept;
+
+		/**
+		 * @brief      Sets the color values.
+		 *
+		 * @param[in]  color
+		 *
+		 * @return     `*this`.
+		 */
+		constexpr Color4& set(const Color4f& color) noexcept;
+
+		/**
+		 * @brief      Sets the color values.
+		 *
+		 * @param[in]  color
+		 * @param[in]  _alpha
+		 *
+		 * @return     `*this`.
+		 */
+		constexpr Color4& set(const Color4f& color, UInt8 _alpha) noexcept;
+
+		/**
+		 * @brief      Unary operator `~`.
+		 *
+		 * @return     `~(*this)`.
+		 */
+		[[nodiscard]]
+		constexpr Color4 operator~() const noexcept;
+
+		/**
+		 * @brief      Binary operator `=`.
+		 *
+		 * @param[in]  a     Right hand side operand.
+		 *
+		 * @return     `*this = a`.
+		 */
+		constexpr Color4& operator=(const Color4& a) noexcept =default;
+
+		/**
+		 * @brief      Binary operator `+=`.
+		 *
+		 * @param[in]  a     Right hand side operand.
+		 *
+		 * @return     `*this += a`.
+		 */
+		constexpr Color4& operator+=(const Color4& a) noexcept;
+
+		/**
+		 * @brief      Binary operator `-=`.
+		 *
+		 * @param[in]  a     Right hand side operand.
+		 *
+		 * @return     `*this -= a`.
+		 */
+		constexpr Color4& operator-=(const Color4& a) noexcept;
+
+		/**
+		 * @brief      Binary operator `*=`.
+		 *
+		 * @param[in]  a     Right hand side operand.
+		 *
+		 * @return     `*this *= a`.
+		 */
+		constexpr Color4& operator*=(UInt8 a) noexcept;
+
+		/**
+		 * @brief      Binary operator `*=`.
+		 *
+		 * @param[in]  a     Right hand side operand.
+		 *
+		 * @return     `*this *= a`.
+		 */
+		constexpr Color4& operator*=(const Color4& a) noexcept;
+
+		/**
+		 * @brief      Binary operator `/=`.
+		 *
+		 * @param[in]  a     Right hand side operand.
+		 *
+		 * @return     `*this /= a`.
+		 */
+		constexpr Color4& operator/=(UInt8 a) noexcept;
+	};
+
+	/**
+	 * @brief      Binary operator `+`.
+	 *
+	 * @param[in]  a     Left hand side operand.
+	 * @param[in]  b     Right hand side operand.
+	 *
+	 * @return     `a + b`.
+	 */
+	[[nodiscard]]
+	constexpr Color4 operator+(const Color4& a, const Color4& b) noexcept;
+
+	/**
+	 * @brief      Binary operator `-`.
+	 *
+	 * @param[in]  a     Left hand side operand.
+	 * @param[in]  b     Right hand side operand.
+	 *
+	 * @return     `a - b`.
+	 */
+	[[nodiscard]]
+	constexpr Color4 operator-(const Color4& a, const Color4& b) noexcept;
+
+	/**
+	 * @brief      Binary operator `*`.
+	 *
+	 * @param[in]  a     Left hand side operand.
+	 * @param[in]  b     Right hand side operand.
+	 *
+	 * @return     `a * b`.
+	 */
+	[[nodiscard]]
+	constexpr Color4 operator*(const Color4& a, UInt8 b) noexcept;
+
+	/**
+	 * @brief      Binary operator `*`.
+	 *
+	 * @param[in]  a     Left hand side operand.
+	 * @param[in]  b     Right hand side operand.
+	 *
+	 * @return     `a * b`.
+	 */
+	[[nodiscard]]
+	constexpr Color4 operator*(UInt8 a, const Color4& b) noexcept;
+
+	/**
+	 * @brief      Binary operator `*`.
+	 *
+	 * @param[in]  a     Left hand side operand.
+	 * @param[in]  b     Right hand side operand.
+	 *
+	 * @return     `a * b`.
+	 */
+	[[nodiscard]]
+	constexpr Color4 operator*(const Color4& a, const Color4& b) noexcept;
+
+	/**
+	 * @brief      Binary operator `/`.
+	 *
+	 * @param[in]  a     Left hand side operand.
+	 * @param[in]  b     Right hand side operand.
+	 *
+	 * @return     `a / b`.
+	 */
+	[[nodiscard]]
+	constexpr Color4 operator/(const Color4& a, UInt8 b) noexcept;
+
+	/**
+	 * @brief      Float RGBA color.
+	 */
+	class Color4f
 	{
 	public:
 		Float32 red, green, blue, alpha;
@@ -46,42 +311,34 @@ namespace Nene
 		 * @return     Gray color.
 		 */
 		[[nodiscard]]
-		constexpr static Color gray(Float32 gray, Float32 alpha = 1.f) noexcept
-		{
-			return { gray, gray, gray, alpha };
-		}
+		constexpr static Color4f gray(Float32 gray, Float32 alpha = 1.f) noexcept;
 
 		/**
 		 * @brief      Default constructor.
 		 */
-		constexpr Color() noexcept =default;
+		constexpr Color4f() noexcept =default;
 
 		/**
 		 * @brief      Copy constructor.
 		 */
-		constexpr Color(const Color&) noexcept =default;
+		constexpr Color4f(const Color4f&) noexcept =default;
 
 		/**
 		 * @brief      Constructor.
 		 *
-		 * @param[in]  red    Initial `red` value.
-		 * @param[in]  green  Initial `green` value.
-		 * @param[in]  blue   Initial `blue` value.
-		 * @param[in]  alpha  Initial `alpha` value.
+		 * @param[in]  red
+		 * @param[in]  green
+		 * @param[in]  blue
+		 * @param[in]  alpha
 		 */
-		constexpr Color(Float32 red, Float32 green, Float32 blue, Float32 alpha = 1.f) noexcept
-			: red(red), green(green), blue(blue), alpha(alpha) {}
+		constexpr Color4f(Float32 red, Float32 green, Float32 blue, Float32 alpha = 1.f) noexcept;
 
 		/**
 		 * @brief      Constructor.
 		 *
 		 * @param[in]  color  Color code (0xAARRGGBB style).
 		 */
-		constexpr Color(UInt32 color) noexcept
-			: red  (((color >> 16) & 0xff) / 255.f)
-			, green(((color >>  8) & 0xff) / 255.f)
-			, blue (((color >>  0) & 0xff) / 255.f)
-			, alpha(((color >> 24) & 0xff) / 255.f) {}
+		constexpr Color4f(UInt32 color) noexcept;
 
 		/**
 		 * @brief      Constructor.
@@ -89,25 +346,36 @@ namespace Nene
 		 * @param[in]  color  Color code (0xRRGGBB style).
 		 * @param[in]  alpha  Initial `alpha` value.
 		 */
-		constexpr Color(UInt32 color, Float32 alpha) noexcept
-			: red  (((color >> 16) & 0xff) / 255.f)
-			, green(((color >>  8) & 0xff) / 255.f)
-			, blue (((color >>  0) & 0xff) / 255.f)
-			, alpha(alpha) {}
+		constexpr Color4f(UInt32 color, Float32 alpha) noexcept;
 
 		/**
 		 * @brief      Constructor.
 		 *
-		 * @param[in]  color  Color.
-		 * @param[in]  alpha  Initial `alpha` value.
+		 * @param[in]  color
+		 * @param[in]  alpha
 		 */
-		constexpr Color(const Color& color, Float32 alpha) noexcept
-			: red(color.red), green(color.green), blue(color.blue), alpha(alpha) {}
+		constexpr explicit Color4f(const Color4& color) noexcept;
+
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  color
+		 * @param[in]  alpha
+		 */
+		constexpr Color4f(const Color4& color, Float32 alpha) noexcept;
+
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  color
+		 * @param[in]  alpha
+		 */
+		constexpr Color4f(const Color4f& color, Float32 alpha) noexcept;
 
 		/**
 		 * @brief      Destructor.
 		 */
-		~Color() =default;
+		~Color4f() =default;
 
 		/**
 		 * @brief      Clamps the values within range of `0` to `1`.
@@ -115,85 +383,64 @@ namespace Nene
 		 * @return     The clamped values.
 		 */
 		[[nodiscard]]
-		constexpr Color saturated() const noexcept
-		{
-			return {
-				std::clamp(red,   0.f, 1.f),
-				std::clamp(green, 0.f, 1.f),
-				std::clamp(blue,  0.f, 1.f),
-				std::clamp(alpha, 0.f, 1.f),
-			};
-		}
+		constexpr Color4f saturated() const noexcept;
 
 		/**
 		 * @brief      Sets the color values.
 		 *
-		 * @param[in]  _red    New `red` value.
-		 * @param[in]  _green  New `green` value.
-		 * @param[in]  _blue   New `blue` value.
-		 * @param[in]  _alpha  New `alpha` value.
+		 * @param[in]  _red
+		 * @param[in]  _green
+		 * @param[in]  _blue
+		 * @param[in]  _alpha
 		 *
 		 * @return     `*this`.
 		 */
-		Color& set(Float32 _red, Float32 _green, Float32 _blue, Float32 _alpha = 1.f) noexcept
-		{
-			red   = _red;
-			green = _green;
-			blue  = _blue;
-			alpha = _alpha;
-
-			return *this;
-		}
+		constexpr Color4f& set(Float32 _red, Float32 _green, Float32 _blue, Float32 _alpha = 1.f) noexcept;
 
 		/**
 		 * @brief      Sets the color values.
 		 *
-		 * @param[in]  color   New color value.
-		 * @param[in]  _alpha  New `alpha` value.
+		 * @param[in]  color
 		 *
 		 * @return     `*this`.
 		 */
-		Color& set(const Color& color, Float32 _alpha) noexcept
-		{
-			red   = color.red;
-			green = color.green;
-			blue  = color.blue;
-			alpha = _alpha;
-
-			return *this;
-		}
+		constexpr Color4f& set(const Color4& color) noexcept;
 
 		/**
 		 * @brief      Sets the color values.
 		 *
-		 * @param[in]  color   New color value.
+		 * @param[in]  color
+		 * @param[in]  _alpha
 		 *
 		 * @return     `*this`.
 		 */
-		Color& set(const Color& color) noexcept
-		{
-			red   = color.red;
-			green = color.green;
-			blue  = color.blue;
-			alpha = color.alpha;
+		constexpr Color4f& set(const Color4& color, Float32 _alpha) noexcept;
 
-			return *this;
-		}
+		/**
+		 * @brief      Sets the color values.
+		 *
+		 * @param[in]  color
+		 *
+		 * @return     `*this`.
+		 */
+		constexpr Color4f& set(const Color4f& color) noexcept;
+
+		/**
+		 * @brief      Sets the color values.
+		 *
+		 * @param[in]  color
+		 * @param[in]  _alpha
+		 *
+		 * @return     `*this`.
+		 */
+		constexpr Color4f& set(const Color4f& color, Float32 _alpha) noexcept;
 
 		/**
 		 * @brief      Clamps the values within range of `0` to `1`.
 		 *
 		 * @return     `*this`.
 		 */
-		constexpr Color& saturate() noexcept
-		{
-			red   = std::clamp(red,   0.f, 1.f);
-			green = std::clamp(green, 0.f, 1.f);
-			blue  = std::clamp(blue,  0.f, 1.f);
-			alpha = std::clamp(alpha, 0.f, 1.f);
-
-			return *this;
-		}
+		constexpr Color4f& saturate() noexcept;
 
 		/**
 		 * @brief      Unary operator `+`.
@@ -201,10 +448,7 @@ namespace Nene
 		 * @return     `+(*this)`.
 		 */
 		[[nodiscard]]
-		constexpr Color operator+() const noexcept
-		{
-			return { +red, +green, +blue, +alpha };
-		}
+		constexpr Color4f operator+() const noexcept;
 
 		/**
 		 * @brief      Unary operator `-`.
@@ -212,10 +456,7 @@ namespace Nene
 		 * @return     `-(*this)`.
 		 */
 		[[nodiscard]]
-		constexpr Color operator-() const noexcept
-		{
-			return { -red, -green, -blue, -alpha };
-		}
+		constexpr Color4f operator-() const noexcept;
 
 		/**
 		 * @brief      Unary operator `~`.
@@ -223,10 +464,7 @@ namespace Nene
 		 * @return     `~(*this)`.
 		 */
 		[[nodiscard]]
-		constexpr Color operator~() const noexcept
-		{
-			return { 1.f-red, 1.f-green, 1.f-blue, 1.f-alpha };
-		}
+		constexpr Color4f operator~() const noexcept;
 
 		/**
 		 * @brief      Binary operator `=`.
@@ -235,7 +473,7 @@ namespace Nene
 		 *
 		 * @return     `*this = a`.
 		 */
-		constexpr Color& operator=(const Color& a) noexcept =default;
+		constexpr Color4f& operator=(const Color4f& a) noexcept =default;
 
 		/**
 		 * @brief      Binary operator `+=`.
@@ -244,15 +482,7 @@ namespace Nene
 		 *
 		 * @return     `*this += a`.
 		 */
-		constexpr Color& operator+=(const Color& a) noexcept
-		{
-			red   += a.red;
-			green += a.green;
-			blue  += a.blue;
-			alpha += a.alpha;
-
-			return *this;
-		}
+		constexpr Color4f& operator+=(const Color4f& a) noexcept;
 
 		/**
 		 * @brief      Binary operator `-=`.
@@ -261,15 +491,7 @@ namespace Nene
 		 *
 		 * @return     `*this -= a`.
 		 */
-		constexpr Color& operator-=(const Color& a) noexcept
-		{
-			red   -= a.red;
-			green -= a.green;
-			blue  -= a.blue;
-			alpha -= a.alpha;
-
-			return *this;
-		}
+		constexpr Color4f& operator-=(const Color4f& a) noexcept;
 
 		/**
 		 * @brief      Binary operator `*=`.
@@ -278,15 +500,7 @@ namespace Nene
 		 *
 		 * @return     `*this *= a`.
 		 */
-		constexpr Color& operator*=(Float32 a) noexcept
-		{
-			red   *= a;
-			green *= a;
-			blue  *= a;
-			alpha *= a;
-
-			return *this;
-		}
+		constexpr Color4f& operator*=(Float32 a) noexcept;
 
 		/**
 		 * @brief      Binary operator `*=`.
@@ -295,15 +509,7 @@ namespace Nene
 		 *
 		 * @return     `*this *= a`.
 		 */
-		constexpr Color& operator*=(const Color& a) noexcept
-		{
-			red   *= a.red;
-			green *= a.green;
-			blue  *= a.blue;
-			alpha *= a.alpha;
-
-			return *this;
-		}
+		constexpr Color4f& operator*=(const Color4f& a) noexcept;
 
 		/**
 		 * @brief      Binary operator `/=`.
@@ -312,15 +518,7 @@ namespace Nene
 		 *
 		 * @return     `*this /= a`.
 		 */
-		constexpr Color& operator/=(Float32 a) noexcept
-		{
-			red   /= a;
-			green /= a;
-			blue  /= a;
-			alpha /= a;
-
-			return *this;
-		}
+		constexpr Color4f& operator/=(Float32 a) noexcept;
 	};
 
 	/**
@@ -332,15 +530,7 @@ namespace Nene
 	 * @return     `a + b`.
 	 */
 	[[nodiscard]]
-	constexpr Color operator+(const Color& a, const Color& b) noexcept
-	{
-		return {
-			a.red   + b.red,
-			a.green + b.green,
-			a.blue  + b.blue,
-			a.alpha + b.alpha,
-		};
-	}
+	constexpr Color4f operator+(const Color4f& a, const Color4f& b) noexcept;
 
 	/**
 	 * @brief      Binary operator `-`.
@@ -351,15 +541,7 @@ namespace Nene
 	 * @return     `a - b`.
 	 */
 	[[nodiscard]]
-	constexpr Color operator-(const Color& a, const Color& b) noexcept
-	{
-		return {
-			a.red   - b.red,
-			a.green - b.green,
-			a.blue  - b.blue,
-			a.alpha - b.alpha,
-		};
-	}
+	constexpr Color4f operator-(const Color4f& a, const Color4f& b) noexcept;
 
 	/**
 	 * @brief      Binary operator `*`.
@@ -370,15 +552,7 @@ namespace Nene
 	 * @return     `a * b`.
 	 */
 	[[nodiscard]]
-	constexpr Color operator*(const Color& a, Float32 b) noexcept
-	{
-		return {
-			a.red   * b,
-			a.green * b,
-			a.blue  * b,
-			a.alpha * b,
-		};
-	}
+	constexpr Color4f operator*(const Color4f& a, Float32 b) noexcept;
 
 	/**
 	 * @brief      Binary operator `*`.
@@ -389,15 +563,18 @@ namespace Nene
 	 * @return     `a * b`.
 	 */
 	[[nodiscard]]
-	constexpr Color operator*(const Color& a, const Color& b) noexcept
-	{
-		return {
-			a.red   * b.red,
-			a.green * b.green,
-			a.blue  * b.blue,
-			a.alpha * b.alpha,
-		};
-	}
+	constexpr Color4f operator*(Float32 a, const Color4f& b) noexcept;
+
+	/**
+	 * @brief      Binary operator `*`.
+	 *
+	 * @param[in]  a     Left hand side operand.
+	 * @param[in]  b     Right hand side operand.
+	 *
+	 * @return     `a * b`.
+	 */
+	[[nodiscard]]
+	constexpr Color4f operator*(const Color4f& a, const Color4f& b) noexcept;
 
 	/**
 	 * @brief      Binary operator `/`.
@@ -408,15 +585,9 @@ namespace Nene
 	 * @return     `a / b`.
 	 */
 	[[nodiscard]]
-	constexpr Color operator/(const Color& a, Float32 b) noexcept
-	{
-		return {
-			a.red   / b,
-			a.green / b,
-			a.blue  / b,
-			a.alpha / b,
-		};
-	}
+	constexpr Color4f operator/(const Color4f& a, Float32 b) noexcept;
 }
+
+#include "Color.inl.hpp"
 
 #endif  // #ifndef INCLUDE_NENE_COLOR_HPP
