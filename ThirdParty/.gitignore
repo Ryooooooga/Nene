@@ -2,3 +2,8 @@ Include/fmt/*
 Source/fmt/*
 !Include/fmt/.keep
 !Source/fmt/.keep
+
+Include/zlib/*
+Source/zlib/*
+!Include/zlib/.keep
+!Source/zlib/.keep
