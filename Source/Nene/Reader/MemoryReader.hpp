@@ -39,8 +39,8 @@ namespace Nene
 		: public  IReader
 		, private Uncopyable
 	{
-		std::vector<UInt8> data_;
-		std::size_t        pos_;
+		std::vector<Byte> data_;
+		std::size_t       pos_;
 
 	public:
 		/**
@@ -48,7 +48,7 @@ namespace Nene
 		 *
 		 * @param[in]  data  The memory data.
 		 */
-		explicit MemoryReader(ArrayView<UInt8> data)
+		explicit MemoryReader(ByteArrayView data)
 			: data_ (data.to_vector())
 			, pos_  (0) {}
 
@@ -100,7 +100,7 @@ namespace Nene
 			const auto sizeToRead = (std::min)(size, data_.size() - pos_);
 
 			// Copy data.
-			std::memcpy(buffer, data_.data(), sizeToRead);
+			std::memcpy(buffer, data_.data() + pos_, sizeToRead);
 
 			pos_ += sizeToRead;
 
@@ -126,7 +126,7 @@ namespace Nene
 		 * @return     The memory data of the memory reader.
 		 */
 		[[nodiscard]]
-		ArrayView<UInt8> data() const noexcept
+		ByteArrayView data() const noexcept
 		{
 			return data_;
 		}
