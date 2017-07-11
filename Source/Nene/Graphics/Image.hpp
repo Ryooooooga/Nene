@@ -127,15 +127,27 @@ namespace Nene
 			return data_.data();
 		}
 
-		/**
-		 * @brief      Returns the pointer to the image color data.
-		 *
-		 * @return     The pointer to the array of the pixel colors.
-		 */
 		[[nodiscard]]
 		const Color4* dataPointer() const noexcept
 		{
 			return data_.data();
+		}
+
+		/**
+		 * @brief      Returns the pointer to the image byte data.
+		 *
+		 * @return     The pointer to the array of the image bytes.
+		 */
+		[[nodiscard]]
+		Byte* dataPointerAsByte() noexcept
+		{
+			return reinterpret_cast<Byte*>(data_.data());
+		}
+
+		[[nodiscard]]
+		const Byte* dataPointerAsByte() const noexcept
+		{
+			return reinterpret_cast<const Byte*>(data_.data());
 		}
 
 		/**

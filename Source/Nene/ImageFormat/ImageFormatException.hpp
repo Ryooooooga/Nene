@@ -21,64 +21,30 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_IMAGEFORMAT_IIMAGEFORMAT_HPP
-#define INCLUDE_NENE_IMAGEFORMAT_IIMAGEFORMAT_HPP
+#ifndef INCLUDE_NENE_IMAGEFORMAT_IMAGEFORMATEXCEPTION_HPP
+#define INCLUDE_NENE_IMAGEFORMAT_IMAGEFORMATEXCEPTION_HPP
 
-#include <array>
-#include <string>
-#include "../Types.hpp"
-#include "../Graphics/Image.hpp"
+#include "../Exceptions/EngineException.hpp"
 
 namespace Nene
 {
-	// Forward declarations.
-	class IReader;
-
 	/**
-	 * @brief      Image format interface.
+	 * @brief      Exception for signaling image format errors.
 	 */
-	class IImageFormat
+	class ImageFormatException
+		: public EngineException
 	{
 	public:
 		/**
 		 * @brief      Constructor.
 		 */
-		IImageFormat() noexcept =default;
+		using EngineException::EngineException;
 
 		/**
 		 * @brief      Destructor.
 		 */
-		virtual ~IImageFormat() =default;
-
-		/**
-		 * @brief      Returns the name of the image format.
-		 *
-		 * @return     The name of the image format.
-		 */
-		[[nodiscard]]
-		virtual const std::string& name() const noexcept =0;
-
-		/**
-		 * @brief      Determines if the given data is an image header.
-		 *
-		 * @param[in]  header  The header byte data.
-		 *
-		 * @return     `true` if `header` seems the image header supported,
-		 *             `false` otherwise.
-		 */
-		[[nodiscard]]
-		virtual bool isImageHeader(const std::array<Byte, 16>& header) const noexcept =0;
-
-		/**
-		 * @brief      Constructs a image from a reader.
-		 *
-		 * @param      reader  The image data reader.
-		 *
-		 * @return     The image from `reader`.
-		 */
-		[[nodiscard]]
-		virtual Image decode(IReader& reader) =0;
+		virtual ~ImageFormatException() =default;
 	};
 }
 
-#endif  // #ifndef INCLUDE_NENE_IMAGEFORMAT_IIMAGEFORMAT_HPP
+#endif  // #ifndef INCLUDE_NENE_IMAGEFORMAT_IMAGEFORMATEXCEPTION_HPP

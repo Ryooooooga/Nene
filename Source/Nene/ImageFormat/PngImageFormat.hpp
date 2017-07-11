@@ -21,64 +21,54 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_IMAGEFORMAT_IIMAGEFORMAT_HPP
-#define INCLUDE_NENE_IMAGEFORMAT_IIMAGEFORMAT_HPP
+#ifndef INCLUDE_NENE_IMAGEFORMAT_PNGIMAGEFORMAT_HPP
+#define INCLUDE_NENE_IMAGEFORMAT_PNGIMAGEFORMAT_HPP
 
-#include <array>
-#include <string>
-#include "../Types.hpp"
-#include "../Graphics/Image.hpp"
+#include "../Uncopyable.hpp"
+#include "IImageFormat.hpp"
 
 namespace Nene
 {
-	// Forward declarations.
-	class IReader;
-
 	/**
-	 * @brief      Image format interface.
+	 * @brief      PNG image format.
 	 */
-	class IImageFormat
+	class PngImageFormat final
+		: public  IImageFormat
+		, private Uncopyable
 	{
+		std::string name_;
+
 	public:
 		/**
 		 * @brief      Constructor.
+		 *
+		 * @param[in]  name  Image format name.
 		 */
-		IImageFormat() noexcept =default;
+		explicit PngImageFormat(std::string_view name);
 
 		/**
 		 * @brief      Destructor.
 		 */
-		virtual ~IImageFormat() =default;
+		~PngImageFormat() =default;
 
 		/**
-		 * @brief      Returns the name of the image format.
-		 *
-		 * @return     The name of the image format.
+		 * @see        `Nene::IImageFormat::name()`.
 		 */
 		[[nodiscard]]
-		virtual const std::string& name() const noexcept =0;
+		const std::string& name() const noexcept override;
 
 		/**
-		 * @brief      Determines if the given data is an image header.
-		 *
-		 * @param[in]  header  The header byte data.
-		 *
-		 * @return     `true` if `header` seems the image header supported,
-		 *             `false` otherwise.
+		 * @see        `Nene::IImageFormat::isImageHeader()`.
 		 */
 		[[nodiscard]]
-		virtual bool isImageHeader(const std::array<Byte, 16>& header) const noexcept =0;
+		bool isImageHeader(const std::array<Byte, 16>& header) const noexcept override;
 
 		/**
-		 * @brief      Constructs a image from a reader.
-		 *
-		 * @param      reader  The image data reader.
-		 *
-		 * @return     The image from `reader`.
+		 * @see        `Nene::IImageFormat::decode()`.
 		 */
 		[[nodiscard]]
-		virtual Image decode(IReader& reader) =0;
+		Image decode(IReader& reader) override;
 	};
 }
 
-#endif  // #ifndef INCLUDE_NENE_IMAGEFORMAT_IIMAGEFORMAT_HPP
+#endif  // #ifndef INCLUDE_NENE_IMAGEFORMAT_PNGIMAGEFORMAT_HPP
