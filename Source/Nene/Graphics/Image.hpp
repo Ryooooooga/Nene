@@ -59,8 +59,7 @@ namespace Nene
 			assert(size.width  >= 0);
 			assert(size.height >= 0);
 
-			data_.resize(size.width * size.height);
-			std::fill(std::begin(data_), std::end(data_), Color4 { 0, 0, 0, 0 });
+			data_.assign(size.width * size.height, Color4 { 0, 0, 0, 0 });
 		}
 
 		/**
@@ -181,6 +180,58 @@ namespace Nene
 		std::size_t sizeBytes() const noexcept
 		{
 			return numPixels() * sizeof(Color4);
+		}
+
+		/**
+		 * @brief      Resizes the image.
+		 *
+		 * @param[in]  size  New image size.
+		 */
+		void resize(const Size2Di& size)
+		{
+			resize(size.width, size.height);
+		}
+
+		/**
+		 * @brief      Resizes the image.
+		 *
+		 * @param[in]  width   New image width.
+		 * @param[in]  height  New image height.
+		 */
+		void resize(Int32 width, Int32 height)
+		{
+			assert(0 <= width  );
+			assert(0 <= height );
+
+			size_.set(width, height);
+			data_.resize(width * height);
+		}
+
+		/**
+		 * @brief      Resizes the image and fills pixels.
+		 *
+		 * @param[in]  size       New image size.
+		 * @param[in]  fillColor  The fill color.
+		 */
+		void resize(const Size2Di& size, const Color4& fillColor)
+		{
+			resize(size.width, size.height, fillColor);
+		}
+
+		/**
+		 * @brief      Resizes the image and fills pixels.
+		 *
+		 * @param[in]  width      New image width.
+		 * @param[in]  height     New image height.
+		 * @param[in]  fillColor  The fill color.
+		 */
+		void resize(Int32 width, Int32 height, const Color4& fillColor)
+		{
+			assert(0 <= width  );
+			assert(0 <= height );
+
+			size_.set(width, height);
+			data_.assign(width * height, fillColor);
 		}
 
 		/**
