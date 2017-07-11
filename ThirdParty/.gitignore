@@ -7,3 +7,8 @@ Include/zlib/*
 Source/zlib/*
 !Include/zlib/.keep
 !Source/zlib/.keep
+
+Include/libpng/*
+Source/libpng/*
+!Include/libpng/.keep
+!Source/libpng/.keep
