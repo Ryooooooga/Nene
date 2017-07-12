@@ -33,6 +33,7 @@ namespace Nene
 {
 	// Forward declarations.
 	class IReader;
+	class IWriter;
 
 	/**
 	 * @brief      Image format interface.
@@ -78,6 +79,14 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		virtual Image decode(IReader& reader) =0;
+
+		/**
+		 * @brief      Writes a image to a writer.
+		 *
+		 * @param[in]  image   The image data to write.
+		 * @param      writer  The image data writer.
+		 */
+		virtual void encode(const Image& image, IWriter& writer) =0;
 	};
 }
 

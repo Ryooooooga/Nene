@@ -27,6 +27,7 @@
 #include "ImageFormatException.hpp"
 #include "../Platform.hpp"
 #include "../Reader/IReader.hpp"
+#include "../Writer/IWriter.hpp"
 
 namespace Nene
 {
@@ -50,6 +51,13 @@ namespace Nene
 
 			reader->read(buffer, size);
 		}
+
+		void pngWriteData(::png_structp png, ::png_bytep buffer, ::png_size_t size)
+		{
+			const auto writer = static_cast<IWriter*>(::png_get_io_ptr(png));
+
+			writer->write(buffer, size);
+		}
 	}
 
 	PngImageFormat::PngImageFormat(std::string_view name)
@@ -71,13 +79,13 @@ namespace Nene
 	{
 		::png_structp png  = nullptr;
 		::png_infop   info = nullptr;
-		
+
 		Image image;
 
 		try
 		{
 			// Initialize libpng.
-			if (!(png = ::png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr)))
+			if (!(png = ::png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, pngError, pngWarning)))
 			{
 				throw EngineException { u8"Failed to create png read struct." };
 			}
@@ -88,7 +96,6 @@ namespace Nene
 			}
 
 			// Set callback.
-			::png_set_error_fn(png, info, pngError, pngWarning);
 			::png_set_read_fn(png, &reader, pngReadData);
 
 			// Read information header.
@@ -165,9 +172,12 @@ namespace Nene
 			{
 				rows[i] = image.dataPointerAsByte() + i * width * sizeof(Color4);
 			}
-		
+
 			::png_read_image(png, rows.data());
 			::png_read_end(png, info);
+
+			// Release objects.
+			::png_destroy_read_struct(&png, &info, nullptr);
 		}
 		catch (...)
 		{
@@ -177,9 +187,66 @@ namespace Nene
 			throw;
 		}
 
-		// Release objects.
-		::png_destroy_read_struct(&png, &info, nullptr);
-
 		return image;
+	}
+
+	void PngImageFormat::encode(const Image& image, IWriter& writer)
+	{
+		::png_structp png  = nullptr;
+		::png_infop   info = nullptr;
+
+		try
+		{
+			// Initialize libpng.
+			if (!(png = ::png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, pngError, pngWarning)))
+			{
+				throw EngineException { u8"Failed to create png write struct." };
+			}
+
+			if (!(info = ::png_create_info_struct(png)))
+			{
+				throw EngineException { u8"Failed to cerate png info struct." };
+			}
+
+			// Set callback.
+			::png_set_write_fn(png, &writer, pngWriteData, nullptr);
+
+
+			// Set information header.
+			const auto width           = static_cast<::png_uint_32>(image.size().width  );
+			const auto height          = static_cast<::png_uint_32>(image.size().height );
+			const int  bitDepth        = 8;
+			const int  colorType       = PNG_COLOR_TYPE_RGBA;
+			const int  interlaceType   = PNG_INTERLACE_NONE;
+			const int  compressionType = PNG_COMPRESSION_TYPE_DEFAULT;
+			const int  filterType      = PNG_FILTER_TYPE_DEFAULT;
+
+			::png_set_IHDR(png, info, width, height, bitDepth, colorType, interlaceType, compressionType, filterType);
+
+			// Write information header.
+			::png_write_info(png, info);
+
+			// Write image data.
+			::png_const_bytep data = image.dataPointerAsByte();
+
+			for (::png_uint_32 y = 0; y < height; y++)
+			{
+				::png_write_row(png, data);
+
+				data += width * sizeof(Color4);
+			}
+
+			::png_write_end(png, info);
+
+			// Release objects.
+			::png_destroy_write_struct(&png, &info);
+		}
+		catch (...)
+		{
+			// Release objects.
+			::png_destroy_write_struct(&png, &info);
+
+			throw;
+		}
 	}
 }

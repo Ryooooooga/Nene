@@ -68,6 +68,12 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		Image decode(IReader& reader) override;
+
+		/**
+		 * @see        `Nene::IImageFormat::encode()`.
+		 */
+		[[nodiscard]]
+		void encode(const Image& image, IWriter& reader) override;
 	};
 }
 
