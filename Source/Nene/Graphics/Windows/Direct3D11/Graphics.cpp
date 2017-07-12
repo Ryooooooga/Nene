@@ -119,14 +119,14 @@ namespace Nene::Windows::Direct3D11
 
 	Graphics::~Graphics() =default;
 
-	std::vector<std::shared_ptr<IMonitor>> Graphics::monitors() const
+	std::vector<std::unique_ptr<IMonitor>> Graphics::monitors() const
 	{
-		std::vector<std::shared_ptr<IMonitor>> monitors;
+		std::vector<std::unique_ptr<IMonitor>> monitors;
 		Microsoft::WRL::ComPtr<IDXGIOutput> output;
 
 		for (UINT i = 0; SUCCEEDED(adapter_->EnumOutputs(i, output.ReleaseAndGetAddressOf())); i++)
 		{
-			monitors.emplace_back(std::make_shared<Monitor>(output));
+			monitors.emplace_back(std::make_unique<Monitor>(output));
 		}
 
 		return monitors;

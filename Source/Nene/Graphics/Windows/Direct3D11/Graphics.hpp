@@ -68,7 +68,7 @@ namespace Nene::Windows::Direct3D11
 		 * @see        `Nene::IGraphics::monitors()`.
 		 */
 		[[nodiscard]]
-		std::vector<std::shared_ptr<IMonitor>> monitors() const override;
+		std::vector<std::unique_ptr<IMonitor>> monitors() const override;
 
 		/**
 		 * @see        `Nene::IGraphics::screen()`.

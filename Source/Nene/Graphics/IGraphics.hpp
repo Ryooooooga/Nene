@@ -56,7 +56,7 @@ namespace Nene
 		 * @return     The list of monitors.
 		 */
 		[[nodiscard]]
-		virtual std::vector<std::shared_ptr<IMonitor>> monitors() const =0;
+		virtual std::vector<std::unique_ptr<IMonitor>> monitors() const =0;
 
 		/**
 		 * @brief      Creates the screen from the window.
