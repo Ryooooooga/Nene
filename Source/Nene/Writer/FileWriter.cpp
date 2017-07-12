@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // Copyright (c) 2017 Ryooooooga
 // https://github.com/Ryooooooga
 //
@@ -22,54 +22,45 @@
 //=============================================================================
 
 #include <fmt/ostream.h>
-#include "FileReader.hpp"
+#include "FileWriter.hpp"
 #include "../Platform.hpp"
 #include "../Exceptions/FileException.hpp"
 
 namespace Nene
 {
-	FileReader::FileReader(const std::experimental::filesystem::path& path)
+	FileWriter::FileWriter(const std::experimental::filesystem::path& path)
 		: path_(path)
-		, size_()
 		, file_(nullptr, std::fclose)
 	{
 		// Open file.
 		FILE* fp = nullptr;
 
 #if defined(NENE_COMPILER_MSVC)
-		if (_wfopen_s(&fp, path.c_str(), L"rb"))
+		if (_wfopen_s(&fp, path.c_str(), L"wb"))
 #else
-		if (!(fp = std::fopen(path.c_str(), "rb")))
+		if (!(fp = std::fopen(path.c_str(), "wb")))
 #endif
 		{
 			throw FileException { fmt::format(u8"Could not open file '{}'.", path.u8string()) };
 		}
 
 		file_.reset(fp);
+	}
 
-		// Get file size.
+	std::size_t FileWriter::size() const noexcept
+	{
 #if defined(NENE_COMPILER_MSVC)
 		struct ::_stat64 stat;
-		::_fstat64(::_fileno(fp), &stat);
+		::_fstat64(::_fileno(file_.get()), &stat);
 #else
 		struct ::stat stat;
-		::fstat(::_fileno(fp), &stat);
+		::fstat(::_fileno(file_.get()), &stat);
 #endif
 
-		size_ = stat.st_size;
+		return static_cast<std::size_t>(stat.st_size);
 	}
 
-	bool FileReader::eof() const noexcept
-	{
-		return !!std::feof(file_.get());
-	}
-
-	std::size_t FileReader::size() const noexcept
-	{
-		return size_;
-	}
-
-	std::size_t FileReader::position() const noexcept
+	std::size_t FileWriter::position() const noexcept
 	{
 #if defined(NENE_COMPILER_MSVC)
 		return static_cast<std::size_t>(::_ftelli64(file_.get()));
@@ -80,7 +71,7 @@ namespace Nene
 #endif
 	}
 
-	void FileReader::position(std::size_t pos)
+	void FileWriter::position(std::size_t pos)
 	{
 #if defined(NENE_COMPILER_MSVC)
 		::_fseeki64(file_.get(), static_cast<__int64>(pos), SEEK_SET);
@@ -91,22 +82,12 @@ namespace Nene
 #endif
 	}
 
-	std::size_t FileReader::read(void* buffer, std::size_t size)
+	std::size_t FileWriter::write(void* buffer, std::size_t size)
 	{
-		return std::fread(buffer, size, 1, file_.get());
+		return std::fwrite(buffer, size, 1, file_.get());
 	}
 
-	std::size_t FileReader::peek(void* buffer, std::size_t size)
-	{
-		const auto pos      = position();
-		const auto sizeRead = read(buffer, size);
-
-		position(pos);
-
-		return sizeRead;
-	}
-
-	const std::experimental::filesystem::path& FileReader::path() const noexcept
+	const std::experimental::filesystem::path& FileWriter::path() const noexcept
 	{
 		return path_;
 	}
