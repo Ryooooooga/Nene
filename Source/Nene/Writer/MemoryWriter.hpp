@@ -84,7 +84,7 @@ namespace Nene
 		/**
 		 * @see        `Nene::IReader::write()`.
 		 */
-		std::size_t write(void* buffer, std::size_t size) override
+		std::size_t write(const void* buffer, std::size_t size) override
 		{
 			const auto requiredSize = pos_ + size;
 

@@ -73,7 +73,7 @@ namespace Nene
 		 *
 		 * @return     Bytes of the data written.
 		 */
-		virtual std::size_t write(void* buffer, std::size_t size) =0;
+		virtual std::size_t write(const void* buffer, std::size_t size) =0;
 	};
 }
 

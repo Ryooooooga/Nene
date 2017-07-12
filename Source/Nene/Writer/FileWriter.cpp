@@ -82,7 +82,7 @@ namespace Nene
 #endif
 	}
 
-	std::size_t FileWriter::write(void* buffer, std::size_t size)
+	std::size_t FileWriter::write(const void* buffer, std::size_t size)
 	{
 		return std::fwrite(buffer, size, 1, file_.get());
 	}
