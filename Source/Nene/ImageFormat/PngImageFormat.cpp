@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // Copyright (c) 2017 Ryooooooga
 // https://github.com/Ryooooooga
 //
@@ -66,6 +66,16 @@ namespace Nene
 	const std::string& PngImageFormat::name() const noexcept
 	{
 		return name_;
+	}
+
+	ArrayView<std::experimental::filesystem::path> PngImageFormat::possibleExtensions() const noexcept
+	{
+		static const std::experimental::filesystem::path extensions[] =
+		{
+			".png",
+		};
+
+		return extensions;
 	}
 
 	bool PngImageFormat::isImageHeader(const std::array<Byte, 16>& header) const noexcept

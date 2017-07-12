@@ -58,6 +58,12 @@ namespace Nene
 		const std::string& name() const noexcept override;
 
 		/**
+		 * @see        `Nene::IImageFormat::possibleExtensions()`.
+		 */
+		[[nodiscard]]
+		ArrayView<std::experimental::filesystem::path> possibleExtensions() const noexcept override;
+
+		/**
 		 * @see        `Nene::IImageFormat::isImageHeader()`.
 		 */
 		[[nodiscard]]

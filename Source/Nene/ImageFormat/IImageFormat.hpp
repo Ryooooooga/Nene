@@ -24,9 +24,8 @@
 #ifndef INCLUDE_NENE_IMAGEFORMAT_IIMAGEFORMAT_HPP
 #define INCLUDE_NENE_IMAGEFORMAT_IIMAGEFORMAT_HPP
 
-#include <array>
-#include <string>
-#include "../Types.hpp"
+#include <filesystem>
+#include "../ArrayView.hpp"
 #include "../Graphics/Image.hpp"
 
 namespace Nene
@@ -58,6 +57,14 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		virtual const std::string& name() const noexcept =0;
+
+		/**
+		 * @brief      Returns the list of possible extensions of the image format.
+		 *
+		 * @return     The list of possible extensions of the image format.
+		 */
+		[[nodiscard]]
+		virtual ArrayView<std::experimental::filesystem::path> possibleExtensions() const noexcept =0;
 
 		/**
 		 * @brief      Determines if the given data is an image header.
