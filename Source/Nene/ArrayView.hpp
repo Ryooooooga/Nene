@@ -27,6 +27,7 @@
 #include <cassert>
 #include <array>
 #include <vector>
+#include "Types.hpp"
 
 namespace Nene
 {
@@ -388,7 +389,7 @@ namespace Nene
 		constexpr ArrayView& operator=(const ArrayView& a) =default;
 	};
 
-	using ByteArrayView = ArrayView<std::uint8_t>;
+	using ByteArrayView = ArrayView<Byte>;
 }
 
 #endif  // #ifndef INCLUDE_NENE_ARRAYVIEW_HPP

@@ -25,7 +25,6 @@
 #define INCLUDE_NENE_IMAGEFORMAT_IIMAGEFORMAT_HPP
 
 #include <filesystem>
-#include "../ArrayView.hpp"
 #include "../Graphics/Image.hpp"
 
 namespace Nene
