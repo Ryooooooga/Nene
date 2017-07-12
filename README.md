@@ -1,4 +1,4 @@
-﻿# Nene
+# Nene
 
 ## License
 
