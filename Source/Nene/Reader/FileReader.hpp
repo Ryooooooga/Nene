@@ -27,7 +27,6 @@
 #include <cstdio>
 #include <filesystem>
 #include <memory>
-#include "../Types.hpp"
 #include "../Uncopyable.hpp"
 #include "IReader.hpp"
 
@@ -41,8 +40,8 @@ namespace Nene
 		, private Uncopyable
 	{
 		std::experimental::filesystem::path path_;
-		std::size_t size_;
 		std::unique_ptr<FILE, int(*)(FILE*)> file_;
+		std::size_t size_;
 
 	public:
 		/**
