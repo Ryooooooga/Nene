@@ -24,8 +24,8 @@
 #ifndef INCLUDE_NENE_LOGGER_FILELOGGER_HPP
 #define INCLUDE_NENE_LOGGER_FILELOGGER_HPP
 
-#include <fstream>
 #include "FormatLogger.hpp"
+#include "../Writer/FileWriter.hpp"
 
 namespace Nene
 {
@@ -35,7 +35,7 @@ namespace Nene
 	class FileLogger
 		: public FormatLogger
 	{
-		std::ofstream file_;
+		FileWriter writer_;
 
 	public:
 		/**
@@ -43,11 +43,8 @@ namespace Nene
 		 *
 		 * @param[in]  path  Log file path.
 		 */
-		explicit FileLogger(const std::string& path)
-			: file_(path)
-		{
-			// TODO: Error.
-		}
+		explicit FileLogger(const std::experimental::filesystem::path& path)
+			: writer_(path) {}
 
 		/**
 		 * @brief      Destructor.
@@ -57,7 +54,10 @@ namespace Nene
 	protected:
 		void writeLogMessage(const std::string& message) override
 		{
-			file_ << message << std::endl;
+			const char newLine = u8'\n';
+
+			writer_.write(message.data(), message.size());
+			writer_.write(&newLine, 1);
 		}
 	};
 }
