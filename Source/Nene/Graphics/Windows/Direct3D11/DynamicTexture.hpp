@@ -39,7 +39,7 @@ namespace Nene::Windows::Direct3D11
 	class Texture;
 
 	/**
-	 * @brief      Directr3D11 dynamic texture implementation.
+	 * @brief      Direct3D11 dynamic texture implementation.
 	 */
 	class DynamicTexture final
 		: public  IDynamicTexture
