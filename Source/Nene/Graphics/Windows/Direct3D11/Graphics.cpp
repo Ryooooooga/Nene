@@ -27,6 +27,7 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 
+#include "Context.hpp"
 #include "Graphics.hpp"
 #include "DynamicTexture.hpp"
 #include "Monitor.hpp"
@@ -39,7 +40,7 @@ namespace Nene::Windows::Direct3D11
 {
 	Graphics::Graphics()
 		: device_()
-		, immediateContext_()
+		, context_()
 		, adapter_()
 		, driverType_()
 		, featureLevel_()
@@ -66,6 +67,8 @@ namespace Nene::Windows::Direct3D11
 
 		HRESULT hr;
 
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext;
+
 		for (const auto& driverType : driverTypes)
 		{
 			hr = ::D3D11CreateDevice(
@@ -78,7 +81,7 @@ namespace Nene::Windows::Direct3D11
 				D3D11_SDK_VERSION,
 				device_.GetAddressOf(),
 				&featureLevel_,
-				immediateContext_.GetAddressOf());
+				immediateContext.GetAddressOf());
 
 			if (SUCCEEDED(hr))
 			{
@@ -91,6 +94,9 @@ namespace Nene::Windows::Direct3D11
 		{
 			throw DirectXException { hr, u8"Failed to create Direct3D11 device." };
 		}
+
+		// Create context.
+		context_ = std::make_unique<Context>(immediateContext);
 
 		// Get DXGI device.
 		Microsoft::WRL::ComPtr<IDXGIDevice> dxgiDevice;
@@ -110,6 +116,8 @@ namespace Nene::Windows::Direct3D11
 			throw DirectXException { hr, u8"Failed to aquire DXGI adapter." };
 		}
 	}
+
+	Graphics::~Graphics() =default;
 
 	std::vector<std::shared_ptr<IMonitor>> Graphics::monitors() const
 	{

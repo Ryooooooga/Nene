@@ -21,63 +21,24 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
-#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
-
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include <memory>
-#include <d3d11.h>
-#include <wrl/client.h>
-#include "../../../Uncopyable.hpp"
-#include "../../IGraphics.hpp"
+#include <cassert>
+#include "Context.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
-	// Forward declarations.
-	class Context;
-
-	/**
-	 * @brief      Direct3D11 graphics implementation.
-	 */
-	class Graphics final
-		: public  IGraphics
-		, private Uncopyable
+	Context::Context(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
+		: context_(context)
 	{
-		Microsoft::WRL::ComPtr<ID3D11Device> device_;
-		Microsoft::WRL::ComPtr<IDXGIAdapter> adapter_;
+		assert(context);
+	}
 
-		std::unique_ptr<Context> context_;
-
-		D3D_DRIVER_TYPE   driverType_;
-		D3D_FEATURE_LEVEL featureLevel_;
-
-	public:
-		/**
-		 * @brief      Constructor.
-		 */
-		explicit Graphics();
-
-		/**
-		 * @brief      Destructor.
-		 */
-		~Graphics();
-
-		/**
-		 * @see        `Nene::IGraphics::monitors()`.
-		 */
-		[[nodiscard]]
-		std::vector<std::shared_ptr<IMonitor>> monitors() const override;
-
-		/**
-		 * @see        `Nene::IGraphics::screen()`.
-		 */
-		[[nodiscard]]
-		std::shared_ptr<IScreen> screen(const std::shared_ptr<IWindow>& window) override;
-	};
+	const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& Context::context() const noexcept
+	{
+		return context_;
+	}
 }
 
 #endif
-
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
