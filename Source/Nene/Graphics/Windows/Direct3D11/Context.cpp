@@ -26,18 +26,26 @@
 
 #include <cassert>
 #include "Context.hpp"
+#include "CommandList.hpp"
+// #include "SpriteBatch.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
 	Context::Context(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
 		: device_(device)
 		, immediateContext_()
+		, commandList_()
+		// , spriteBatch_()
 	{
 		assert(device);
 
 		// Get immediate context.
 		device_->GetImmediateContext(immediateContext_.GetAddressOf());
+
+		commandList_ = std::make_unique<CommandList>();
 	}
+
+	Context::~Context() =default;
 
 	void Context::dispatch()
 	{

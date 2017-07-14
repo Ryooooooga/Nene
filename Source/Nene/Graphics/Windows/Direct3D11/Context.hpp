@@ -27,12 +27,17 @@
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
+#include <memory>
 #include <d3d11.h>
 #include <wrl/client.h>
 #include "../../../Uncopyable.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
+	// Forward declarations.
+	class CommandList;
+	class SpriteBatch;
+
 	/**
 	 * @brief      Direct3D11 rendering context.
 	 */
@@ -41,6 +46,9 @@ namespace Nene::Windows::Direct3D11
 	{
 		Microsoft::WRL::ComPtr<ID3D11Device>        device_;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
+
+		std::unique_ptr<CommandList> commandList_;
+		// std::unique_ptr<SpriteBatch> spriteBatch_;
 
 	public:
 		/**
@@ -53,7 +61,7 @@ namespace Nene::Windows::Direct3D11
 		/**
 		 * @brief      Destructor.
 		 */
-		~Context() =default;
+		~Context();
 
 		/**
 		 * @brief      Dispatches the rendering commands.
