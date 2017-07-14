@@ -42,6 +42,7 @@ namespace Nene::Windows::Direct3D11::Shader
 	 *
 	 * @return     The compiled shader binary.
 	 */
+	[[nodiscard]]
 	std::vector<Byte> compile(const std::string& name, const std::string& entryPoint, const std::string& target, ByteArrayView source);
 }
 

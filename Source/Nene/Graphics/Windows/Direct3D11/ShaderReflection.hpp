@@ -43,6 +43,7 @@ namespace Nene::Windows::Direct3D11::Shader
 	 *
 	 * @return     The shader input layout.
 	 */
+	[[nodiscard]]
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> createInputLayout(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::string& name, ByteArrayView binary);
 }
 

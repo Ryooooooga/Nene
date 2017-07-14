@@ -34,6 +34,7 @@ namespace Nene::Windows::Direct3D11::Shader
 {
 	namespace
 	{
+		[[nodiscard]]
 		DXGI_FORMAT dxgiFormat(D3D_REGISTER_COMPONENT_TYPE componentType, BYTE mask)
 		{
 			if (mask == 1)
