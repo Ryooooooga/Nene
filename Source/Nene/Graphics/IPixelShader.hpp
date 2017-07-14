@@ -49,6 +49,7 @@ namespace Nene
 		 *
 		 * @return     The compilex pixel shader binary.
 		 */
+		[[nodiscard]]
 		virtual ByteArrayView compiledBinary() const noexcept =0;
 	};
 }

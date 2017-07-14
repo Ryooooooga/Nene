@@ -21,37 +21,30 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
-#define INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
+#ifndef INCLUDE_NENE_WINDOWS_DIRECT3D11_SHADERCOMPILER_HPP
+#define INCLUDE_NENE_WINDOWS_DIRECT3D11_SHADERCOMPILER_HPP
 
-#include "../ArrayView.hpp"
+#include "../../../Platform.hpp"
+#if defined(NENE_OS_WINDOWS)
 
-namespace Nene
+#include <string>
+#include "../../../ArrayView.hpp"
+
+namespace Nene::Windows::Direct3D11::Shader
 {
 	/**
-	 * @brief      Vertex shader interface.
+	 * @brief      Compiles shader.
+	 *
+	 * @param[in]  name        The shader file name.
+	 * @param[in]  entryPoint  The shader entry point.
+	 * @param[in]  target      The shader compile target.
+	 * @param[in]  source      The shader source.
+	 *
+	 * @return     The compiled shader binary.
 	 */
-	class IVertexShader
-	{
-	public:
-		/**
-		 * @brief      Constructor.
-		 */
-		IVertexShader() noexcept =default;
-
-		/**
-		 * @brief      Destructor.
-		 */
-		virtual ~IVertexShader() =default;
-
-		/**
-		 * @brief      Returns the compiled vertex shader binary.
-		 *
-		 * @return     The compilex vertex shader binary.
-		 */
-		[[nodiscard]]
-		virtual ByteArrayView compiledBinary() const noexcept =0;
-	};
+	std::vector<Byte> compile(const std::string& name, const std::string& entryPoint, const std::string& target, ByteArrayView source);
 }
 
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
+#endif
+
+#endif  // #ifndef INCLUDE_NENE_WINDOWS_DIRECT3D11_SHADERCOMPILER_HPP

@@ -21,37 +21,55 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
-#define INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
+#include "../../../Platform.hpp"
+#if defined(NENE_OS_WINDOWS)
 
-#include "../ArrayView.hpp"
+#include <d3dcompiler.h>
+#include <wrl/client.h>
+#include "ShaderCompiler.hpp"
+#include "../../../Exceptions/Windows/DirectXException.hpp"
 
-namespace Nene
+#pragma comment(lib, "d3dcompiler.lib")
+
+namespace Nene::Windows::Direct3D11::Shader
 {
-	/**
-	 * @brief      Vertex shader interface.
-	 */
-	class IVertexShader
+	std::vector<Byte> compile(const std::string& name, const std::string& entryPoint, const std::string& target, ByteArrayView source)
 	{
-	public:
-		/**
-		 * @brief      Constructor.
-		 */
-		IVertexShader() noexcept =default;
+		Microsoft::WRL::ComPtr<ID3DBlob> binary;
+		Microsoft::WRL::ComPtr<ID3DBlob> error;
 
-		/**
-		 * @brief      Destructor.
-		 */
-		virtual ~IVertexShader() =default;
+		HRESULT hr = ::D3DCompile(
+			source.data(),
+			source.size(),
+			name.c_str(),
+			nullptr,
+			nullptr,
+			entryPoint.c_str(),
+			target.c_str(),
+			0,
+			0,
+			binary.GetAddressOf(),
+			error.GetAddressOf());
 
-		/**
-		 * @brief      Returns the compiled vertex shader binary.
-		 *
-		 * @return     The compilex vertex shader binary.
-		 */
-		[[nodiscard]]
-		virtual ByteArrayView compiledBinary() const noexcept =0;
-	};
+		if (FAILED(hr))
+		{
+			const auto message = fmt::format(
+				u8"Failed to compile shader.\n"
+				u8"Name: {}\n"
+				u8"Entry point: {}\n"
+				u8"Target: {}",
+				name,
+				entryPoint,
+				target);
+
+			throw DirectXException { hr, message };
+		}
+
+		const auto begin = static_cast<const Byte*>(binary->GetBufferPointer());
+		const auto end   = begin + binary->GetBufferSize();
+
+		return std::vector<Byte>(begin, end);
+	}
 }
 
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
+#endif

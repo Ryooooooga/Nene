@@ -21,37 +21,59 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
-#define INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_PIXELSHADER_HPP
+#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_PIXELSHADER_HPP
 
-#include "../ArrayView.hpp"
+#include "../../../Platform.hpp"
+#if defined(NENE_OS_WINDOWS)
 
-namespace Nene
+#include <string>
+#include <d3d11.h>
+#include <wrl/client.h>
+#include "../../../ArrayView.hpp"
+#include "../../../Uncopyable.hpp"
+#include "../../IPixelShader.hpp"
+
+namespace Nene::Windows::Direct3D11
 {
 	/**
-	 * @brief      Vertex shader interface.
+	 * @brief      Direct3D11 pixel shader implementation.
 	 */
-	class IVertexShader
+	class PixelShader final
+		: public  IPixelShader
+		, private Uncopyable
 	{
+		Microsoft::WRL::ComPtr<ID3D11Device>      device_;
+		Microsoft::WRL::ComPtr<ID3D11PixelShader> shader_;
+
+		std::string       name_;
+		std::vector<Byte> binary_;
+
 	public:
 		/**
 		 * @brief      Constructor.
+		 *
+		 * @param[in]  device      Direct3D11 device.
+		 * @param[in]  name        The pixel shader name.
+		 * @param[in]  entryPoint  The entry point of the shader.
+		 * @param[in]  target      The pixel shader compile target.
+		 * @param[in]  source      The pixel shader source.
 		 */
-		IVertexShader() noexcept =default;
+		explicit PixelShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::string& name, const std::string& entryPoint, const std::string& target, ByteArrayView source);
 
 		/**
 		 * @brief      Destructor.
 		 */
-		virtual ~IVertexShader() =default;
+		~PixelShader() =default;
 
 		/**
-		 * @brief      Returns the compiled vertex shader binary.
-		 *
-		 * @return     The compilex vertex shader binary.
+		 * @see        `Nene::IPixelShader::compiledBinary()`.
 		 */
 		[[nodiscard]]
-		virtual ByteArrayView compiledBinary() const noexcept =0;
+		ByteArrayView compiledBinary() const noexcept override;
 	};
 }
 
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
+#endif
+
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_PIXELSHADER_HPP

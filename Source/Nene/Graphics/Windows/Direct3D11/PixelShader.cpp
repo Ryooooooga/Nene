@@ -21,37 +21,51 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
-#define INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
+#include "../../../Platform.hpp"
+#if defined(NENE_OS_WINDOWS)
 
-#include "../ArrayView.hpp"
+#include "PixelShader.hpp"
+#include "ShaderCompiler.hpp"
+#include "../../../Exceptions/Windows/DirectXException.hpp"
 
-namespace Nene
+namespace Nene::Windows::Direct3D11
 {
-	/**
-	 * @brief      Vertex shader interface.
-	 */
-	class IVertexShader
+	PixelShader::PixelShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::string& name, const std::string& entryPoint, const std::string& target, ByteArrayView source)
+		: device_(device)
+		, shader_()
+		, name_(name)
+		, binary_()
 	{
-	public:
-		/**
-		 * @brief      Constructor.
-		 */
-		IVertexShader() noexcept =default;
+		assert(device);
 
-		/**
-		 * @brief      Destructor.
-		 */
-		virtual ~IVertexShader() =default;
+		// Compile pixel shader.
+		binary_ = Shader::compile(name, entryPoint, target, source);
+		
+		HRESULT hr = device->CreatePixelShader(
+			binary_.data(),
+			binary_.size(),
+			nullptr,
+			shader_.GetAddressOf());
 
-		/**
-		 * @brief      Returns the compiled vertex shader binary.
-		 *
-		 * @return     The compilex vertex shader binary.
-		 */
-		[[nodiscard]]
-		virtual ByteArrayView compiledBinary() const noexcept =0;
-	};
+		if (FAILED(hr))
+		{
+			const auto message = fmt::format(
+				u8"Failed to create pixel shader.\n"
+				u8"Name: {}\n"
+				u8"Entry point: {}\n"
+				u8"Target: {}",
+				name,
+				entryPoint,
+				target);
+
+			throw DirectXException { hr, message };
+		}
+	}
+
+	ByteArrayView PixelShader::compiledBinary() const noexcept
+	{
+		return binary_;
+	}
 }
 
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
+#endif
