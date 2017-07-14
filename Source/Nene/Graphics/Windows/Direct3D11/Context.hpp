@@ -39,15 +39,16 @@ namespace Nene::Windows::Direct3D11
 	class Context final
 		: private Uncopyable
 	{
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> context_;
+		Microsoft::WRL::ComPtr<ID3D11Device>        device_;
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
 
 	public:
 		/**
 		 * @brief      Constructor.
 		 *
-		 * @param[in]  context  Direct3D11 device context.
+		 * @param[in]  device  Direct3D11 device.
 		 */
-		explicit Context(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
+		explicit Context(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
 
 		/**
 		 * @brief      Destructor.
@@ -55,12 +56,9 @@ namespace Nene::Windows::Direct3D11
 		~Context() =default;
 
 		/**
-		 * @brief      Returns Direct3D11 device context.
-		 *
-		 * @return     Direct3D11 device context.
+		 * @brief      Dispatches the rendering commands.
 		 */
-		[[nodiscard]]
-		const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context() const noexcept;
+		void dispatch();
 	};
 }
 

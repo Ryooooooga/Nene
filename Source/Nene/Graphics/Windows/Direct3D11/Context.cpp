@@ -29,15 +29,18 @@
 
 namespace Nene::Windows::Direct3D11
 {
-	Context::Context(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
-		: context_(context)
+	Context::Context(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
+		: device_(device)
+		, immediateContext_()
 	{
-		assert(context);
+		assert(device);
+
+		// Get immediate context.
+		device_->GetImmediateContext(immediateContext_.GetAddressOf());
 	}
 
-	const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& Context::context() const noexcept
+	void Context::dispatch()
 	{
-		return context_;
 	}
 }
 

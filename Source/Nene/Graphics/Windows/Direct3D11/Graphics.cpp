@@ -24,24 +24,30 @@
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "dxguid.lib")
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d3dcompiler.lib")
 
 #include "Context.hpp"
 #include "Graphics.hpp"
 #include "DynamicTexture.hpp"
 #include "Monitor.hpp"
+#include "PixelShader.hpp"
 #include "Screen.hpp"
 #include "Texture.hpp"
+#include "VertexShader.hpp"
 #include "../../../Exceptions/Windows/DirectXException.hpp"
 #include "../../../Window/Windows/Window.hpp"
+
+#include "../../../Reader/FileReader.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
 	Graphics::Graphics()
 		: device_()
-		, context_()
 		, adapter_()
+		, context_()
 		, driverType_()
 		, featureLevel_()
 	{
@@ -67,8 +73,6 @@ namespace Nene::Windows::Direct3D11
 
 		HRESULT hr;
 
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext;
-
 		for (const auto& driverType : driverTypes)
 		{
 			hr = ::D3D11CreateDevice(
@@ -81,7 +85,7 @@ namespace Nene::Windows::Direct3D11
 				D3D11_SDK_VERSION,
 				device_.GetAddressOf(),
 				&featureLevel_,
-				immediateContext.GetAddressOf());
+				nullptr);
 
 			if (SUCCEEDED(hr))
 			{
@@ -94,9 +98,6 @@ namespace Nene::Windows::Direct3D11
 		{
 			throw DirectXException { hr, u8"Failed to create Direct3D11 device." };
 		}
-
-		// Create context.
-		context_ = std::make_unique<Context>(immediateContext);
 
 		// Get DXGI device.
 		Microsoft::WRL::ComPtr<IDXGIDevice> dxgiDevice;
@@ -115,6 +116,17 @@ namespace Nene::Windows::Direct3D11
 		{
 			throw DirectXException { hr, u8"Failed to aquire DXGI adapter." };
 		}
+
+		// Create rendering context.
+		context_ = std::make_shared<Context>(device_);
+
+		// Create shader.
+		FileReader reader {"Assets/Shader/Shader2D.hlsl"};
+		std::vector<Byte> source(reader.size());
+		reader.read(source.data(), source.size());
+
+		PixelShader(device_, reader.path().u8string().c_str(), u8"PS_main", u8"ps_5_0", source);
+		VertexShader(device_, reader.path().u8string().c_str(), u8"VS_main", u8"vs_5_0", source);
 	}
 
 	Graphics::~Graphics() =default;

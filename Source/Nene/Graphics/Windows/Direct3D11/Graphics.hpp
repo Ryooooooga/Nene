@@ -48,7 +48,7 @@ namespace Nene::Windows::Direct3D11
 		Microsoft::WRL::ComPtr<ID3D11Device> device_;
 		Microsoft::WRL::ComPtr<IDXGIAdapter> adapter_;
 
-		std::unique_ptr<Context> context_;
+		std::shared_ptr<Context> context_;
 
 		D3D_DRIVER_TYPE   driverType_;
 		D3D_FEATURE_LEVEL featureLevel_;
