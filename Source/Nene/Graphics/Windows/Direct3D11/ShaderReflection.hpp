@@ -21,51 +21,31 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
+#ifndef INCLUDE_NENE_WINDOWS_DIRECT3D11_SHADERREFLECTION_HPP
+#define INCLUDE_NENE_WINDOWS_DIRECT3D11_SHADERREFLECTION_HPP
+
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include "PixelShader.hpp"
-#include "ShaderCompiler.hpp"
-#include "../../../Exceptions/Windows/DirectXException.hpp"
+#include <string>
+#include <d3d11.h>
+#include <wrl/client.h>
+#include "../../../ArrayView.hpp"
 
-namespace Nene::Windows::Direct3D11
+namespace Nene::Windows::Direct3D11::Shader
 {
-	PixelShader::PixelShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::string& name, const std::string& entryPoint, const std::string& target, ByteArrayView source)
-		: device_(device)
-		, shader_()
-		, name_(name)
-		, binary_()
-	{
-		assert(device);
-
-		// Compile pixel shader.
-		binary_ = Shader::compile(name, entryPoint, target, source);
-		
-		HRESULT hr = device_->CreatePixelShader(
-			binary_.data(),
-			binary_.size(),
-			nullptr,
-			shader_.GetAddressOf());
-
-		if (FAILED(hr))
-		{
-			const auto message = fmt::format(
-				u8"Failed to create pixel shader.\n"
-				u8"Name: {}\n"
-				u8"Entry point: {}\n"
-				u8"Target: {}",
-				name,
-				entryPoint,
-				target);
-
-			throw DirectXException { hr, message };
-		}
-	}
-
-	ByteArrayView PixelShader::compiledBinary() const noexcept
-	{
-		return binary_;
-	}
+	/**
+	 * @brief      Gets input layout from the compiled shader binary.
+	 *
+	 * @param[in]  device  Direct3D11 device.
+	 * @param[in]  name    The shader file name.
+	 * @param[in]  binary  The compiled shader binary.
+	 *
+	 * @return     The shader input layout.
+	 */
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> createInputLayout(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::string& name, ByteArrayView binary);
 }
 
 #endif
+
+#endif  // #ifndef INCLUDE_NENE_WINDOWS_DIRECT3D11_SHADERREFLECTION_HPP

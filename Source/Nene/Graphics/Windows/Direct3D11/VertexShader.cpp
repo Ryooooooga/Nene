@@ -24,24 +24,26 @@
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include "PixelShader.hpp"
+#include "VertexShader.hpp"
 #include "ShaderCompiler.hpp"
+#include "ShaderReflection.hpp"
 #include "../../../Exceptions/Windows/DirectXException.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
-	PixelShader::PixelShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::string& name, const std::string& entryPoint, const std::string& target, ByteArrayView source)
+	VertexShader::VertexShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::string& name, const std::string& entryPoint, const std::string& target, ByteArrayView source)
 		: device_(device)
 		, shader_()
+		, inputLayout_()
 		, name_(name)
 		, binary_()
 	{
 		assert(device);
 
-		// Compile pixel shader.
-		binary_ = Shader::compile(name, entryPoint, target, source);
-		
-		HRESULT hr = device_->CreatePixelShader(
+		// Compile vertex shader.
+		binary_ = Shader::compile(name_, entryPoint, target, source);
+
+		HRESULT hr = device_->CreateVertexShader(
 			binary_.data(),
 			binary_.size(),
 			nullptr,
@@ -50,7 +52,7 @@ namespace Nene::Windows::Direct3D11
 		if (FAILED(hr))
 		{
 			const auto message = fmt::format(
-				u8"Failed to create pixel shader.\n"
+				u8"Failed to create vertex shader.\n"
 				u8"Name: {}\n"
 				u8"Entry point: {}\n"
 				u8"Target: {}",
@@ -60,9 +62,12 @@ namespace Nene::Windows::Direct3D11
 
 			throw DirectXException { hr, message };
 		}
+
+		// Create input layout.
+		inputLayout_ = Shader::createInputLayout(device_, name_, binary_);
 	}
 
-	ByteArrayView PixelShader::compiledBinary() const noexcept
+	ByteArrayView VertexShader::compiledBinary() const noexcept
 	{
 		return binary_;
 	}

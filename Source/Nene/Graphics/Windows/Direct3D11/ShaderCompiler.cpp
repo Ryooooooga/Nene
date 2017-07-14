@@ -29,8 +29,6 @@
 #include "ShaderCompiler.hpp"
 #include "../../../Exceptions/Windows/DirectXException.hpp"
 
-#pragma comment(lib, "d3dcompiler.lib")
-
 namespace Nene::Windows::Direct3D11::Shader
 {
 	std::vector<Byte> compile(const std::string& name, const std::string& entryPoint, const std::string& target, ByteArrayView source)
