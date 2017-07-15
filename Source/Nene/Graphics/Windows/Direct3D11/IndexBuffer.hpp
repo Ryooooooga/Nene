@@ -57,6 +57,26 @@ namespace Nene::Windows::Direct3D11
 		 * @brief      Destructor.
 		 */
 		~IndexBuffer() =default;
+
+		/**
+		 * @see        `Nene::IVertexBuffer::capacity()`.
+		 */
+		[[nodiscard]]
+		UInt32 capacity() const noexcept override
+		{
+			return capacity_;
+		}
+
+		/**
+		 * @brief      Returns Direct3D11 index buffer.
+		 *
+		 * @return     Direct3D11 index buffer.
+		 */
+		[[nodiscard]]
+		const Microsoft::WRL::ComPtr<ID3D11Buffer>& buffer() const noexcept
+		{
+			return buffer_;
+		}
 	};
 }
 

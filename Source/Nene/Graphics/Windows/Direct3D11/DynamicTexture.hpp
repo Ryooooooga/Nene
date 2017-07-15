@@ -76,6 +76,14 @@ namespace Nene::Windows::Direct3D11
 		 */
 		[[nodiscard]]
 		const Size2Di& size() const noexcept override;
+
+		/**
+		 * @brief      Returns Direct3D11 render target view.
+		 *
+		 * @return     Direct3D11 render target view.
+		 */
+		[[nodiscard]]
+		const Microsoft::WRL::ComPtr<ID3D11RenderTargetView>& renderTargetView() const noexcept;
 	};
 }
 

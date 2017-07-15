@@ -71,6 +71,14 @@ namespace Nene::Windows::Direct3D11
 		 */
 		[[nodiscard]]
 		ByteArrayView compiledBinary() const noexcept override;
+
+		/**
+		 * @brief      Returns Direct3D11 pixel shader.
+		 *
+		 * @return     Direct3D11 pixel shader.
+		 */
+		[[nodiscard]]
+		const Microsoft::WRL::ComPtr<ID3D11PixelShader>& shader() const noexcept;
 	};
 }
 

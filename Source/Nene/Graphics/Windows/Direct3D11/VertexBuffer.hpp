@@ -59,6 +59,44 @@ namespace Nene::Windows::Direct3D11
 		 * @brief      Destructor.
 		 */
 		~VertexBuffer() =default;
+
+		/**
+		 * @see        `Nene::IVertexBuffer::vertexSize()`.
+		 */
+		[[nodiscard]]
+		UInt32 vertexSize() const noexcept override
+		{
+			return vertexSize_;
+		}
+
+		/**
+		 * @see        `Nene::IVertexBuffer::capacity()`.
+		 */
+		[[nodiscard]]
+		UInt32 capacity() const noexcept override
+		{
+			return capacity_;
+		}
+
+		/**
+		 * @see        `Nene::IVertexBuffer::stride()`.
+		 */
+		[[nodiscard]]
+		UInt32 stride() const noexcept override
+		{
+			return vertexSize_ * capacity_;
+		}
+
+		/**
+		 * @brief      Returns Direct3D11 vertex buffer.
+		 *
+		 * @return     Direct3D11 vertex buffer.
+		 */
+		[[nodiscard]]
+		const Microsoft::WRL::ComPtr<ID3D11Buffer>& buffer() const noexcept
+		{
+			return buffer_;
+		}
 	};
 }
 

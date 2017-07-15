@@ -45,6 +45,14 @@ namespace Nene
 		 * @brief      Destructor.
 		 */
 		virtual ~IIndexBuffer() =default;
+
+		/**
+		 * @brief      Returns max number of the indices contains.
+		 *
+		 * @return     Max number of the indices contains.
+		 */
+		[[nodiscard]]
+		virtual UInt32 capacity() const noexcept =0;
 	};
 }
 

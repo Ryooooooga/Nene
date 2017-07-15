@@ -72,6 +72,22 @@ namespace Nene::Windows::Direct3D11
 		 */
 		[[nodiscard]]
 		ByteArrayView compiledBinary() const noexcept override;
+
+		/**
+		 * @brief      Returns Direct3D11 vertex shader.
+		 *
+		 * @return     Direct3D11 vertex shader.
+		 */
+		[[nodiscard]]
+		const Microsoft::WRL::ComPtr<ID3D11VertexShader>& shader() const noexcept;
+
+		/**
+		 * @brief      Returns Direct3D11 input layout.
+		 *
+		 * @return     Direct3D11 input layout.
+		 */
+		[[nodiscard]]
+		const Microsoft::WRL::ComPtr<ID3D11InputLayout>& inputLayout() const noexcept;
 	};
 }
 

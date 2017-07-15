@@ -71,6 +71,16 @@ namespace Nene::Windows::Direct3D11
 	{
 		return binary_;
 	}
+
+	const Microsoft::WRL::ComPtr<ID3D11VertexShader>& VertexShader::shader() const noexcept
+	{
+		return shader_;
+	}
+
+	const Microsoft::WRL::ComPtr<ID3D11InputLayout>& VertexShader::inputLayout() const noexcept
+	{
+		return inputLayout_;
+	}
 }
 
 #endif

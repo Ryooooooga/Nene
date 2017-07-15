@@ -106,6 +106,11 @@ namespace Nene::Windows::Direct3D11
 	{
 		return texture_->size();
 	}
+
+	const Microsoft::WRL::ComPtr<ID3D11RenderTargetView>& DynamicTexture::renderTargetView() const noexcept
+	{
+		return renderTarget_;
+	}
 }
 
 #endif

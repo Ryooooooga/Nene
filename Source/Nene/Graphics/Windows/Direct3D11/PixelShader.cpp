@@ -40,7 +40,7 @@ namespace Nene::Windows::Direct3D11
 
 		// Compile pixel shader.
 		binary_ = Shader::compile(name, entryPoint, target, source);
-		
+
 		HRESULT hr = device_->CreatePixelShader(
 			binary_.data(),
 			binary_.size(),
@@ -65,6 +65,11 @@ namespace Nene::Windows::Direct3D11
 	ByteArrayView PixelShader::compiledBinary() const noexcept
 	{
 		return binary_;
+	}
+
+	const Microsoft::WRL::ComPtr<ID3D11PixelShader>& PixelShader::shader() const noexcept
+	{
+		return shader_;
 	}
 }
 

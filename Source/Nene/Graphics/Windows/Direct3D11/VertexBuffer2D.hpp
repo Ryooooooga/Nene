@@ -48,12 +48,51 @@ namespace Nene::Windows::Direct3D11
 		 * @param[in]  device    Direct3D11 device.
 		 * @param[in]  capacity  Max number of indices contains.
 		 */
-		explicit VertexBuffer2D(const Microsoft::WRL::ComPtr<ID3D11Device>& device, UInt32 capacity);
+		explicit VertexBuffer2D(const Microsoft::WRL::ComPtr<ID3D11Device>& device, UInt32 capacity)
+			:buffer_(device, sizeof(vertex_type), capacity) {}
 
 		/**
 		 * @brief      Destructor.
 		 */
 		~VertexBuffer2D() =default;
+
+		/**
+		 * @see        `Nene::IVertexBuffer::vertexSize()`.
+		 */
+		[[nodiscard]]
+		UInt32 vertexSize() const noexcept override
+		{
+			return buffer_.vertexSize();
+		}
+
+		/**
+		 * @see        `Nene::IVertexBuffer::capacity()`.
+		 */
+		[[nodiscard]]
+		UInt32 capacity() const noexcept override
+		{
+			return buffer_.capacity();
+		}
+
+		/**
+		 * @see        `Nene::IVertexBuffer::stride()`.
+		 */
+		[[nodiscard]]
+		UInt32 stride() const noexcept override
+		{
+			return buffer_.stride();
+		}
+
+		/**
+		 * @brief      Returns Direct3D11 vertex buffer.
+		 *
+		 * @return     Direct3D11 vertex buffer.
+		 */
+		[[nodiscard]]
+		const Microsoft::WRL::ComPtr<ID3D11Buffer>& buffer() const noexcept
+		{
+			return buffer_.buffer();
+		}
 	};
 }
 

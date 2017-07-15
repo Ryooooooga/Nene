@@ -43,6 +43,30 @@ namespace Nene
 		 * @brief      Destructor.
 		 */
 		virtual ~IVertexBuffer() =default;
+
+		/**
+		 * @brief      Returns byte width of the vertex type.
+		 *
+		 * @return     Byte width of the vertex type.
+		 */
+		[[nodiscard]]
+		virtual UInt32 vertexSize() const noexcept =0;
+
+		/**
+		 * @brief      Returns max number of the vertices contains.
+		 *
+		 * @return     Max number of the vertices contains.
+		 */
+		[[nodiscard]]
+		virtual UInt32 capacity() const noexcept =0;
+
+		/**
+		 * @brief      Returns byte width of the buffer.
+		 *
+		 * @return     Byte width of the buffer.
+		 */
+		[[nodiscard]]
+		virtual UInt32 stride() const noexcept =0;
 	};
 }
 

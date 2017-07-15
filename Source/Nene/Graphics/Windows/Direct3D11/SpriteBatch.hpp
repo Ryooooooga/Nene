@@ -67,6 +67,28 @@ namespace Nene::Windows::Direct3D11
 		 * @brief      Destructor.
 		 */
 		~SpriteBatch() =default;
+
+		/**
+		 * @brief      Returns the vertex buffer.
+		 *
+		 * @return     The vertex buffer.
+		 */
+		[[nodiscard]]
+		const std::shared_ptr<VertexBuffer2D>& vertexBuffer() const noexcept
+		{
+			return vertexBuffer_;
+		}
+
+		/**
+		 * @brief      Returns the index buffer.
+		 *
+		 * @return     The index buffer.
+		 */
+		[[nodiscard]]
+		const std::shared_ptr<IndexBuffer>& indexBuffer() const noexcept
+		{
+			return indexBuffer_;
+		}
 	};
 }
 
