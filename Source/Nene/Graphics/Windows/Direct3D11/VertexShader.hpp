@@ -57,10 +57,9 @@ namespace Nene::Windows::Direct3D11
 		 * @param[in]  device      Direct3D11 device.
 		 * @param[in]  name        The vertex shader name.
 		 * @param[in]  entryPoint  The entry point of the shader.
-		 * @param[in]  target      The vertex shader compile target.
 		 * @param[in]  source      The vertex shader source.
 		 */
-		explicit VertexShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::string& name, const std::string& entryPoint, const std::string& target, ByteArrayView source);
+		explicit VertexShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::string& name, const std::string& entryPoint, ByteArrayView source);
 
 		/**
 		 * @brief      Destructor.

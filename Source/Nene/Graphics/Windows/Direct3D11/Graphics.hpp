@@ -51,7 +51,6 @@ namespace Nene::Windows::Direct3D11
 		std::shared_ptr<Context> context_;
 
 		D3D_DRIVER_TYPE   driverType_;
-		D3D_FEATURE_LEVEL featureLevel_;
 
 	public:
 		/**

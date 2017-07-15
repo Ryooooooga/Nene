@@ -30,7 +30,15 @@
 
 namespace Nene::Windows::Direct3D11
 {
-	PixelShader::PixelShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::string& name, const std::string& entryPoint, const std::string& target, ByteArrayView source)
+	namespace
+	{
+		const char* shaderModel(D3D_FEATURE_LEVEL featureLevel)
+		{
+			return featureLevel >= D3D_FEATURE_LEVEL_11_0 ? u8"ps_5_0" : u8"ps_4_0";
+		}
+	}
+
+	PixelShader::PixelShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::string& name, const std::string& entryPoint, ByteArrayView source)
 		: device_(device)
 		, shader_()
 		, name_(name)
@@ -39,7 +47,7 @@ namespace Nene::Windows::Direct3D11
 		assert(device);
 
 		// Compile pixel shader.
-		binary_ = Shader::compile(name, entryPoint, target, source);
+		binary_ = Shader::compile(name, entryPoint, shaderModel(device->GetFeatureLevel()), source);
 
 		HRESULT hr = device_->CreatePixelShader(
 			binary_.data(),
@@ -52,11 +60,9 @@ namespace Nene::Windows::Direct3D11
 			const auto message = fmt::format(
 				u8"Failed to create pixel shader.\n"
 				u8"Name: {}\n"
-				u8"Entry point: {}\n"
-				u8"Target: {}",
+				u8"Entry point: {}\n",
 				name,
-				entryPoint,
-				target);
+				entryPoint);
 
 			throw DirectXException { hr, message };
 		}

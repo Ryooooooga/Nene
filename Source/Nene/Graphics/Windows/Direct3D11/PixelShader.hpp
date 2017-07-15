@@ -56,10 +56,9 @@ namespace Nene::Windows::Direct3D11
 		 * @param[in]  device      Direct3D11 device.
 		 * @param[in]  name        The pixel shader name.
 		 * @param[in]  entryPoint  The entry point of the shader.
-		 * @param[in]  target      The pixel shader compile target.
 		 * @param[in]  source      The pixel shader source.
 		 */
-		explicit PixelShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::string& name, const std::string& entryPoint, const std::string& target, ByteArrayView source);
+		explicit PixelShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::string& name, const std::string& entryPoint, ByteArrayView source);
 
 		/**
 		 * @brief      Destructor.

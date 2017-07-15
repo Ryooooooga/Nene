@@ -40,8 +40,6 @@
 #include "../../../Exceptions/Windows/DirectXException.hpp"
 #include "../../../Window/Windows/Window.hpp"
 
-#include "../../../Reader/FileReader.hpp"
-
 namespace Nene::Windows::Direct3D11
 {
 	Graphics::Graphics()
@@ -49,7 +47,6 @@ namespace Nene::Windows::Direct3D11
 		, adapter_()
 		, context_()
 		, driverType_()
-		, featureLevel_()
 	{
 		// Create device.
 		UINT creationFlags = 0;
@@ -75,6 +72,8 @@ namespace Nene::Windows::Direct3D11
 
 		for (const auto& driverType : driverTypes)
 		{
+			D3D_FEATURE_LEVEL featureLevel;
+
 			hr = ::D3D11CreateDevice(
 				nullptr,
 				driverType,
@@ -84,7 +83,7 @@ namespace Nene::Windows::Direct3D11
 				std::extent_v<decltype(featureLevels)>,
 				D3D11_SDK_VERSION,
 				device_.GetAddressOf(),
-				&featureLevel_,
+				&featureLevel,
 				nullptr);
 
 			if (SUCCEEDED(hr))
@@ -119,14 +118,6 @@ namespace Nene::Windows::Direct3D11
 
 		// Create rendering context.
 		context_ = std::make_shared<Context>(device_);
-
-		// Create shader.
-		FileReader reader {"Assets/Shader/Shader2D.hlsl"};
-		std::vector<Byte> source(reader.size());
-		reader.read(source.data(), source.size());
-
-		PixelShader(device_, reader.path().u8string().c_str(), u8"PS_main", u8"ps_5_0", source);
-		VertexShader(device_, reader.path().u8string().c_str(), u8"VS_main", u8"vs_5_0", source);
 	}
 
 	Graphics::~Graphics() =default;
