@@ -21,49 +21,39 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_VERTEX2D_HPP
-#define INCLUDE_NENE_VERTEX2D_HPP
+#include "../../../Platform.hpp"
+#if defined(NENE_OS_WINDOWS)
 
-#include "Color.hpp"
-#include "Vector2D.hpp"
+#include "IndexBuffer.hpp"
+#include "../../../Exceptions/Windows/DirectXException.hpp"
 
-namespace Nene
+namespace Nene::Windows::Direct3D11
 {
-	/**
-	 * @brief      2D vertex.
-	 */
-	class Vertex2D
+	IndexBuffer::IndexBuffer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, UInt32 capacity)
+		: buffer_()
+		, capacity_(capacity)
 	{
-	public:
-		Vector2Df position;
-		Color4f   color;
-		Vector2Df uv;
+		assert(device);
+		assert(capacity > 0);
 
-		/**
-		 * @brief      Default constructor.
-		 */
-		Vertex2D() noexcept =default;
+		D3D11_BUFFER_DESC desc = {};
+		desc.ByteWidth           = UINT {sizeof(index_type)} * capacity_;
+		desc.Usage               = D3D11_USAGE_DYNAMIC;
+		desc.BindFlags           = D3D11_BIND_INDEX_BUFFER;
+		desc.CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE;
+		desc.MiscFlags           = 0;
+		desc.StructureByteStride = UINT {sizeof(index_type)};
 
-		/**
-		 * @brief      Copy constructor.
-		 */
-		constexpr Vertex2D(const Vertex2D&) noexcept =default;
+		HRESULT hr = device->CreateBuffer(
+			&desc,
+			nullptr,
+			buffer_.GetAddressOf());
 
-		/**
-		 * @brief      Constructor.
-		 *
-		 * @param[in]  position  The vertex location.
-		 * @param[in]  color     The vertex color.
-		 * @param[in]  uv        The vertex texture UV position.
-		 */
-		constexpr Vertex2D(const Vector2Df& position, const Color4f& color, const Vector2Df& uv = Vector2Df::zero()) noexcept
-			: position(position), color(color), uv(uv) {}
-
-		/**
-		 * @brief      Destructor.
-		 */
-		~Vertex2D() =default;
-	};
+		if (FAILED(hr))
+		{
+			throw DirectXException { hr, u8"Failed to create index buffer." };
+		}
+	}
 }
 
-#endif  // #ifndef INCLUDE_NENE_VERTEX2D_HPP
+#endif

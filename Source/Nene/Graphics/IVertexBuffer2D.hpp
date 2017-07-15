@@ -21,49 +21,31 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_VERTEX2D_HPP
-#define INCLUDE_NENE_VERTEX2D_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_IVERTEXBUFFER2D_HPP
+#define INCLUDE_NENE_GRAPHICS_IVERTEXBUFFER2D_HPP
 
-#include "Color.hpp"
-#include "Vector2D.hpp"
+#include "../Vertex2D.hpp"
+#include "IVertexBuffer.hpp"
 
 namespace Nene
 {
 	/**
-	 * @brief      2D vertex.
+	 * @brief      2D vertex buffer interface.
 	 */
-	class Vertex2D
+	class IVertexBuffer2D
+		: public IVertexBuffer
 	{
 	public:
-		Vector2Df position;
-		Color4f   color;
-		Vector2Df uv;
-
-		/**
-		 * @brief      Default constructor.
-		 */
-		Vertex2D() noexcept =default;
-
-		/**
-		 * @brief      Copy constructor.
-		 */
-		constexpr Vertex2D(const Vertex2D&) noexcept =default;
-
 		/**
 		 * @brief      Constructor.
-		 *
-		 * @param[in]  position  The vertex location.
-		 * @param[in]  color     The vertex color.
-		 * @param[in]  uv        The vertex texture UV position.
 		 */
-		constexpr Vertex2D(const Vector2Df& position, const Color4f& color, const Vector2Df& uv = Vector2Df::zero()) noexcept
-			: position(position), color(color), uv(uv) {}
+		IVertexBuffer2D() noexcept =default;
 
 		/**
 		 * @brief      Destructor.
 		 */
-		~Vertex2D() =default;
+		virtual ~IVertexBuffer2D() =default;
 	};
 }
 
-#endif  // #ifndef INCLUDE_NENE_VERTEX2D_HPP
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_IVERTEXBUFFER2D_HPP

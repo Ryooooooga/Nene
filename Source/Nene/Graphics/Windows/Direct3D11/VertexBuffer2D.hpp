@@ -21,49 +21,42 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_VERTEX2D_HPP
-#define INCLUDE_NENE_VERTEX2D_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_VERTEXBUFFER2D_HPP
+#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_VERTEXBUFFER2D_HPP
 
-#include "Color.hpp"
-#include "Vector2D.hpp"
+#include "../../../Platform.hpp"
+#if defined(NENE_OS_WINDOWS)
 
-namespace Nene
+#include "../../IVertexBuffer2D.hpp"
+#include "VertexBuffer.hpp"
+
+namespace Nene::Windows::Direct3D11
 {
 	/**
-	 * @brief      2D vertex.
+	 * @brief      Direct3D11 2D vertex buffer implementation.
 	 */
-	class Vertex2D
+	class VertexBuffer2D final
+		: public  IVertexBuffer2D
+		, private Uncopyable
 	{
+		VertexBuffer buffer_;
+
 	public:
-		Vector2Df position;
-		Color4f   color;
-		Vector2Df uv;
-
-		/**
-		 * @brief      Default constructor.
-		 */
-		Vertex2D() noexcept =default;
-
-		/**
-		 * @brief      Copy constructor.
-		 */
-		constexpr Vertex2D(const Vertex2D&) noexcept =default;
-
 		/**
 		 * @brief      Constructor.
 		 *
-		 * @param[in]  position  The vertex location.
-		 * @param[in]  color     The vertex color.
-		 * @param[in]  uv        The vertex texture UV position.
+		 * @param[in]  device    Direct3D11 device.
+		 * @param[in]  capacity  Max number of indices contains.
 		 */
-		constexpr Vertex2D(const Vector2Df& position, const Color4f& color, const Vector2Df& uv = Vector2Df::zero()) noexcept
-			: position(position), color(color), uv(uv) {}
+		explicit VertexBuffer2D(const Microsoft::WRL::ComPtr<ID3D11Device>& device, UInt32 capacity);
 
 		/**
 		 * @brief      Destructor.
 		 */
-		~Vertex2D() =default;
+		~VertexBuffer2D() =default;
 	};
 }
 
-#endif  // #ifndef INCLUDE_NENE_VERTEX2D_HPP
+#endif
+
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_VERTEXBUFFER2D_HPP

@@ -21,49 +21,31 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_VERTEX2D_HPP
-#define INCLUDE_NENE_VERTEX2D_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_IINDEXBUFFER_HPP
+#define INCLUDE_NENE_GRAPHICS_IINDEXBUFFER_HPP
 
-#include "Color.hpp"
-#include "Vector2D.hpp"
+#include "../ArrayView.hpp"
 
 namespace Nene
 {
 	/**
-	 * @brief      2D vertex.
+	 * @brief      Index buffer interface.
 	 */
-	class Vertex2D
+	class IIndexBuffer
 	{
 	public:
-		Vector2Df position;
-		Color4f   color;
-		Vector2Df uv;
-
-		/**
-		 * @brief      Default constructor.
-		 */
-		Vertex2D() noexcept =default;
-
-		/**
-		 * @brief      Copy constructor.
-		 */
-		constexpr Vertex2D(const Vertex2D&) noexcept =default;
+		using index_type = UInt32;
 
 		/**
 		 * @brief      Constructor.
-		 *
-		 * @param[in]  position  The vertex location.
-		 * @param[in]  color     The vertex color.
-		 * @param[in]  uv        The vertex texture UV position.
 		 */
-		constexpr Vertex2D(const Vector2Df& position, const Color4f& color, const Vector2Df& uv = Vector2Df::zero()) noexcept
-			: position(position), color(color), uv(uv) {}
+		IIndexBuffer() noexcept =default;
 
 		/**
 		 * @brief      Destructor.
 		 */
-		~Vertex2D() =default;
+		virtual ~IIndexBuffer() =default;
 	};
 }
 
-#endif  // #ifndef INCLUDE_NENE_VERTEX2D_HPP
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_IINDEXBUFFER_HPP
