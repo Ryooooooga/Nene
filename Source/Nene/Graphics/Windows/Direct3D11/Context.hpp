@@ -35,8 +35,21 @@
 namespace Nene::Windows::Direct3D11
 {
 	// Forward declarations.
+	struct CommandNop;
+	struct CommandClearRenderTarget;
+	struct CommandSetRenderTarget;
+	struct CommandSetVertexShader;
+	struct CommandSetPixelShader;
+	struct CommandSetPrimitiveTopology;
+	struct CommandDraw;
+
 	class CommandList;
+	class DynamicTexture;
+	class IndexBuffer;
+	class PixelShader;
 	class SpriteBatch;
+	class VertexBuffer2D;
+	class VertexShader;
 
 	/**
 	 * @brief      Direct3D11 rendering context.
@@ -47,8 +60,30 @@ namespace Nene::Windows::Direct3D11
 		Microsoft::WRL::ComPtr<ID3D11Device>        device_;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
 
-		std::unique_ptr<CommandList> commandList_;
-		std::unique_ptr<SpriteBatch> spriteBatch_;
+		std::unique_ptr<CommandList>    commandList_;
+		std::unique_ptr<SpriteBatch>    spriteBatch_;
+
+		std::shared_ptr<VertexBuffer2D> vertexBuffer_;
+		std::shared_ptr<IndexBuffer>    indexBuffer_;
+		std::shared_ptr<VertexShader>   vertexShaderShape_;
+		std::shared_ptr<PixelShader>    pixelShaderShape_;
+
+		std::shared_ptr<DynamicTexture> renderTarget_;
+		std::shared_ptr<VertexShader>   vertexShader_;
+		std::shared_ptr<PixelShader>    pixelShader_;
+
+		D3D11_PRIMITIVE_TOPOLOGY primitiveTopology_;
+
+		void setBuffers();
+		void clear();
+
+		void excuteCommand(const CommandNop&                  command);
+		void excuteCommand(const CommandClearRenderTarget&    command);
+		void excuteCommand(const CommandSetRenderTarget&      command);
+		void excuteCommand(const CommandSetVertexShader&      command);
+		void excuteCommand(const CommandSetPixelShader&       command);
+		void excuteCommand(const CommandSetPrimitiveTopology& command);
+		void excuteCommand(const CommandDraw&                 command);
 
 	public:
 		/**

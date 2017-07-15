@@ -27,6 +27,7 @@
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
+#include <d3d11.h>
 #include <variant>
 #include "../../../ArrayView.hpp"
 #include "../../../Color.hpp"
@@ -66,20 +67,15 @@ namespace Nene::Windows::Direct3D11
 		std::shared_ptr<PixelShader> shader;
 	};
 
-	struct CommandSetVertexBuffer
+	struct CommandSetPrimitiveTopology
 	{
-		std::shared_ptr<VertexBuffer> buffer;
-	};
-
-	struct CommandSetIndexBuffer
-	{
-		std::shared_ptr<IndexBuffer> buffer;
+		D3D11_PRIMITIVE_TOPOLOGY topology;
 	};
 
 	struct CommandDraw
 	{
-		std::size_t indexOffset;
-		std::size_t indexCount;
+		UInt32 indexOffset;
+		UInt32 indexCount;
 	};
 
 	using Command = std::variant
@@ -88,8 +84,7 @@ namespace Nene::Windows::Direct3D11
 		CommandSetRenderTarget,
 		CommandSetVertexShader,
 		CommandSetPixelShader,
-		CommandSetVertexBuffer,
-		CommandSetIndexBuffer,
+		CommandSetPrimitiveTopology,
 		CommandDraw,
 		CommandNop
 	>;
@@ -167,27 +162,17 @@ namespace Nene::Windows::Direct3D11
 			);
 		}
 
-		void addSetVertexBufferCommand(const std::shared_ptr<VertexBuffer>& buffer)
+		void addSetPrimitiveTopologyCommand(D3D11_PRIMITIVE_TOPOLOGY topology)
 		{
 			addCommand(
-				CommandSetVertexBuffer
+				CommandSetPrimitiveTopology
 				{
-					buffer,
+					topology,
 				}
 			);
 		}
 
-		void addSetIndexBufferCommand(const std::shared_ptr<IndexBuffer>& buffer)
-		{
-			addCommand(
-				CommandSetIndexBuffer
-				{
-					buffer,
-				}
-			);
-		}
-
-		void addDraw(std::size_t indexOffset, std::size_t indexCount)
+		void addDraw(UInt32 indexOffset, UInt32 indexCount)
 		{
 			addCommand(
 				CommandDraw

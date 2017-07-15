@@ -13,7 +13,7 @@ struct VS_Output
 	float4 color    : COLOR0;
 };
 
-VS_Output VS_main(VS_Input input)
+VS_Output VS_shape(VS_Input input)
 {
 	VS_Output output;
 	output.position = float4(input.position, 0.0, 1.0);
@@ -23,7 +23,7 @@ VS_Output VS_main(VS_Input input)
 	return output;
 }
 
-float4 PS_main(VS_Output input): SV_Target
+float4 PS_shape(VS_Output input): SV_Target
 {
 	return input.color;
 }
