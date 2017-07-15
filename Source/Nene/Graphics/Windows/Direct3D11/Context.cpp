@@ -27,7 +27,7 @@
 #include <cassert>
 #include "Context.hpp"
 #include "CommandList.hpp"
-// #include "SpriteBatch.hpp"
+#include "SpriteBatch.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
@@ -35,7 +35,7 @@ namespace Nene::Windows::Direct3D11
 		: device_(device)
 		, immediateContext_()
 		, commandList_()
-		// , spriteBatch_()
+		, spriteBatch_()
 	{
 		assert(device);
 
@@ -43,6 +43,7 @@ namespace Nene::Windows::Direct3D11
 		device_->GetImmediateContext(immediateContext_.GetAddressOf());
 
 		commandList_ = std::make_unique<CommandList>();
+		spriteBatch_ = std::make_unique<SpriteBatch>(device_);
 	}
 
 	Context::~Context() =default;

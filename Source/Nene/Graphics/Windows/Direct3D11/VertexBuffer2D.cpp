@@ -29,7 +29,7 @@
 namespace Nene::Windows::Direct3D11
 {
 	VertexBuffer2D::VertexBuffer2D(const Microsoft::WRL::ComPtr<ID3D11Device>& device, UInt32 capacity)
-		: buffer_(device, sizeof(Vertex2D), capacity) {}
+		: buffer_(device, sizeof(vertex_type), capacity) {}
 }
 
 #endif

@@ -36,6 +36,8 @@ namespace Nene
 		: public IVertexBuffer
 	{
 	public:
+		using vertex_type = Vertex2D;
+
 		/**
 		 * @brief      Constructor.
 		 */

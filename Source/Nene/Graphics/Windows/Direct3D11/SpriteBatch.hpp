@@ -21,8 +21,8 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_CONTEXT_HPP
-#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_CONTEXT_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_SPRITEBATCH_HPP
+#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_SPRITEBATCH_HPP
 
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
@@ -30,25 +30,30 @@
 #include <memory>
 #include <d3d11.h>
 #include <wrl/client.h>
+#include "../../../ArrayView.hpp"
 #include "../../../Uncopyable.hpp"
+#include "../../../Vertex2D.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
 	// Forward declarations.
-	class CommandList;
-	class SpriteBatch;
+	class IndexBuffer;
+	class VertexBuffer2D;
 
 	/**
-	 * @brief      Direct3D11 rendering context.
+	 * @brief      Sprite batch.
 	 */
-	class Context final
+	class SpriteBatch final
 		: private Uncopyable
 	{
-		Microsoft::WRL::ComPtr<ID3D11Device>        device_;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
+		std::shared_ptr<VertexBuffer2D> vertexBuffer_;
+		std::shared_ptr<IndexBuffer>    indexBuffer_;
 
-		std::unique_ptr<CommandList> commandList_;
-		std::unique_ptr<SpriteBatch> spriteBatch_;
+		std::vector<Vertex2D> vertices_;
+		std::vector<UInt32>   indices_;
+
+		UInt32 vertexWritePos_;
+		UInt32 indexWritePos_;
 
 	public:
 		/**
@@ -56,20 +61,15 @@ namespace Nene::Windows::Direct3D11
 		 *
 		 * @param[in]  device  Direct3D11 device.
 		 */
-		explicit Context(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
+		explicit SpriteBatch(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
 
 		/**
 		 * @brief      Destructor.
 		 */
-		~Context();
-
-		/**
-		 * @brief      Dispatches the rendering commands.
-		 */
-		void dispatch();
+		~SpriteBatch() =default;
 	};
 }
 
 #endif
 
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_CONTEXT_HPP
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_SPRITEBATCH_HPP

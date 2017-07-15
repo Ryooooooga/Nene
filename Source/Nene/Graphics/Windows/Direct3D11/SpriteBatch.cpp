@@ -21,55 +21,37 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_CONTEXT_HPP
-#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_CONTEXT_HPP
-
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include <memory>
-#include <d3d11.h>
-#include <wrl/client.h>
-#include "../../../Uncopyable.hpp"
+#include "IndexBuffer.hpp"
+#include "SpriteBatch.hpp"
+#include "VertexBuffer2D.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
-	// Forward declarations.
-	class CommandList;
-	class SpriteBatch;
-
-	/**
-	 * @brief      Direct3D11 rendering context.
-	 */
-	class Context final
-		: private Uncopyable
+	namespace
 	{
-		Microsoft::WRL::ComPtr<ID3D11Device>        device_;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
+		constexpr UInt32 initialVertexCount   = 4096;
+		constexpr UInt32 initialIndexCount    = 4096 * 2;
 
-		std::unique_ptr<CommandList> commandList_;
-		std::unique_ptr<SpriteBatch> spriteBatch_;
+		constexpr UInt32 vertexBufferCapacity = 65536;
+		constexpr UInt32 indexBufferCapacity  = 65536 * 2;
+	}
 
-	public:
-		/**
-		 * @brief      Constructor.
-		 *
-		 * @param[in]  device  Direct3D11 device.
-		 */
-		explicit Context(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
+	SpriteBatch::SpriteBatch(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
+		: vertexBuffer_()
+		, indexBuffer_()
+		, vertices_(initialVertexCount)
+		, indices_(initialIndexCount)
+		, vertexWritePos_(0)
+		, indexWritePos_(0)
+	{
+		assert(device);
 
-		/**
-		 * @brief      Destructor.
-		 */
-		~Context();
-
-		/**
-		 * @brief      Dispatches the rendering commands.
-		 */
-		void dispatch();
-	};
+		vertexBuffer_ = std::make_shared<VertexBuffer2D>(device, vertexBufferCapacity);
+		indexBuffer_  = std::make_shared<IndexBuffer>(device, indexBufferCapacity);
+	}
 }
 
 #endif
-
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_CONTEXT_HPP
