@@ -69,7 +69,35 @@ namespace Nene
 			;
 		}
 
+		void save(Serialization::BinarySerializer& archive, const BITMAPFILEHEADER& header)
+		{
+			archive
+				.serialize(header.signature)
+				.serialize(header.size)
+				.serialize(header.reserved1)
+				.serialize(header.reserved2)
+				.serialize(header.offset)
+			;
+		}
+
 		void load(Serialization::BinaryDeserializer& archive, BITMAPINFOHEADER& header)
+		{
+			archive
+				.serialize(header.headerSize)
+				.serialize(header.width)
+				.serialize(header.height)
+				.serialize(header.bitPlanes)
+				.serialize(header.bitCount)
+				.serialize(header.compression)
+				.serialize(header.sizeImage)
+				.serialize(header.xPixelPerMeter)
+				.serialize(header.yPixelPerMeter)
+				.serialize(header.colorUsed)
+				.serialize(header.colorImportant)
+			;
+		}
+
+		void save(Serialization::BinarySerializer& archive, const BITMAPINFOHEADER& header)
 		{
 			archive
 				.serialize(header.headerSize)
@@ -189,5 +217,45 @@ namespace Nene
 
 	void BmpImageFormat::encode(const Image& image, std::unique_ptr<IWriter>&& writer)
 	{
+		Serialization::BinarySerializer archive {std::move(writer)};
+
+		archive.serialize(BITMAPFILEHEADER
+		{
+			/*.signature =*/0x4d42,
+			/*.size      =*/static_cast<UInt32>(54 + 4 * image.size().area()),
+			/*.reserved1 =*/0,
+			/*.reserved2 =*/0,
+			/*.offset    =*/54,
+		});
+
+		archive.serialize(BITMAPINFOHEADER
+		{
+			/*.headerSize     =*/40,
+			/*.width          =*/image.size().width,
+			/*.height         =*/image.size().height,
+			/*.bitPlanes      =*/1,
+			/*.bitCount       =*/32,
+			/*.compression    =*/0,
+			/*.sizeImage      =*/static_cast<UInt32>(4 * image.size().area()),
+			/*.xPixelPerMeter =*/3780,
+			/*.yPixelPerMeter =*/3780,
+			/*.colorUsed      =*/0,
+			/*.colorImportant =*/0,
+		});
+
+		for (Int32 y = image.size().height - 1; y >= 0; y--)
+		{
+			for (Int32 x = 0; x < image.size().width; x++)
+			{
+				const std::size_t i = static_cast<std::size_t>(x + y * image.size().width);
+
+				archive
+					.serialize(image.data()[i].blue)
+					.serialize(image.data()[i].green)
+					.serialize(image.data()[i].red)
+					.serialize(image.data()[i].alpha)
+				;
+			}
+		}
 	}
 }

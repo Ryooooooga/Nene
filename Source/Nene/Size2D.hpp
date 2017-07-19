@@ -89,6 +89,17 @@ namespace Nene
 		~Size2D() =default;
 
 		/**
+		 * @brief      Caluculates the product of the width and the height.
+		 *
+		 * @return     `this->width * this->height`.
+		 */
+		[[nodiscard]]
+		constexpr T area() const noexcept
+		{
+			return width * height;
+		}
+
+		/**
 		 * @brief      Calculates the scaled size.
 		 *
 		 * @param[in]  s     Scaling.
