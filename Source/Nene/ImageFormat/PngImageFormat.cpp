@@ -85,7 +85,7 @@ namespace Nene
 		return std::memcmp(header.data(), signature, sizeof(signature)) == 0;
 	}
 
-	Image PngImageFormat::decode(IReader& reader)
+	Image PngImageFormat::decode(std::unique_ptr<IReader>&& reader)
 	{
 		::png_structp png  = nullptr;
 		::png_infop   info = nullptr;
@@ -106,7 +106,7 @@ namespace Nene
 			}
 
 			// Set callback.
-			::png_set_read_fn(png, &reader, pngReadData);
+			::png_set_read_fn(png, reader.get(), pngReadData);
 
 			// Read information header.
 			::png_read_info(png, info);
@@ -200,7 +200,7 @@ namespace Nene
 		return image;
 	}
 
-	void PngImageFormat::encode(const Image& image, IWriter& writer)
+	void PngImageFormat::encode(const Image& image, std::unique_ptr<IWriter>&& writer)
 	{
 		::png_structp png  = nullptr;
 		::png_infop   info = nullptr;
@@ -219,7 +219,7 @@ namespace Nene
 			}
 
 			// Set callback.
-			::png_set_write_fn(png, &writer, pngWriteData, nullptr);
+			::png_set_write_fn(png, writer.get(), pngWriteData, nullptr);
 
 
 			// Set information header.

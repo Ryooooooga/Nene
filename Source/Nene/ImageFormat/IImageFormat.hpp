@@ -24,6 +24,7 @@
 #ifndef INCLUDE_NENE_IMAGEFORMAT_IIMAGEFORMAT_HPP
 #define INCLUDE_NENE_IMAGEFORMAT_IIMAGEFORMAT_HPP
 
+#include <memory>
 #include <filesystem>
 #include "../Graphics/Image.hpp"
 
@@ -84,7 +85,7 @@ namespace Nene
 		 * @return     The image from `reader`.
 		 */
 		[[nodiscard]]
-		virtual Image decode(IReader& reader) =0;
+		virtual Image decode(std::unique_ptr<IReader>&& reader) =0;
 
 		/**
 		 * @brief      Writes a image to a writer.
@@ -92,7 +93,7 @@ namespace Nene
 		 * @param[in]  image   The image data to write.
 		 * @param      writer  The image data writer.
 		 */
-		virtual void encode(const Image& image, IWriter& writer) =0;
+		virtual void encode(const Image& image, std::unique_ptr<IWriter>&& writer) =0;
 	};
 }
 
