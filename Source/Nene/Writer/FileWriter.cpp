@@ -84,7 +84,7 @@ namespace Nene
 
 	std::size_t FileWriter::write(const void* buffer, std::size_t size)
 	{
-		return std::fwrite(buffer, size, 1, file_.get());
+		return std::fwrite(buffer, 1, size, file_.get());
 	}
 
 	const std::experimental::filesystem::path& FileWriter::path() const noexcept

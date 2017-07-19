@@ -93,7 +93,7 @@ namespace Nene
 
 	std::size_t FileReader::read(void* buffer, std::size_t size)
 	{
-		return std::fread(buffer, size, 1, file_.get()) * size;
+		return std::fread(buffer, 1, size, file_.get());
 	}
 
 	std::size_t FileReader::peek(void* buffer, std::size_t size)
