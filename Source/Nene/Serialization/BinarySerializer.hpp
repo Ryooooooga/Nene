@@ -21,38 +21,38 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_SERIALIZATION_BINARYDESERIALIZER_HPP
-#define INCLUDE_NENE_SERIALIZATION_BINARYDESERIALIZER_HPP
+#ifndef INCLUDE_NENE_SERIALIZATION_BINARYSERIALIZER_HPP
+#define INCLUDE_NENE_SERIALIZATION_BINARYSERIALIZER_HPP
 
 #include <memory>
 #include "../Endian.hpp"
 #include "../Uncopyable.hpp"
-#include "../Reader/IReader.hpp"
+#include "../Writer/IWriter.hpp"
 
 namespace Nene::Serialization
 {
 	/**
-	 * @brief      Binary deserializer.
+	 * @brief      Binary serializer.
 	 */
-	class BinaryDeserializer final
+	class BinarySerializer final
 		: private Uncopyable
 	{
-		std::unique_ptr<IReader> reader_;
+		std::unique_ptr<IWriter> writer_;
 		Endian::Order order_;
 
 	public:
 		/**
 		 * @brief      Constructor.
 		 *
-		 * @param      reader  The input reader.
+		 * @param      writer  The output writer.
 		 * @param[in]  endian  The serializer byte order.
 		 */
-		explicit BinaryDeserializer(std::unique_ptr<IReader>&& reader, Endian::Order byteOrder = Endian::Order::native) noexcept;
+		explicit BinarySerializer(std::unique_ptr<IWriter>&& writer, Endian::Order byteOrder = Endian::Order::native) noexcept;
 
 		/**
 		 * @brief      Destructor.
 		 */
-		~BinaryDeserializer() =default;
+		~BinarySerializer() =default;
 
 		/**
 		 * @brief      Returns the serializer byte order.
@@ -63,27 +63,27 @@ namespace Nene::Serialization
 		Endian::Order byteOrder() const noexcept;
 
 		/**
-		 * @brief      Deserializes the data.
+		 * @brief      Serializes the data.
 		 *
-		 * @param      data  The data to read.
+		 * @param      data  The data to write.
 		 *
 		 * @tparam     T     The data type.
 		 *
 		 * @return     `*this`.
 		 */
 		template <typename T>
-		BinaryDeserializer& serialize(T& data);
+		BinarySerializer& serialize(const T& data);
 
 		/**
-		 * @brief      Reads data.
+		 * @brief      Writes data.
 		 *
 		 * @param      data  The pointer to the data.
 		 * @param[in]  size  The data size.
 		 */
-		void read(void* data, std::size_t size);
+		void write(const void* data, std::size_t size);
 	};
 }
 
-#include "BinaryDeserializer.inl.hpp"
+#include "BinarySerializer.inl.hpp"
 
-#endif  // #ifndef INCLUDE_NENE_SERIALIZATION_BINARYDESERIALIZER_HPP
+#endif  // #ifndef INCLUDE_NENE_SERIALIZATION_BINARYSERIALIZER_HPP
