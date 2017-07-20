@@ -27,6 +27,7 @@
 #include "ImageFormatException.hpp"
 #include "../Platform.hpp"
 #include "../Reader/IReader.hpp"
+#include "../Scope.hpp"
 #include "../Writer/IWriter.hpp"
 
 namespace Nene
@@ -90,112 +91,105 @@ namespace Nene
 		::png_structp png  = nullptr;
 		::png_infop   info = nullptr;
 
+		// Release objects.
+		const auto _ = scopeExit([&]()
+		{
+			::png_destroy_read_struct(&png, &info, nullptr);
+		});
+
 		Image image;
 
-		try
+		// Initialize libpng.
+		if (!(png = ::png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, pngError, pngWarning)))
 		{
-			// Initialize libpng.
-			if (!(png = ::png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, pngError, pngWarning)))
-			{
-				throw EngineException { u8"Failed to create png read struct." };
-			}
-
-			if (!(info = ::png_create_info_struct(png)))
-			{
-				throw EngineException { u8"Failed to cerate png info struct." };
-			}
-
-			// Set callback.
-			::png_set_read_fn(png, reader.get(), pngReadData);
-
-			// Read information header.
-			::png_read_info(png, info);
-
-			::png_uint_32 width, height;
-			int bitDepth, colorType, interlaceType;
-
-			::png_get_IHDR(png, info, &width, &height, &bitDepth, &colorType, &interlaceType, nullptr, nullptr);
-
-			// Expand element into 8bit.
-			::png_set_packing(png);
-
-			if (colorType == PNG_COLOR_TYPE_PALETTE)
-			{
-				// Convert palette image into rgb image.
-				::png_set_palette_to_rgb(png);
-			}
-
-			if (colorType == PNG_COLOR_TYPE_GRAY && bitDepth < 8)
-			{
-				// Convert (1/2/4)bit gray scale image into 8bit gray scale image.
-				::png_set_expand_gray_1_2_4_to_8(png);
-			}
-
-			if (::png_get_valid(png, info, PNG_INFO_tRNS))
-			{
-				// Convert tRNS chunk into alpha channel.
-				::png_set_tRNS_to_alpha(png);
-			}
-
-			if (bitDepth == 16)
-			{
-				// Narrow element into 8bit.
-				::png_set_scale_16(png);
-			}
-
-			if (colorType == PNG_COLOR_TYPE_GRAY || colorType == PNG_COLOR_TYPE_GRAY_ALPHA)
-			{
-				// Convert gray scale into rgb.
-				::png_set_gray_to_rgb(png);
-			}
-
-			if (interlaceType != PNG_INTERLACE_NONE)
-			{
-				// Handling image interlace.
-				::png_set_interlace_handling(png);
-			}
-
-			// Add alpha.
-			::png_set_add_alpha(png, 0xff, PNG_FILLER_AFTER);
-
-			// Set gamma.
-			double gamma;
-
-			if (::png_get_gAMA(png, info, &gamma))
-			{
-				// Windows screen gamma.
-				constexpr double screenGamma = 2.2;
-
-				::png_set_gamma(png, screenGamma, gamma);
-			}
-
-			// Update information.
-			::png_read_update_info(png, info);
-
-			// Create image buffer.
-			image.resize(static_cast<Int32>(width), static_cast<Int32>(height));
-
-			// Create list of row pointers.
-			std::vector<::png_bytep> rows(height);
-
-			for (png_uint_32 i = 0; i < height; i++)
-			{
-				rows[i] = image.dataPointerAsByte() + i * width * sizeof(Color4);
-			}
-
-			::png_read_image(png, rows.data());
-			::png_read_end(png, info);
-
-			// Release objects.
-			::png_destroy_read_struct(&png, &info, nullptr);
+			throw EngineException { u8"Failed to create png read struct." };
 		}
-		catch (...)
+
+		if (!(info = ::png_create_info_struct(png)))
 		{
-			// Release objects.
-			::png_destroy_read_struct(&png, &info, nullptr);
-
-			throw;
+			throw EngineException { u8"Failed to cerate png info struct." };
 		}
+
+		// Set callback.
+		::png_set_read_fn(png, reader.get(), pngReadData);
+
+		// Read information header.
+		::png_read_info(png, info);
+
+		::png_uint_32 width, height;
+		int bitDepth, colorType, interlaceType;
+
+		::png_get_IHDR(png, info, &width, &height, &bitDepth, &colorType, &interlaceType, nullptr, nullptr);
+
+		// Expand element into 8bit.
+		::png_set_packing(png);
+
+		if (colorType == PNG_COLOR_TYPE_PALETTE)
+		{
+			// Convert palette image into rgb image.
+			::png_set_palette_to_rgb(png);
+		}
+
+		if (colorType == PNG_COLOR_TYPE_GRAY && bitDepth < 8)
+		{
+			// Convert (1/2/4)bit gray scale image into 8bit gray scale image.
+			::png_set_expand_gray_1_2_4_to_8(png);
+		}
+
+		if (::png_get_valid(png, info, PNG_INFO_tRNS))
+		{
+			// Convert tRNS chunk into alpha channel.
+			::png_set_tRNS_to_alpha(png);
+		}
+
+		if (bitDepth == 16)
+		{
+			// Narrow element into 8bit.
+			::png_set_scale_16(png);
+		}
+
+		if (colorType == PNG_COLOR_TYPE_GRAY || colorType == PNG_COLOR_TYPE_GRAY_ALPHA)
+		{
+			// Convert gray scale into rgb.
+			::png_set_gray_to_rgb(png);
+		}
+
+		if (interlaceType != PNG_INTERLACE_NONE)
+		{
+			// Handling image interlace.
+			::png_set_interlace_handling(png);
+		}
+
+		// Add alpha.
+		::png_set_add_alpha(png, 0xff, PNG_FILLER_AFTER);
+
+		// Set gamma.
+		double gamma;
+
+		if (::png_get_gAMA(png, info, &gamma))
+		{
+			// Windows screen gamma.
+			constexpr double screenGamma = 2.2;
+
+			::png_set_gamma(png, screenGamma, gamma);
+		}
+
+		// Update information.
+		::png_read_update_info(png, info);
+
+		// Create image buffer.
+		image.resize(static_cast<Int32>(width), static_cast<Int32>(height));
+
+		// Create list of row pointers.
+		std::vector<::png_bytep> rows(height);
+
+		for (png_uint_32 i = 0; i < height; i++)
+		{
+			rows[i] = image.dataPointerAsByte() + i * width * sizeof(Color4);
+		}
+
+		::png_read_image(png, rows.data());
+		::png_read_end(png, info);
 
 		return image;
 	}
