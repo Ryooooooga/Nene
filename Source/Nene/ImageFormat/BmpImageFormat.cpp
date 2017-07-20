@@ -212,6 +212,8 @@ namespace Nene
 					UInt32 pad;
 					archive.read(&pad, size.width % 4);
 				}
+
+				break;
 			}
 
 			case 32:
@@ -232,6 +234,8 @@ namespace Nene
 						;
 					}
 				}
+			
+				break;
 			}
 
 			default:
