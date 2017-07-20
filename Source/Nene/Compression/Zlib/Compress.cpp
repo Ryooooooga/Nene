@@ -22,6 +22,7 @@
 //=============================================================================
 
 #include <zlib/zlib.h>
+#include "../../Scope.hpp"
 #include "Compress.hpp"
 #include "ZlibException.hpp"
 
@@ -42,10 +43,13 @@ namespace Nene::Compression::Zlib
 			throw ZlibException { u8"Failed to initialize zlib deflate stream." };
 		}
 
+		scopeExit([&]()
+		{
+			::deflateEnd(&zs);
+		});
+
 		int result = ::deflate(&zs, Z_FINISH);
 		compressed.resize(zs.total_out);
-
-		::deflateEnd(&zs);
 
 		if (result != Z_STREAM_END)
 		{

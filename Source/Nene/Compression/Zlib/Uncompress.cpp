@@ -22,6 +22,7 @@
 //=============================================================================
 
 #include <zlib/zlib.h>
+#include "../../Scope.hpp"
 #include "Uncompress.hpp"
 #include "ZlibException.hpp"
 
@@ -42,8 +43,12 @@ namespace Nene::Compression::Zlib
 			throw ZlibException { u8"Failed to initialize zlib inflate stream." };
 		}
 
+		scopeExit([&]()
+		{
+			::inflateEnd(&zs);
+		});
+
 		int result = ::inflate(&zs, Z_FINISH);
-		::inflateEnd(&zs);
 
 		if (result != Z_STREAM_END)
 		{
