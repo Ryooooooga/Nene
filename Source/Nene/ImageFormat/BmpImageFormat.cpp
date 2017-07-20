@@ -167,11 +167,6 @@ namespace Nene
 			throw ImageFormatException { u8"Unknown bitmap image format." };
 		}
 
-		if (infoHeader.bitCount != 24)
-		{
-			throw ImageFormatException { u8"Unsupported bitmap image format." };
-		}
-
 		if (infoHeader.compression != 0)
 		{
 			throw ImageFormatException { u8"Unsupported bitmap compression format." };
@@ -193,23 +188,56 @@ namespace Nene
 
 		Image image { size };
 
-		for (Int32 y = 0; y < size.height; y++)
+		switch (infoHeader.bitCount)
 		{
-			for (Int32 x = 0; x < size.width; x++)
+			case 24:
 			{
-				const std::size_t i = static_cast<std::size_t>(x + (topDown ? y : size.height - y - 1) * size.width);
+				for (Int32 y = 0; y < size.height; y++)
+				{
+					for (Int32 x = 0; x < size.width; x++)
+					{
+						const std::size_t col = x;
+						const std::size_t row = topDown ? y : size.height - y - 1;
+						const std::size_t i   = x + col * size.width;
 
-				archive
-					.serialize(image.dataPointer()[i].blue)
-					.serialize(image.dataPointer()[i].green)
-					.serialize(image.dataPointer()[i].red)
-				;
+						archive
+							.serialize(image.dataPointer()[i].blue)
+							.serialize(image.dataPointer()[i].green)
+							.serialize(image.dataPointer()[i].red)
+						;
 
-				image.dataPointer()[i].alpha = 255;
+						image.dataPointer()[i].alpha = 255;
+					}
+
+					UInt32 pad;
+					archive.read(&pad, size.width % 4);
+				}
 			}
 
-			UInt32 pad;
-			archive.read(&pad, size.width % 4);
+			case 32:
+			{
+				for (Int32 y = 0; y < size.height; y++)
+				{
+					for (Int32 x = 0; x < size.width; x++)
+					{
+						const std::size_t col = x;
+						const std::size_t row = topDown ? y : size.height - y - 1;
+						const std::size_t i   = x + col * size.width;
+
+						archive
+							.serialize(image.dataPointer()[i].blue)
+							.serialize(image.dataPointer()[i].green)
+							.serialize(image.dataPointer()[i].red)
+							.serialize(image.dataPointer()[i].alpha)
+						;
+					}
+				}
+			}
+
+			default:
+			{
+				throw ImageFormatException { u8"Unsupported bitmap image format." };
+			}
 		}
 
 		return image;
