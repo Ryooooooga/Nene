@@ -61,18 +61,21 @@ namespace Nene
 	}
 
 	template <typename Callback>
+	[[nodiscard]]
 	Detail::Scope<Callback> scopeExit(Callback&& callback) noexcept
 	{
 		return Detail::Scope<Callback> { std::move(callback), true, true };
 	}
 
 	template <typename Callback>
+	[[nodiscard]]
 	Detail::Scope<Callback> scopeSuccess(Callback&& callback) noexcept
 	{
 		return Detail::Scope<Callback> { std::move(callback), true, false };
 	}
 
 	template <typename Callback>
+	[[nodiscard]]
 	Detail::Scope<Callback> scopeFailure(Callback&& callback) noexcept
 	{
 		return Detail::Scope<Callback> { std::move(callback), false, true };
