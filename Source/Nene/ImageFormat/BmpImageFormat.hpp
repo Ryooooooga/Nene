@@ -80,6 +80,12 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		void encode(const Image& image, std::unique_ptr<IWriter>&& writer) override;
+
+		/**
+		 * @see        `Nene::IImageFormat::encode()`.
+		 */
+		[[nodiscard]]
+		void encode(const Image& image, std::unique_ptr<IWriter>&& writer, Int32 quality) override;
 	};
 }
 

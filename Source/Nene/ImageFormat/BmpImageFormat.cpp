@@ -290,4 +290,9 @@ namespace Nene
 			}
 		}
 	}
+
+	void BmpImageFormat::encode(const Image& image, std::unique_ptr<IWriter>&& writer, [[maybe_unused]] Int32 quality)
+	{
+		encode(image, std::move(writer));
+	}
 }

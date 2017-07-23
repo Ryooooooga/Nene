@@ -94,6 +94,15 @@ namespace Nene
 		 * @param      writer  The image data writer.
 		 */
 		virtual void encode(const Image& image, std::unique_ptr<IWriter>&& writer) =0;
+
+		/**
+		 * @brief      Writes a image to a writer.
+		 *
+		 * @param[in]  image    The image data to write.
+		 * @param      writer   The image data writer.
+		 * @param[in]  quality  The image quality.
+		 */
+		virtual void encode(const Image& image, std::unique_ptr<IWriter>&& writer, Int32 quality) =0;
 	};
 }
 
