@@ -30,11 +30,8 @@
 
 namespace Nene::Serialization
 {
-	inline BinaryDeserializer::BinaryDeserializer(std::unique_ptr<IReader>&& reader, Endian::Order byteOrder) noexcept
-		: reader_(std::move(reader)), order_(byteOrder)
-	{
-		assert(reader_);
-	}
+	inline BinaryDeserializer::BinaryDeserializer(IReader& reader, Endian::Order byteOrder) noexcept
+		: reader_(reader), order_(byteOrder) {}
 
 	inline Endian::Order BinaryDeserializer::byteOrder() const noexcept
 	{
@@ -51,7 +48,7 @@ namespace Nene::Serialization
 
 	inline void BinaryDeserializer::read(void* data, std::size_t size)
 	{
-		if (reader_->read(data, size) != size)
+		if (reader_.read(data, size) != size)
 		{
 			throw SerializationException { u8"Deserialization failed." };
 		}

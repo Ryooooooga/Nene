@@ -140,7 +140,7 @@ namespace Nene
 		return std::memcmp(header.data(), signature, sizeof(signature)) == 0;
 	}
 
-	Image BmpImageFormat::decode(std::unique_ptr<IReader>&& reader)
+	Image BmpImageFormat::decode(IReader& reader)
 	{
 		Serialization::BinaryDeserializer archive {std::move(reader)};
 
@@ -247,7 +247,7 @@ namespace Nene
 		return image;
 	}
 
-	void BmpImageFormat::encode(const Image& image, std::unique_ptr<IWriter>&& writer)
+	void BmpImageFormat::encode(const Image& image, IWriter& writer)
 	{
 		Serialization::BinarySerializer archive {std::move(writer)};
 
@@ -291,7 +291,7 @@ namespace Nene
 		}
 	}
 
-	void BmpImageFormat::encode(const Image& image, std::unique_ptr<IWriter>&& writer, [[maybe_unused]] Int32 quality)
+	void BmpImageFormat::encode(const Image& image, IWriter& writer, [[maybe_unused]] Int32 quality)
 	{
 		encode(image, std::move(writer));
 	}

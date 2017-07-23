@@ -73,19 +73,19 @@ namespace Nene
 		 * @see        `Nene::IImageFormat::decode()`.
 		 */
 		[[nodiscard]]
-		Image decode(std::unique_ptr<IReader>&& reader) override;
+		Image decode(IReader& reader) override;
 
 		/**
 		 * @see        `Nene::IImageFormat::encode()`.
 		 */
 		[[nodiscard]]
-		void encode(const Image& image, std::unique_ptr<IWriter>&& writer) override;
+		void encode(const Image& image, IWriter& writer) override;
 
 		/**
 		 * @see        `Nene::IImageFormat::encode()`.
 		 */
 		[[nodiscard]]
-		void encode(const Image& image, std::unique_ptr<IWriter>&& writer, Int32 quality) override;
+		void encode(const Image& image, IWriter& writer, Int32 quality) override;
 	};
 }
 

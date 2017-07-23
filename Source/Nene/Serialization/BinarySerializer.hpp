@@ -24,7 +24,6 @@
 #ifndef INCLUDE_NENE_SERIALIZATION_BINARYSERIALIZER_HPP
 #define INCLUDE_NENE_SERIALIZATION_BINARYSERIALIZER_HPP
 
-#include <memory>
 #include "../Endian.hpp"
 #include "../Uncopyable.hpp"
 #include "../Writer/IWriter.hpp"
@@ -37,7 +36,7 @@ namespace Nene::Serialization
 	class BinarySerializer final
 		: private Uncopyable
 	{
-		std::unique_ptr<IWriter> writer_;
+		IWriter& writer_;
 		Endian::Order order_;
 
 	public:
@@ -47,7 +46,7 @@ namespace Nene::Serialization
 		 * @param      writer  The output writer.
 		 * @param[in]  endian  The serializer byte order.
 		 */
-		explicit BinarySerializer(std::unique_ptr<IWriter>&& writer, Endian::Order byteOrder = Endian::Order::native) noexcept;
+		explicit BinarySerializer(IWriter& writer, Endian::Order byteOrder = Endian::Order::native) noexcept;
 
 		/**
 		 * @brief      Destructor.

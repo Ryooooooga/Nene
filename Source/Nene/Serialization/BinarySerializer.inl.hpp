@@ -30,11 +30,8 @@
 
 namespace Nene::Serialization
 {
-	inline BinarySerializer::BinarySerializer(std::unique_ptr<IWriter>&& writer, Endian::Order byteOrder) noexcept
-		: writer_(std::move(writer)), order_(byteOrder)
-	{
-		assert(writer_);
-	}
+	inline BinarySerializer::BinarySerializer(IWriter& writer, Endian::Order byteOrder) noexcept
+		: writer_(writer), order_(byteOrder) {}
 
 	inline Endian::Order BinarySerializer::byteOrder() const noexcept
 	{
@@ -59,11 +56,11 @@ namespace Nene::Serialization
 
 			if (order_ == Endian::Order::native)
 			{
-				sizeWritten += writer_->write(p + i, 1);
+				sizeWritten += writer_.write(p + i, 1);
 			}
 			else
 			{
-				sizeWritten += writer_->write(p - size - i - 1, 1);
+				sizeWritten += writer_.write(p - size - i - 1, 1);
 			}
 		}
 

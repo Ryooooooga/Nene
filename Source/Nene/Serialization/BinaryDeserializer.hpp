@@ -37,7 +37,7 @@ namespace Nene::Serialization
 	class BinaryDeserializer final
 		: private Uncopyable
 	{
-		std::unique_ptr<IReader> reader_;
+		IReader& reader_;
 		Endian::Order order_;
 
 	public:
@@ -47,7 +47,7 @@ namespace Nene::Serialization
 		 * @param      reader  The input reader.
 		 * @param[in]  endian  The serializer byte order.
 		 */
-		explicit BinaryDeserializer(std::unique_ptr<IReader>&& reader, Endian::Order byteOrder = Endian::Order::native) noexcept;
+		explicit BinaryDeserializer(IReader& reader, Endian::Order byteOrder = Endian::Order::native) noexcept;
 
 		/**
 		 * @brief      Destructor.
