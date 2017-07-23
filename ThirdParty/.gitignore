@@ -8,6 +8,11 @@ Source/zlib/*
 !Include/zlib/.keep
 !Source/zlib/.keep
 
+Include/libjpeg/*
+Source/libjpeg/*
+!Include/libjpeg/.keep
+!Source/libjpeg/.keep
+
 Include/libpng/*
 Source/libpng/*
 !Include/libpng/.keep
