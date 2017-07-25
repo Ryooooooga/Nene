@@ -24,7 +24,6 @@
 #ifndef INCLUDE_NENE_DIALOG_MESSAGEDIALOG_HPP
 #define INCLUDE_NENE_DIALOG_MESSAGEDIALOG_HPP
 
-#include <memory>
 #include <string_view>
 #include "IMessageDialog.hpp"
 

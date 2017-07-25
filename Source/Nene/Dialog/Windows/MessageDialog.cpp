@@ -33,10 +33,11 @@ namespace Nene::Windows
 {
 	namespace
 	{
-		MessageDialogButton showDialog(std::string_view title, std::string_view message, MessageDialogType type, MessageDialogIcon icon, const IWindow* parent)
+		MessageDialogButton showDialog(std::string_view title, std::string_view message, MessageDialogType type, MessageDialogIcon icon, const std::shared_ptr<const IWindow>& parent)
 		{
 			// TODO: owner window.
-			//const auto owner = dynamic_cast<const >;
+			//const auto owner = std::dynamic_pointer_cast<const Windows::Window>(parent);
+			//const HWND hWnd  = owner ? owner->handle() : nullptr;
 			const HWND hWnd  = nullptr;
 
 			UINT uType = 0;
@@ -117,14 +118,14 @@ namespace Nene::Windows
 		}
 	}
 
-	MessageDialogButton MessageDialog::show() const
+	MessageDialogButton MessageDialog::show(const std::shared_ptr<const IWindow>& parent) const
 	{
-		return showDialog(title_, message_, type_, icon_, nullptr);
+		return showDialog(title_, message_, type_, icon_, parent);
 	}
 
-	MessageDialogButton MessageDialog::show(const IWindow& parent) const
+	std::future<MessageDialogButton> MessageDialog::showAsync(const std::shared_ptr<const IWindow>& parent) const
 	{
-		return showDialog(title_, message_, type_, icon_, &parent);
+		return std::async(showDialog, title_, message_, type_, icon_, parent);
 	}
 }
 

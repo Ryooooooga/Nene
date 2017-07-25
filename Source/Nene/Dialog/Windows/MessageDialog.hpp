@@ -142,12 +142,12 @@ namespace Nene::Windows
 		/**
 		 * @see        `Nene::IMessageDialog::show()`.
 		 */
-		MessageDialogButton show() const override;
+		MessageDialogButton show(const std::shared_ptr<const IWindow>& window = nullptr) const override;
 
 		/**
-		 * @see        `Nene::IMessageDialog::show()`.
+		 * @see        `Nene::IMessageDialog::showAsync()`.
 		 */
-		MessageDialogButton show(const IWindow& window) const override;
+		std::future<MessageDialogButton> showAsync(const std::shared_ptr<const IWindow>& window = nullptr) const override;
 	};
 }
 
