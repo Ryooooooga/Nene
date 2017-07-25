@@ -42,6 +42,7 @@ namespace Nene::Console
 		NENE_SUPPRESS_WARNING_MSVC(4996) std::freopen("CONIN$",  "r", stdin  );
 
 		std::cout.clear();
+		std::cerr.clear();
 
 		return true;
 	}
