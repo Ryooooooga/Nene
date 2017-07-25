@@ -92,7 +92,7 @@ namespace Nene
 		::png_infop   info = nullptr;
 
 		// Release objects.
-		const auto _ = scopeExit([&]()
+		[[maybe_unused]] const auto _ = scopeExit([&]()
 		{
 			::png_destroy_read_struct(&png, &info, nullptr);
 		});

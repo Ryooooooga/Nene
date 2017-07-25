@@ -79,13 +79,11 @@ namespace Nene
 		/**
 		 * @see        `Nene::IImageFormat::encode()`.
 		 */
-		[[nodiscard]]
 		void encode(const Image& image, IWriter& writer) override;
 
 		/**
 		 * @see        `Nene::IImageFormat::encode()`.
 		 */
-		[[nodiscard]]
 		void encode(const Image& image, IWriter& writer, Int32 quality) override;
 	};
 }

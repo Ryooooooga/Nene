@@ -260,7 +260,7 @@ namespace Nene
 		// Initialize compression struct.
 		jpeg_create_compress(&cinfo);
 
-		const auto _ = scopeExit([&]()
+		[[maybe_unused]] const auto _ = scopeExit([&]()
 		{
 			// Destroy compression struct.
 			jpeg_destroy_compress(&cinfo);
