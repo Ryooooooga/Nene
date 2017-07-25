@@ -86,7 +86,7 @@ namespace Nene
 		 * @return     Left location of the rectangle.
 		 */
 		[[nodiscard]]
-		T left() const noexcept
+		constexpr T left() const noexcept
 		{
 			return position.x;
 		}
@@ -97,7 +97,7 @@ namespace Nene
 		 * @return     Top location of the rectangle.
 		 */
 		[[nodiscard]]
-		T top() const noexcept
+		constexpr T top() const noexcept
 		{
 			return position.y;
 		}
@@ -108,7 +108,7 @@ namespace Nene
 		 * @return     Right location of the rectangle.
 		 */
 		[[nodiscard]]
-		T right() const noexcept
+		constexpr T right() const noexcept
 		{
 			return position.x + size.width;
 		}
@@ -119,7 +119,7 @@ namespace Nene
 		 * @return     Bottom location of the rectangle.
 		 */
 		[[nodiscard]]
-		T bottom() const noexcept
+		constexpr T bottom() const noexcept
 		{
 			return position.y + size.height;
 		}
@@ -130,7 +130,7 @@ namespace Nene
 		 * @return     Center location of the rectangle.
 		 */
 		[[nodiscard]]
-		vector_type center() const noexcept
+		constexpr vector_type center() const noexcept
 		{
 			return { position.x + size.width / 2, position.y + size.height / 2 };
 		}
