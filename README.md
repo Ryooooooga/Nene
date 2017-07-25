@@ -54,6 +54,10 @@
 
 >(C) 1995-2017 Jean-loup Gailly and Mark Adler
 
+### libjpeg
+
+>this software is based in part on the work of the Independent JPEG Group
+
 ### libpng
 
 >Copyright (c) 1998-2002, 2004, 2006-2017 Glenn Randers-Pehrson
