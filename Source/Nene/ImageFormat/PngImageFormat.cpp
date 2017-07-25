@@ -34,26 +34,26 @@ namespace Nene
 {
 	namespace
 	{
-		void pngError([[maybe_unused]] ::png_structp png, ::png_const_charp message)
+		void error([[maybe_unused]] ::png_structp png, ::png_const_charp message)
 		{
 			throw PngImageFormatException { fmt::format(u8"PNG image format error\nDescription: {}", message) };
 		}
 
-		void pngWarning([[maybe_unused]] ::png_structp png, ::png_const_charp message)
+		void warning([[maybe_unused]] ::png_structp png, ::png_const_charp message)
 		{
 #ifdef NENE_DEBUG
 			fprintf(stderr, "PNG warning: %s\n", message);
 #endif
 		}
 
-		void pngReadData(::png_structp png, ::png_bytep buffer, ::png_size_t size)
+		void readData(::png_structp png, ::png_bytep buffer, ::png_size_t size)
 		{
 			const auto reader = static_cast<IReader*>(::png_get_io_ptr(png));
 
 			reader->read(buffer, size);
 		}
 
-		void pngWriteData(::png_structp png, ::png_bytep buffer, ::png_size_t size)
+		void writeData(::png_structp png, ::png_bytep buffer, ::png_size_t size)
 		{
 			const auto writer = static_cast<IWriter*>(::png_get_io_ptr(png));
 
@@ -98,7 +98,7 @@ namespace Nene
 		});
 
 		// Initialize libpng.
-		if (!(png = ::png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, pngError, pngWarning)))
+		if (!(png = ::png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, error, warning)))
 		{
 			throw EngineException { u8"Failed to create png read struct." };
 		}
@@ -109,7 +109,7 @@ namespace Nene
 		}
 
 		// Set callback.
-		::png_set_read_fn(png, &reader, pngReadData);
+		::png_set_read_fn(png, &reader, readData);
 
 		// Read information header.
 		::png_read_info(png, info);
@@ -200,7 +200,7 @@ namespace Nene
 		try
 		{
 			// Initialize libpng.
-			if (!(png = ::png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, pngError, pngWarning)))
+			if (!(png = ::png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, error, warning)))
 			{
 				throw EngineException { u8"Failed to create png write struct." };
 			}
@@ -211,7 +211,7 @@ namespace Nene
 			}
 
 			// Set callback.
-			::png_set_write_fn(png, &writer, pngWriteData, nullptr);
+			::png_set_write_fn(png, &writer, writeData, nullptr);
 
 
 			// Set information header.
