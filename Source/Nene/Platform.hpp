@@ -46,4 +46,10 @@
 #  define NENE_RELEASE
 #endif
 
+#if defined(NENE_COMPILER_MSVC)
+#  define NENE_SUPPRESS_WARNING_MSVC(x) __pragma(warning(suppress: x))
+#else
+#  define NENE_SUPPRESS_WARNING_MSVC(x)
+#endif
+
 #endif  // #ifndef INCLUDE_NENE_PLATFORM_HPP
