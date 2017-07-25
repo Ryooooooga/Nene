@@ -24,7 +24,7 @@
 #include "Monitor.hpp"
 #include "Windows/Monitor.hpp"
 
-namespace Nene::Monitors
+namespace Nene::Monitor
 {
 	std::vector<std::unique_ptr<IMonitor>> enumerate()
 	{

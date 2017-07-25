@@ -28,7 +28,7 @@
 #include <vector>
 #include "IMonitor.hpp"
 
-namespace Nene::Monitors
+namespace Nene::Monitor
 {
 	/**
 	 * @brief      Enumerates monitors.
