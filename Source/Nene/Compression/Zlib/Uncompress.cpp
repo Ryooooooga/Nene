@@ -43,7 +43,7 @@ namespace Nene::Compression::Zlib
 			throw ZlibException { u8"Failed to initialize zlib inflate stream." };
 		}
 
-		scopeExit([&]()
+		const auto _ = scopeExit([&]()
 		{
 			::inflateEnd(&zs);
 		});
