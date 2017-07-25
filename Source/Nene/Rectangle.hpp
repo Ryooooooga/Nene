@@ -125,6 +125,50 @@ namespace Nene
 		}
 
 		/**
+		 * @brief      Returns the top left location.
+		 *
+		 * @return     The top left location.
+		 */
+		[[nodiscard]]
+		constexpr vector_type topLeft() const noexcept
+		{
+			return { left(), top() };
+		}
+
+		/**
+		 * @brief      Returns the top right location.
+		 *
+		 * @return     The top right location.
+		 */
+		[[nodiscard]]
+		constexpr vector_type topRight() const noexcept
+		{
+			return { right(), top() };
+		}
+
+		/**
+		 * @brief      Returns the bottom left location.
+		 *
+		 * @return     The bottom left location.
+		 */
+		[[nodiscard]]
+		constexpr vector_type bottomLeft() const noexcept
+		{
+			return { left(), bottom() };
+		}
+
+		/**
+		 * @brief      Returns the bottom right location.
+		 *
+		 * @return     The bottom right location.
+		 */
+		[[nodiscard]]
+		constexpr vector_type bottomRight() const noexcept
+		{
+			return { right(), bottom() };
+		}
+
+		/**
 		 * @brief      Returns center location.
 		 *
 		 * @return     Center location of the rectangle.
