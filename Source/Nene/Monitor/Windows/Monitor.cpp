@@ -24,42 +24,55 @@
 #include "../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include <Windows.h>
 #include "../../Encoding.hpp"
-#include "../Monitor.hpp"
+#include "../../Exceptions/Windows/WindowsApiException.hpp"
+#include "Monitor.hpp"
 
-namespace Nene
+namespace Nene::Windows
 {
-	namespace
+	BOOL CALLBACK Monitor::onEnumMonitor(HMONITOR hMonitor, [[maybe_unused]] HDC hDC, [[maybe_unused]] LPRECT lprcMonitor, LPARAM dwData)
 	{
-		BOOL CALLBACK onEnumMonitor(HMONITOR hMonitor, [[maybe_unused]] HDC hDC, [[maybe_unused]] LPRECT lprcMonitor, LPARAM dwData)
+		MONITORINFOEXW info = {};
+		info.cbSize = sizeof(info);
+
+		if (::GetMonitorInfoW(hMonitor, &info))
 		{
-			const auto monitors = reinterpret_cast<std::vector<Monitor>*>(dwData);
-
-			// Get monitor information.
-			MONITORINFOEXW info = {};
-			info.cbSize = sizeof(info);
-
-			::GetMonitorInfoW(hMonitor, &info);
-
-			monitors->emplace_back(
+			auto monitor = std::make_unique<Monitor>(
 				Encoding::toUtf8(info.szDevice),
-				Rectanglei
-				{
-					static_cast<Int32>(info.rcMonitor.left   ),
-					static_cast<Int32>(info.rcMonitor.top    ),
-					static_cast<Int32>(info.rcMonitor.right  ),
-					static_cast<Int32>(info.rcMonitor.bottom ),
-				},
+				Rectanglei { info.rcMonitor.left, info.rcMonitor.top, info.rcMonitor.right, info.rcMonitor.bottom },
 				!!(info.dwFlags & MONITORINFOF_PRIMARY));
 
-			return TRUE;
+			const auto monitors = reinterpret_cast<std::vector<std::unique_ptr<IMonitor>>*>(dwData);
+			monitors->emplace_back(std::move(monitor));
 		}
+
+		return TRUE;
 	}
 
-	std::vector<Monitor> Monitor::enumerate()
+	BOOL CALLBACK Monitor::onEnumMonitorPrimary(HMONITOR hMonitor, [[maybe_unused]] HDC hDC, [[maybe_unused]] LPRECT lprcMonitor, LPARAM dwData)
 	{
-		std::vector<Monitor> monitors;
+		MONITORINFOEXW info = {};
+		info.cbSize = sizeof(info);
+
+		if (::GetMonitorInfoW(hMonitor, &info) && info.dwFlags & MONITORINFOF_PRIMARY)
+		{
+			auto monitor = std::make_unique<Monitor>(
+				Encoding::toUtf8(info.szDevice),
+				Rectanglei { info.rcMonitor.left, info.rcMonitor.top, info.rcMonitor.right, info.rcMonitor.bottom },
+				!!(info.dwFlags & MONITORINFOF_PRIMARY));
+
+			const auto primary = reinterpret_cast<std::unique_ptr<IMonitor>*>(dwData);
+			*primary = std::move(monitor);
+
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
+	std::vector<std::unique_ptr<IMonitor>> Monitor::enumerate()
+	{
+		std::vector<std::unique_ptr<IMonitor>> monitors;
 		monitors.reserve(2);
 
 		::EnumDisplayMonitors(
@@ -69,6 +82,24 @@ namespace Nene
 			reinterpret_cast<LPARAM>(&monitors));
 
 		return monitors;
+	}
+
+	std::unique_ptr<IMonitor> Monitor::primary()
+	{
+		std::unique_ptr<IMonitor> monitor;
+
+		::EnumDisplayMonitors(
+			nullptr,
+			nullptr,
+			onEnumMonitorPrimary,
+			reinterpret_cast<LPARAM>(&monitor));
+
+		if (!monitor)
+		{
+			throw WindowsApiException { ::GetLastError(), u8"Failed to get primary monitor information." };
+		}
+
+		return monitor;
 	}
 }
 

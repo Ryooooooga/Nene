@@ -21,28 +21,22 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_MONITOR_MONITOR_HPP
-#define INCLUDE_NENE_MONITOR_MONITOR_HPP
-
-#include <memory>
-#include <vector>
-#include "IMonitor.hpp"
+#include "Monitor.hpp"
+#include "Windows/Monitor.hpp"
 
 namespace Nene::Monitors
 {
-	/**
-	 * @brief      Enumerates monitors.
-	 *
-	 * @return     List of monitors.
-	 */
-	std::vector<std::unique_ptr<IMonitor>> enumerate();
+	std::vector<std::unique_ptr<IMonitor>> enumerate()
+	{
+#if defined(NENE_OS_WINDOWS)
+		return Windows::Monitor::enumerate();
+#endif
+	}
 
-	/**
-	 * @brief      Gets the primary monitor.
-	 *
-	 * @return     The primary monitor.
-	 */
-	std::unique_ptr<IMonitor> primary();
+	std::unique_ptr<IMonitor> primary()
+	{
+#if defined(NENE_OS_WINDOWS)
+		return Windows::Monitor::primary();
+#endif
+	}
 }
-
-#endif  // #ifndef INCLUDE_NENE_MONITOR_MONITOR_HPP
