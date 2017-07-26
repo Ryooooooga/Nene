@@ -173,7 +173,10 @@ namespace Nene
 
 	bool JpegImageFormat::isImageHeader(const std::array<Byte, 16>& header) const noexcept
 	{
-		constexpr Byte signature[2] = { 0xff, 0xd8 };
+		constexpr Byte signature[2] =
+		{
+			byte(0xff), byte(0xd8),
+		};
 
 		return std::memcmp(header.data(), signature, sizeof(signature)) == 0;
 	}

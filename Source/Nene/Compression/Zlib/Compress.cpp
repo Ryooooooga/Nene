@@ -33,9 +33,9 @@ namespace Nene::Compression::Zlib
 		std::vector<Byte> compressed(::compressBound(static_cast<::uLong>(data.size())));
 
 		::z_stream zs = {};
-		zs.next_in   = const_cast<Byte*>(data.data()); // Never rewrited.
+		zs.next_in   = reinterpret_cast<Bytef*>(const_cast<Byte*>(data.data())); // Never rewrited.
 		zs.avail_in  = static_cast<uInt>(data.size());
-		zs.next_out  = compressed.data();
+		zs.next_out  = reinterpret_cast<Bytef*>(compressed.data());
 		zs.avail_out = static_cast<uInt>(compressed.size());
 
 		if (deflateInit2(&zs, compressionLevel, Z_DEFLATED, -MAX_WBITS, 8, Z_DEFAULT_STRATEGY))

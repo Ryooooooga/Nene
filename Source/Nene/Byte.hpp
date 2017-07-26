@@ -21,26 +21,30 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_TYPES_HPP
-#define INCLUDE_NENE_TYPES_HPP
+#ifndef INCLUDE_NENE_BYTE_HPP
+#define INCLUDE_NENE_BYTE_HPP
 
-#include <cstdint>
-#include "Byte.hpp"
+#include <cstddef>
+#include "Platform.hpp"
 
 namespace Nene
 {
-	using Int8    = std::int8_t;
-	using Int16   = std::int16_t;
-	using Int32   = std::int32_t;
-	using Int64   = std::int64_t;
-	using UInt8   = std::uint8_t;
-	using UInt16  = std::uint16_t;
-	using UInt32  = std::uint32_t;
-	using UInt64  = std::uint64_t;
+	/**
+	 * @brief      Byte type.
+	 */
+	enum class Byte: unsigned char {};
 
-	using Float32 = float;
-	using Float64 = double;
-	using Float   = Float32;
+	/**
+	 * @brief      Returns byte value.
+	 *
+	 * @param[in]  b
+	 *
+	 * @return     Byte value.
+	 */
+	constexpr Byte byte(unsigned char b) noexcept
+	{
+		return static_cast<Byte>(b);
+	}
 }
 
-#endif  // #ifndef INCLUDE_NENE_TYPES_HPP
+#endif  // #ifndef INCLUDE_NENE_BYTE_HPP

@@ -81,15 +81,19 @@ namespace Nene
 
 	bool PngImageFormat::isImageHeader(const std::array<Byte, 16>& header) const noexcept
 	{
-		constexpr Byte signature[8] = { 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a };
+		constexpr Byte signature[8] =
+		{
+			byte(0x89), byte(0x50), byte(0x4e), byte(0x47),
+			byte(0x0d), byte(0x0a), byte(0x1a), byte(0x0a),
+		};
 
 		return std::memcmp(header.data(), signature, sizeof(signature)) == 0;
 	}
 
 	Image PngImageFormat::decode(IReader& reader)
 	{
-		::png_structp png  = nullptr;
-		::png_infop   info = nullptr;
+		png_structp png  = nullptr;
+		png_infop   info = nullptr;
 
 		// Release objects.
 		[[maybe_unused]] const auto _ = scopeExit([&]()
@@ -114,7 +118,7 @@ namespace Nene
 		// Read information header.
 		::png_read_info(png, info);
 
-		::png_uint_32 width, height;
+		png_uint_32 width, height;
 		int bitDepth, colorType, interlaceType;
 
 		::png_get_IHDR(png, info, &width, &height, &bitDepth, &colorType, &interlaceType, nullptr, nullptr);
@@ -183,7 +187,7 @@ namespace Nene
 
 		for (png_uint_32 i = 0; i < height; i++)
 		{
-			rows[i] = image.dataBytes() + i * width * sizeof(Color4);
+			rows[i] = reinterpret_cast<png_bytep>(image.dataBytes()) + i * width * sizeof(Color4);
 		}
 
 		::png_read_image(png, rows.data());
@@ -194,8 +198,8 @@ namespace Nene
 
 	void PngImageFormat::encode(const Image& image, IWriter& writer)
 	{
-		::png_structp png  = nullptr;
-		::png_infop   info = nullptr;
+		png_structp png  = nullptr;
+		png_infop   info = nullptr;
 
 		try
 		{
@@ -215,8 +219,8 @@ namespace Nene
 
 
 			// Set information header.
-			const auto width           = static_cast<::png_uint_32>(image.size().width  );
-			const auto height          = static_cast<::png_uint_32>(image.size().height );
+			const auto width           = static_cast<png_uint_32>(image.size().width  );
+			const auto height          = static_cast<png_uint_32>(image.size().height );
 			const int  bitDepth        = 8;
 			const int  colorType       = PNG_COLOR_TYPE_RGBA;
 			const int  interlaceType   = PNG_INTERLACE_NONE;
@@ -229,9 +233,9 @@ namespace Nene
 			::png_write_info(png, info);
 
 			// Write image data.
-			::png_const_bytep data = image.dataBytes();
+			png_const_bytep data = reinterpret_cast<png_const_bytep>(image.dataBytes());
 
-			for (::png_uint_32 y = 0; y < height; y++)
+			for (png_uint_32 y = 0; y < height; y++)
 			{
 				::png_write_row(png, data);
 

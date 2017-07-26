@@ -33,9 +33,9 @@ namespace Nene::Compression::Zlib
 		std::vector<Byte> uncompressed(uncompressedSize);
 
 		::z_stream zs = {};
-		zs.next_in   = const_cast<Byte*>(data.data()); // Never rewrited.
+		zs.next_in   = reinterpret_cast<Bytef*>(const_cast<Byte*>(data.data())); // Never rewrited.
 		zs.avail_in  = static_cast<uInt>(data.size());
-		zs.next_out  = uncompressed.data();
+		zs.next_out  = reinterpret_cast<Bytef*>(uncompressed.data());
 		zs.avail_out = static_cast<uInt>(uncompressed.size());
 
 		if (inflateInit2(&zs, -MAX_WBITS))

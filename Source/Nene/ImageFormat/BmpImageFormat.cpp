@@ -135,7 +135,10 @@ namespace Nene
 
 	bool BmpImageFormat::isImageHeader(const std::array<Byte, 16>& header) const noexcept
 	{
-		constexpr Byte signature[2] = { 0x42, 0x4d };
+		constexpr Byte signature[2] =
+		{
+			byte(0x42), byte(0x4d),
+		};
 
 		return std::memcmp(header.data(), signature, sizeof(signature)) == 0;
 	}
