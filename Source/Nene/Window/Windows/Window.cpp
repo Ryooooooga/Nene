@@ -25,6 +25,7 @@
 #if defined(NENE_OS_WINDOWS)
 
 #include "../../Encoding.hpp"
+#include "../../Monitor.hpp"
 #include "../../Scope.hpp"
 #include "../../Exceptions/Windows/WindowsApiException.hpp"
 #include "Window.hpp"
@@ -63,6 +64,7 @@ namespace Nene::Windows
 			{
 				if (self)
 				{
+					self->closing_ = true;
 					self->event_.notify(*self, WindowEvent::closing);
 				}
 
@@ -84,6 +86,7 @@ namespace Nene::Windows
 		, className_()
 		, handle_()
 		, style_(WS_OVERLAPPEDWINDOW)
+		, closing_(false)
 	{
 		assert(size.width  >= 0);
 		assert(size.height >= 0);
@@ -117,7 +120,16 @@ namespace Nene::Windows
 		});
 
 		// Compute window size.
-		RECT rect = { 0, 0, static_cast<LONG>(size.width), static_cast<LONG>(size.height) };
+		const auto monitor = Monitor::primary();
+
+		RECT rect =
+		{
+			static_cast<LONG>(monitor->center().x - (size.width  + 1) / 2),
+			static_cast<LONG>(monitor->center().y - (size.height + 1) / 2),
+			static_cast<LONG>(monitor->center().x + (size.width  + 0) / 2),
+			static_cast<LONG>(monitor->center().y + (size.height + 0) / 2),
+		};
+
 		::AdjustWindowRect(&rect, style_, FALSE);
 
 		// Create window.
@@ -126,8 +138,8 @@ namespace Nene::Windows
 			wc.lpszClassName,
 			Encoding::toWide(title).c_str(),
 			style_,
-			0,
-			0,
+			rect.left,
+			rect.top,
 			rect.right - rect.left,
 			rect.bottom - rect.top,
 			nullptr,
@@ -156,18 +168,24 @@ namespace Nene::Windows
 		}
 	}
 
-	void Window::addObserver(const std::shared_ptr<WindowEventObserver>& observer)
+	Window& Window::addObserver(const std::shared_ptr<WindowEventObserver>& observer)
 	{
 		event_.addObserver(observer);
+
+		return *this;
 	}
 
-	void Window::removeObserver(const std::shared_ptr<WindowEventObserver>& observer)
+	Window& Window::removeObserver(const std::shared_ptr<WindowEventObserver>& observer)
 	{
 		event_.removeObserver(observer);
+
+		return *this;
 	}
 
-	void Window::update()
+	Window& Window::update()
 	{
+		closing_ = false;
+
 		MSG msg;
 
 		while (::PeekMessageW(&msg, handle_, 0, 0, PM_REMOVE))
@@ -180,6 +198,30 @@ namespace Nene::Windows
 				std::rethrow_exception(std::exchange(exception, nullptr));
 			}
 		}
+
+		return *this;
+	}
+
+	bool Window::isClosing() const
+	{
+		return closing_;
+	}
+
+	std::string Window::title() const
+	{
+		int size = ::GetWindowTextLengthW(handle_);
+		std::vector<wchar_t> text(size + 1);
+
+		::GetWindowTextW(handle_, text.data(), size + 1);
+
+		return Encoding::toUtf8(std::wstring_view { text.data(), text.size() - 1 });
+	}
+
+	Window& Window::title(const std::string& newTitle)
+	{
+		::SetWindowTextW(handle_, Encoding::toWide(newTitle).c_str());
+
+		return *this;
 	}
 }
 

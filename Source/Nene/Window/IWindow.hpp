@@ -60,23 +60,54 @@ namespace Nene
 		 *
 		 * @param[in]  observer  The weak pointer of the observer.
 		 *
+		 * @return     `*this`.
+		 *
 		 * @see        `Nene::EventObservable::addObserver()`.
 		 */
-		virtual void addObserver(const std::shared_ptr<WindowEventObserver>& observer) =0;
+		virtual IWindow& addObserver(const std::shared_ptr<WindowEventObserver>& observer) =0;
 
 		/**
 		 * @brief      Removes an window event observer.
 		 *
 		 * @param[in]  observer  The observer to remove.
 		 *
+		 * @return     `*this`.
+		 *
 		 * @see        `Nene::EventObservable::removeObserver()`.
 		 */
-		virtual void removeObserver(const std::shared_ptr<WindowEventObserver>& observer) =0;
+		virtual IWindow& removeObserver(const std::shared_ptr<WindowEventObserver>& observer) =0;
 
 		/**
 		 * @brief      Process the window message.
+		 *
+		 * @return     `*this`.
 		 */
-		virtual void update() =0;
+		virtual IWindow& update() =0;
+
+		/**
+		 * @brief      Determines if the close button has just been clicked.
+		 *
+		 * @return     `true` if the window is closing, `false` otherwise.
+		 */
+		[[nodiscard]]
+		virtual bool isClosing() const =0;
+
+		/**
+		 * @brief      Returns the window caption.
+		 *
+		 * @return     The window caption.
+		 */
+		[[nodiscard]]
+		virtual std::string title() const =0;
+
+		/**
+		 * @brief      Sets the window caption.
+		 *
+		 * @param[in]  newTitle  The new window caption.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IWindow& title(const std::string& newTitle) =0;
 	};
 }
 

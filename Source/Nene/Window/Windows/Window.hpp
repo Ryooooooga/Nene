@@ -43,8 +43,9 @@ namespace Nene::Windows
 	{
 		EventObservable<IWindow&, WindowEvent> event_;
 		std::wstring className_;
-		HWND handle_;
+		HWND  handle_;
 		DWORD style_;
+		bool  closing_;
 
 		// Window procedure.
 		static LRESULT CALLBACK procedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -66,17 +67,32 @@ namespace Nene::Windows
 		/**
 		 * @see        `Nene::IWindow::addObserver()`.
 		 */
-		void addObserver(const std::shared_ptr<WindowEventObserver>& observer) override;
+		Window& addObserver(const std::shared_ptr<WindowEventObserver>& observer) override;
 
 		/**
 		 * @see        `Nene::IWindow::removeObserver()`.
 		 */
-		void removeObserver(const std::shared_ptr<WindowEventObserver>& observer) override;
+		Window& removeObserver(const std::shared_ptr<WindowEventObserver>& observer) override;
 
 		/**
 		 * @see        `Nene::IWindow::update()`.
 		 */
-		void update() override;
+		Window& update() override;
+
+		/**
+		 * @see        `Nene::IWindow::isClosing()`.
+		 */
+		bool isClosing() const override;
+
+		/**
+		 * @see        `Nene::IWindow::title()`.
+		 */
+		std::string title() const override;
+
+		/**
+		 * @see        `Nene::IWindow::title()`.
+		 */
+		Window& title(const std::string& newTitle) override;
 	};
 }
 
