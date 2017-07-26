@@ -31,14 +31,20 @@
 
 namespace Nene
 {
+	// Forward declarations.
+	class IWindow;
+
+	/**
+	 * @brief      Window event observer type.
+	 */
+	using WindowEventObserver = IEventObserver<IWindow&, WindowEvent>;
+
 	/**
 	 * @brief      Window interface.
 	 */
 	class IWindow
 	{
 	public:
-		using observer_type = IEventObserver<IWindow&, WindowEvent>;
-
 		/**
 		 * @brief      Constructor.
 		 */
@@ -56,7 +62,7 @@ namespace Nene
 		 *
 		 * @see        `Nene::EventObservable::addObserver()`.
 		 */
-		virtual void addObserver(const std::shared_ptr<observer_type>& observer) =0;
+		virtual void addObserver(const std::shared_ptr<WindowEventObserver>& observer) =0;
 
 		/**
 		 * @brief      Removes an window event observer.
@@ -65,7 +71,7 @@ namespace Nene
 		 *
 		 * @see        `Nene::EventObservable::removeObserver()`.
 		 */
-		virtual void removeObserver(const std::shared_ptr<observer_type>& observer) =0;
+		virtual void removeObserver(const std::shared_ptr<WindowEventObserver>& observer) =0;
 
 		/**
 		 * @brief      Process the window message.

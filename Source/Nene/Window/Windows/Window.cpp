@@ -156,12 +156,12 @@ namespace Nene::Windows
 		}
 	}
 
-	void Window::addObserver(const std::shared_ptr<observer_type>& observer)
+	void Window::addObserver(const std::shared_ptr<WindowEventObserver>& observer)
 	{
 		event_.addObserver(observer);
 	}
 
-	void Window::removeObserver(const std::shared_ptr<observer_type>& observer)
+	void Window::removeObserver(const std::shared_ptr<WindowEventObserver>& observer)
 	{
 		event_.removeObserver(observer);
 	}

@@ -66,12 +66,12 @@ namespace Nene::Windows
 		/**
 		 * @see        `Nene::IWindow::addObserver()`.
 		 */
-		void addObserver(const std::shared_ptr<observer_type>& observer) override;
+		void addObserver(const std::shared_ptr<WindowEventObserver>& observer) override;
 
 		/**
 		 * @see        `Nene::IWindow::removeObserver()`.
 		 */
-		void removeObserver(const std::shared_ptr<observer_type>& observer) override;
+		void removeObserver(const std::shared_ptr<WindowEventObserver>& observer) override;
 
 		/**
 		 * @see        `Nene::IWindow::update()`.
