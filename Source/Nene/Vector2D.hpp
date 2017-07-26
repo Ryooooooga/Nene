@@ -1021,6 +1021,22 @@ namespace Nene
 		return !(a == b);
 	}
 
+	/**
+	 * @brief      Stream output operator `<<`.
+	 *
+	 * @param      stream  The output stream.
+	 * @param[in]  vector  The vector to output.
+	 *
+	 * @tparam     T       Element type.
+	 *
+	 * @return     `stream << vector`.
+	 */
+	template <typename T>
+	inline std::ostream& operator<<(std::ostream& stream, const Vector2D<T>& vector)
+	{
+		return stream << u8'(' << vector.x << u8',' << vector.y << u8')';
+	}
+
 	using Vector2Di = Vector2D<Int32>;
 	using Vector2Df = Vector2D<Float32>;
 	using Vector2Dd = Vector2D<Float64>;

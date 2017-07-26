@@ -303,6 +303,22 @@ namespace Nene
 		return !(a == b);
 	}
 
+	/**
+	 * @brief      Stream output operator `<<`.
+	 *
+	 * @param      stream  The output stream.
+	 * @param[in]  size    The size to output.
+	 *
+	 * @tparam     T       Element type.
+	 *
+	 * @return     `stream << size`.
+	 */
+	template <typename T>
+	inline std::ostream& operator<<(std::ostream& stream, const Size2D<T>& size)
+	{
+		return stream << u8'(' << size.width << u8',' << size.height << u8')';
+	}
+
 	using Size2Di = Size2D<Int32>;
 	using Size2Df = Size2D<Float32>;
 	using Size2Dd = Size2D<Float64>;
