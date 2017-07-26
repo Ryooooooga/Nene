@@ -224,7 +224,7 @@ namespace Nene
 		 * @return     The image size.
 		 */
 		[[nodiscard]]
-		const Size2Di& size() const noexcept
+		Size2Di size() const noexcept
 		{
 			return size_;
 		}

@@ -51,7 +51,7 @@ namespace Nene
 		 * @return     The device name of the monitor being used.
 		 */
 		[[nodiscard]]
-		virtual const std::string& device() const noexcept =0;
+		virtual std::string device() const noexcept =0;
 
 		/**
 		 * @brief      Returns the screen area.
@@ -59,7 +59,7 @@ namespace Nene
 		 * @return     The screen area.
 		 */
 		[[nodiscard]]
-		virtual const Rectanglei& area() const noexcept =0;
+		virtual Rectanglei area() const noexcept =0;
 
 		/**
 		 * @brief      Returns the top left coordinate of the monitor.
@@ -67,15 +67,15 @@ namespace Nene
 		 * @return     The top left coordiante.
 		 */
 		[[nodiscard]]
-		virtual const Vector2Di& position() const noexcept =0;
+		virtual Vector2Di position() const noexcept =0;
 
 		/**
-		 * @brief      Returns the size of the monitor.
+		 * @brief      Returns the center location of the monitor.
 		 *
-		 * @return     The size of the monitor.
+		 * @return     The center location of the monitor.
 		 */
 		[[nodiscard]]
-		virtual const Size2Di& size() const noexcept =0;
+		virtual Vector2Di center() const noexcept =0;
 
 		/**
 		 * @brief      Returns the width of the monitor.
@@ -92,6 +92,14 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		virtual Int32 height() const noexcept =0;
+
+		/**
+		 * @brief      Returns the size of the monitor.
+		 *
+		 * @return     The size of the monitor.
+		 */
+		[[nodiscard]]
+		virtual Size2Di size() const noexcept =0;
 
 		/**
 		 * @brief      Determines if the monitor is the primary monitor.

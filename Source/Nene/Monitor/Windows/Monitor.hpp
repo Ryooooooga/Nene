@@ -79,7 +79,7 @@ namespace Nene::Windows
 		 * @see        `Nene::IMonitor::device()`.
 		 */
 		[[nodiscard]]
-		const std::string& device() const noexcept override
+		std::string device() const noexcept override
 		{
 			return device_;
 		}
@@ -88,7 +88,7 @@ namespace Nene::Windows
 		 * @see        `Nene::IMonitor::area()`.
 		 */
 		[[nodiscard]]
-		const Rectanglei& area() const noexcept override
+		Rectanglei area() const noexcept override
 		{
 			return area_;
 		}
@@ -97,18 +97,18 @@ namespace Nene::Windows
 		 * @see        `Nene::IMonitor::position()`.
 		 */
 		[[nodiscard]]
-		const Vector2Di& position() const noexcept override
+		Vector2Di position() const noexcept override
 		{
 			return area_.position;
 		}
 
 		/**
-		 * @see        `Nene::IMonitor::size()`.
+		 * @see        `Nene::IMonitor::center()`.
 		 */
 		[[nodiscard]]
-		const Size2Di& size() const noexcept override
+		Vector2Di center() const noexcept override
 		{
-			return area_.size;
+			return area_.center();
 		}
 
 		/**
@@ -127,6 +127,15 @@ namespace Nene::Windows
 		Int32 height() const noexcept override
 		{
 			return area_.height();
+		}
+
+		/**
+		 * @see        `Nene::IMonitor::size()`.
+		 */
+		[[nodiscard]]
+		Size2Di size() const noexcept override
+		{
+			return area_.size;
 		}
 
 		/**
