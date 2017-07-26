@@ -33,6 +33,10 @@ namespace Nene
 	 */
 	enum class WindowEvent: Int32
 	{
+		sized,
+		moved,
+		maximized,
+		minimized,
 		closing,
 	};
 }

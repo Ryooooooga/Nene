@@ -101,6 +101,118 @@ namespace Nene
 		virtual std::string title() const =0;
 
 		/**
+		 * @brief      Returns the coordinate of the window client area.
+		 *
+		 * @return     The coordinate of the window client area.
+		 */
+		[[nodiscard]]
+		virtual Rectanglei area() const =0;
+
+		/**
+		 * @brief      Returns the width of the window client area.
+		 *
+		 * @return     The width of the window client area.
+		 */
+		[[nodiscard]]
+		virtual Int32 width() const =0;
+
+		/**
+		 * @brief      Returns the height of the window client area.
+		 *
+		 * @return     The height of the window client area.
+		 */
+		[[nodiscard]]
+		virtual Int32 height() const =0;
+
+		/**
+		 * @brief      Returns the size of the window client area.
+		 *
+		 * @return     The size of the window client area.
+		 */
+		[[nodiscard]]
+		virtual Size2Di size() const =0;
+
+		/**
+		 * @brief      Returns the coordinate of the window.
+		 *
+		 * @return     The coordinate of the window.
+		 */
+		[[nodiscard]]
+		virtual Rectanglei frame() const =0;
+
+		/**
+		 * @brief      Returns the window position.
+		 *
+		 * @return     The window position.
+		 */
+		[[nodiscard]]
+		virtual Vector2Di position() const =0;
+
+		/**
+		 * @brief      Returns the width of the window.
+		 *
+		 * @return     The width of the window.
+		 */
+		[[nodiscard]]
+		virtual Int32 frameWidth() const =0;
+
+		/**
+		 * @brief      Returns the height of the window.
+		 *
+		 * @return     The height of the window.
+		 */
+		[[nodiscard]]
+		virtual Int32 frameHeight() const =0;
+
+		/**
+		 * @brief      Returns the size of the window.
+		 *
+		 * @return     The size of the window.
+		 */
+		[[nodiscard]]
+		virtual Size2Di frameSize() const =0;
+
+		/**
+		 * @brief      Determines if the window has maximize box.
+		 *
+		 * @return     `true` if the window has maximize box, `false` otherwise.
+		 */
+		[[nodiscard]]
+		virtual bool hasMaximizeBox() const =0;
+
+		/**
+		 * @brief      Determines if the window has minimize box.
+		 *
+		 * @return     `true` if the window has minimize box, `false` otherwise.
+		 */
+		[[nodiscard]]
+		virtual bool hasMinimizeBox() const =0;
+
+		/**
+		 * @brief      Determines if the window is resizable.
+		 *
+		 * @return     `true` if the window is resizable, `false` otherwise.
+		 */
+		[[nodiscard]]
+		virtual bool isResizable() const =0;
+
+		/**
+		 * @brief      Determines if the window is visible.
+		 *
+		 * @return     `true` if the window is visible, `false` otherwise.
+		 */
+		[[nodiscard]]
+		virtual bool isShown() const =0;
+
+		/**
+		 * @brief      Determines if the window is not visible.
+		 *
+		 * @return     `true` if the window is not visible, `false` otherwise.
+		 */
+		[[nodiscard]]
+		virtual bool isHidden() const =0;
+
+		/**
 		 * @brief      Sets the window caption.
 		 *
 		 * @param[in]  newTitle  The new window caption.
@@ -108,6 +220,42 @@ namespace Nene
 		 * @return     `*this`.
 		 */
 		virtual IWindow& title(const std::string& newTitle) =0;
+
+		/**
+		 * @brief      Sets the maximize box enabled flag.
+		 *
+		 * @param[in]  enabled  The maximize box enabled.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IWindow& maximizeBox(bool enabled) =0;
+
+		/**
+		 * @brief      Sets the minimize box enabled flag.
+		 *
+		 * @param[in]  enabled  The minimize box enabled.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IWindow& minimizeBox(bool enabled) =0;
+
+		/**
+		 * @brief      Sets the window resizability.
+		 *
+		 * @param[in]  enabled  The window resizability.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IWindow& resizable(bool enabled) =0;
+
+		/**
+		 * @brief      Displays the window.
+		 *
+		 * @param[in]  visibility  The window visibility.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IWindow& show(bool visibility) =0;
 	};
 }
 

@@ -45,10 +45,15 @@ namespace Nene::Windows
 		, private Uncopyable
 	{
 		EventObservable<IWindow&, WindowEvent> event_;
+
 		std::wstring className_;
-		HWND  handle_;
-		DWORD style_;
-		bool  closing_;
+		std::string  title_;
+		Rectanglei   frame_;
+		Rectanglei   client_;
+		HWND         handle_;
+		DWORD        style_;
+		bool         hidden_;
+		bool         closing_;
 
 		// Window procedure.
 		static LRESULT CALLBACK procedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -85,17 +90,123 @@ namespace Nene::Windows
 		/**
 		 * @see        `Nene::IWindow::isClosing()`.
 		 */
+		[[nodiscard]]
 		bool isClosing() const override;
 
 		/**
 		 * @see        `Nene::IWindow::title()`.
 		 */
+		[[nodiscard]]
 		std::string title() const override;
+
+		/**
+		 * @see        `Nene::IWindow::area()`.
+		 */
+		[[nodiscard]]
+		Rectanglei area() const override;
+
+		/**
+		 * @see        `Nene::IWindow::width()`.
+		 */
+		[[nodiscard]]
+		Int32 width() const override;
+
+		/**
+		 * @see        `Nene::IWindow::height()`.
+		 */
+		[[nodiscard]]
+		Int32 height() const override;
+
+		/**
+		 * @see        `Nene::IWindow::size()`.
+		 */
+		[[nodiscard]]
+		Size2Di size() const override;
+
+		/**
+		 * @see        `Nene::IWindow::frame()`.
+		 */
+		[[nodiscard]]
+		Rectanglei frame() const override;
+
+		/**
+		 * @see        `Nene::IWindow::position()`.
+		 */
+		[[nodiscard]]
+		Vector2Di position() const override;
+
+		/**
+		 * @see        `Nene::IWindow::frameWidth()`.
+		 */
+		[[nodiscard]]
+		Int32 frameWidth() const override;
+
+		/**
+		 * @see        `Nene::IWindow::frameHeight()`.
+		 */
+		[[nodiscard]]
+		Int32 frameHeight() const override;
+
+		/**
+		 * @see        `Nene::IWindow::frameSize()`.
+		 */
+		[[nodiscard]]
+		Size2Di frameSize() const override;
+
+		/**
+		 * @see        `Nene::IWindow::hasMaximizeBox()`.
+		 */
+		[[nodiscard]]
+		bool hasMaximizeBox() const override;
+
+		/**
+		 * @see        `Nene::IWindow::hasMinimizeBox()`.
+		 */
+		[[nodiscard]]
+		bool hasMinimizeBox() const override;
+
+		/**
+		 * @see        `Nene::IWindow::isResizable()`.
+		 */
+		[[nodiscard]]
+		bool isResizable() const override;
+
+		/**
+		 * @see        `Nene::IWindow::isShown()`.
+		 */
+		[[nodiscard]]
+		bool isShown() const override;
+
+		/**
+		 * @see        `Nene::IWindow::isHidden()`.
+		 */
+		[[nodiscard]]
+		bool isHidden() const override;
 
 		/**
 		 * @see        `Nene::IWindow::title()`.
 		 */
 		Window& title(const std::string& newTitle) override;
+
+		/**
+		 * @see        `Nene::IWindow::maximizeBox()`.
+		 */
+		Window& maximizeBox(bool enabled) override;
+
+		/**
+		 * @see        `Nene::IWindow::minimizeBox()`.
+		 */
+		Window& minimizeBox(bool enabled) override;
+
+		/**
+		 * @see        `Nene::IWindow::resizable()`.
+		 */
+		Window& resizable(bool enabled) override;
+
+		/**
+		 * @see        `Nene::IWindow::show()`.
+		 */
+		Window& show(bool visibility) override;
 	};
 }
 

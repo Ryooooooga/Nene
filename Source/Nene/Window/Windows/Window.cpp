@@ -35,6 +35,40 @@ namespace Nene::Windows
 	namespace
 	{
 		thread_local std::exception_ptr exception;
+
+		Rectanglei frameRect(HWND hWnd)
+		{
+			RECT rect = {};
+			::GetWindowRect(hWnd, &rect);
+
+			return
+			{
+				static_cast<Int32>(rect.left   ),
+				static_cast<Int32>(rect.top    ),
+				static_cast<Int32>(rect.right  ),
+				static_cast<Int32>(rect.bottom ),
+			};
+		}
+
+		Rectanglei clientRect(HWND hWnd)
+		{
+			POINT pos = { 0, 0 };
+			RECT rect = {};
+			::ClientToScreen(hWnd, &pos);
+			::GetClientRect(hWnd, &rect);
+
+			return
+			{
+				{
+					static_cast<Int32>(pos.x),
+					static_cast<Int32>(pos.y),
+				},
+				{
+					static_cast<Int32>(rect.right),
+					static_cast<Int32>(rect.bottom),
+				},
+			};
+		}
 	}
 
 	LRESULT CALLBACK Window::procedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -70,6 +104,86 @@ namespace Nene::Windows
 
 				return 0;
 			}
+
+			case WM_PAINT:
+			{
+				HDC hDC = ::BeginPaint(hWnd, nullptr);
+				::EndPaint(hWnd, nullptr);
+
+				return 0;
+			}
+
+			case WM_SIZE:
+			{
+				if (self)
+				{
+					if (wParam == SIZE_RESTORED)
+					{
+						self->frame_  = frameRect(hWnd);
+						self->client_ = clientRect(hWnd);
+						self->event_.notify(*self, WindowEvent::sized);
+					}
+					else if (wParam == SIZE_MINIMIZED)
+					{
+						self->event_.notify(*self, WindowEvent::minimized);
+					}
+					else if (wParam == SIZE_MAXIMIZED)
+					{
+						self->frame_  = frameRect(hWnd);
+						self->client_ = clientRect(hWnd);
+						self->event_.notify(*self, WindowEvent::sized);
+						self->event_.notify(*self, WindowEvent::maximized);
+					}
+
+				}
+
+				return 0;
+			}
+
+			case WM_SHOWWINDOW:
+			{
+				if (self)
+				{
+					self->hidden_ = !wParam;
+				}
+
+				return 0;
+			}
+
+			case WM_STYLECHANGED:
+			{
+				if (self)
+				{
+					self->style_ = reinterpret_cast<const STYLESTRUCT*>(lParam)->styleNew;
+				}
+
+				return 0;
+			}
+
+			case WM_MOVE:
+			{
+				if (self)
+				{
+					const Int16 x = static_cast<Int16>(LOWORD(lParam));
+
+					if (x > -32000)
+					{
+						// Not minimized.
+						self->frame_  = frameRect(hWnd);
+						self->client_ = clientRect(hWnd);
+						self->event_.notify(*self, WindowEvent::moved);
+					}
+				}
+
+				return 0;
+			}
+
+			case WM_SETTEXT:
+			{
+				self->title_ = Encoding::toUtf8(reinterpret_cast<LPCWSTR>(lParam));
+
+				break;
+			}
 		}
 
 		return ::DefWindowProcW(hWnd, msg, wParam, lParam);
@@ -84,8 +198,12 @@ namespace Nene::Windows
 	Window::Window(std::string_view title, const Size2Di& size)
 		: event_()
 		, className_()
+		, title_(title)
+		, client_()
+		, frame_()
 		, handle_()
 		, style_(WS_OVERLAPPEDWINDOW)
+		, hidden_(true)
 		, closing_(false)
 	{
 		assert(size.width  >= 0);
@@ -136,7 +254,7 @@ namespace Nene::Windows
 		handle_ = ::CreateWindowExW(
 			0,
 			wc.lpszClassName,
-			Encoding::toWide(title).c_str(),
+			Encoding::toWide(title_).c_str(),
 			style_,
 			rect.left,
 			rect.top,
@@ -152,7 +270,8 @@ namespace Nene::Windows
 			throw WindowsApiException { ::GetLastError(), u8"Faild to create window." };
 		}
 
-		::ShowWindow(handle_, SW_SHOWNORMAL);
+		frame_  = frameRect(handle_);
+		client_ = clientRect(handle_);
 	}
 
 	Window::~Window()
@@ -207,19 +326,152 @@ namespace Nene::Windows
 		return closing_;
 	}
 
+	Rectanglei Window::area() const
+	{
+		return client_;
+	}
+
+	Int32 Window::width() const
+	{
+		return client_.width();
+	}
+
+	Int32 Window::height() const
+	{
+		return client_.height();
+	}
+
+	Size2Di Window::size() const
+	{
+		return client_.size;
+	}
+
+	Rectanglei Window::frame() const
+	{
+		return frame_;
+	}
+
+	Vector2Di Window::position() const
+	{
+		return frame_.position;
+	}
+
+	Int32 Window::frameWidth() const
+	{
+		return frame_.width();
+	}
+
+	Int32 Window::frameHeight() const
+	{
+		return frame_.height();
+	}
+
+	Size2Di Window::frameSize() const
+	{
+		return frame_.size;
+	}
+
+	bool Window::hasMaximizeBox() const
+	{
+		return !!(style_ & WS_MAXIMIZEBOX);
+	}
+
+	bool Window::hasMinimizeBox() const
+	{
+		return !!(style_ & WS_MINIMIZEBOX);
+	}
+
+	bool Window::isResizable() const
+	{
+		return !!(style_ & WS_THICKFRAME);
+	}
+
+	bool Window::isShown() const
+	{
+		return !isHidden();
+	}
+
+	bool Window::isHidden() const
+	{
+		return hidden_;
+	}
+
 	std::string Window::title() const
 	{
-		int size = ::GetWindowTextLengthW(handle_);
-		std::vector<wchar_t> text(size + 1);
-
-		::GetWindowTextW(handle_, text.data(), size + 1);
-
-		return Encoding::toUtf8(std::wstring_view { text.data(), text.size() - 1 });
+		return title_;
 	}
 
 	Window& Window::title(const std::string& newTitle)
 	{
 		::SetWindowTextW(handle_, Encoding::toWide(newTitle).c_str());
+
+		return *this;
+	}
+
+	Window& Window::maximizeBox(bool enabled)
+	{
+		if (hasMaximizeBox() != enabled)
+		{
+			UINT flags = 0;
+			flags |= SWP_NOMOVE;
+			flags |= SWP_NOSIZE;
+			flags |= SWP_NOACTIVATE;
+			flags |= SWP_NOZORDER;
+			flags |= SWP_FRAMECHANGED;
+			flags |= isShown() ? SWP_SHOWWINDOW : SWP_HIDEWINDOW;
+
+			::SetWindowLongPtrW(handle_, GWL_STYLE, style_ ^ WS_MAXIMIZEBOX);
+			::SetWindowPos(handle_, nullptr, 0, 0, 0, 0,  flags);
+		}
+
+		return *this;
+	}
+
+	Window& Window::minimizeBox(bool enabled)
+	{
+		if (hasMinimizeBox() != enabled)
+		{
+			UINT flags = 0;
+			flags |= SWP_NOMOVE;
+			flags |= SWP_NOSIZE;
+			flags |= SWP_NOACTIVATE;
+			flags |= SWP_NOZORDER;
+			flags |= SWP_FRAMECHANGED;
+			flags |= isShown() ? SWP_SHOWWINDOW : SWP_HIDEWINDOW;
+
+			::SetWindowLongPtrW(handle_, GWL_STYLE, style_ ^ WS_MINIMIZEBOX);
+			::SetWindowPos(handle_, nullptr, 0, 0, 0, 0,  flags);
+		}
+
+		return *this;
+	}
+
+	Window& Window::resizable(bool enabled)
+	{
+		if (isResizable() != enabled)
+		{
+			UINT flags = 0;
+			flags |= SWP_NOMOVE;
+			flags |= SWP_NOSIZE;
+			flags |= SWP_NOACTIVATE;
+			flags |= SWP_NOZORDER;
+			flags |= SWP_FRAMECHANGED;
+			flags |= isShown() ? SWP_SHOWWINDOW : SWP_HIDEWINDOW;
+
+			::SetWindowLongPtrW(handle_, GWL_STYLE, style_ ^ WS_THICKFRAME);
+			::SetWindowPos(handle_, nullptr, 0, 0, 0, 0,  flags);
+		}
+
+		return *this;
+	}
+
+	Window& Window::show(bool visibility)
+	{
+		if (visibility != isShown())
+		{
+			// TODO: Maximize/Minimize
+			::ShowWindow(handle_, visibility ? SW_SHOWNA : SW_HIDE);
+		}
 
 		return *this;
 	}
