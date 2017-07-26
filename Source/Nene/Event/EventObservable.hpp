@@ -26,13 +26,10 @@
 
 #include <algorithm>
 #include <vector>
+#include "EventObserver.hpp"
 
 namespace Nene
 {
-	// Forward declarations.
-	template <typename... Args>
-	class IEventObserver;
-
 	/**
 	 * @brief      Event subject.
 	 *
