@@ -142,7 +142,7 @@ namespace Nene
 
 	Image BmpImageFormat::decode(IReader& reader)
 	{
-		Serialization::BinaryDeserializer archive {std::move(reader)};
+		Serialization::BinaryDeserializer archive { reader, Endian::Order::little };
 
 		// Read file header.
 		BITMAPFILEHEADER fileHeader;
@@ -249,7 +249,7 @@ namespace Nene
 
 	void BmpImageFormat::encode(const Image& image, IWriter& writer)
 	{
-		Serialization::BinarySerializer archive {std::move(writer)};
+		Serialization::BinarySerializer archive { writer, Endian::Order::little };
 
 		archive.serialize(BITMAPFILEHEADER
 		{
