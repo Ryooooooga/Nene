@@ -266,8 +266,8 @@ namespace Nene
 		archive.serialize(BITMAPINFOHEADER
 		{
 			/*.headerSize     =*/40,
-			/*.width          =*/image.size().width,
-			/*.height         =*/image.size().height,
+			/*.width          =*/image.width(),
+			/*.height         =*/image.height(),
 			/*.bitPlanes      =*/1,
 			/*.bitCount       =*/32,
 			/*.compression    =*/0,
@@ -278,11 +278,11 @@ namespace Nene
 			/*.colorImportant =*/0,
 		});
 
-		for (Int32 y = image.size().height - 1; y >= 0; y--)
+		for (Int32 y = image.height() - 1; y >= 0; y--)
 		{
-			for (Int32 x = 0; x < image.size().width; x++)
+			for (Int32 x = 0; x < image.width(); x++)
 			{
-				const std::size_t i = static_cast<std::size_t>(x + y * image.size().width);
+				const std::size_t i = static_cast<std::size_t>(x + y * image.width());
 
 				archive
 					.serialize(image.data()[i].blue)

@@ -197,6 +197,28 @@ namespace Nene
 		}
 
 		/**
+		 * @brief      Returns the image width.
+		 *
+		 * @return     The image width.
+		 */
+		[[nodiscard]]
+		Int32 width() const noexcept
+		{
+			return size_.width;
+		}
+
+		/**
+		 * @brief      Returns the image height.
+		 *
+		 * @return     The image height.
+		 */
+		[[nodiscard]]
+		Int32 height() const noexcept
+		{
+			return size_.height;
+		}
+
+		/**
 		 * @brief      Returns the image size.
 		 *
 		 * @return     The image size.

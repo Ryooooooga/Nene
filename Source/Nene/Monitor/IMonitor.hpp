@@ -78,6 +78,22 @@ namespace Nene
 		virtual const Size2Di& size() const noexcept =0;
 
 		/**
+		 * @brief      Returns the width of the monitor.
+		 *
+		 * @return     The width of the monitor.
+		 */
+		[[nodiscard]]
+		virtual Int32 width() const noexcept =0;
+
+		/**
+		 * @brief      Returns the height of the monitor.
+		 *
+		 * @return     The height of the monitor.
+		 */
+		[[nodiscard]]
+		virtual Int32 height() const noexcept =0;
+
+		/**
 		 * @brief      Determines if the monitor is the primary monitor.
 		 *
 		 * @return     `true` if the primary monitor, `false` otherwise.

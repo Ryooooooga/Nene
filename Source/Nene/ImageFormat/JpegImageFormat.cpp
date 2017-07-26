@@ -280,8 +280,8 @@ namespace Nene
 		dest->writer                   = &writer;
 
 		// Compress data.
-		cinfo.image_width      = image.size().width;
-		cinfo.image_height     = image.size().height;
+		cinfo.image_width      = image.width();
+		cinfo.image_height     = image.height();
 		cinfo.in_color_space   = JCS_RGB;
 		cinfo.input_components = 3;
 

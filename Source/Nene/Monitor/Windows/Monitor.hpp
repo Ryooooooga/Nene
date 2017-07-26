@@ -79,7 +79,7 @@ namespace Nene::Windows
 		 * @see        `Nene::IMonitor::device()`.
 		 */
 		[[nodiscard]]
-		const std::string& device() const noexcept
+		const std::string& device() const noexcept override
 		{
 			return device_;
 		}
@@ -88,7 +88,7 @@ namespace Nene::Windows
 		 * @see        `Nene::IMonitor::area()`.
 		 */
 		[[nodiscard]]
-		const Rectanglei& area() const noexcept
+		const Rectanglei& area() const noexcept override
 		{
 			return area_;
 		}
@@ -97,7 +97,7 @@ namespace Nene::Windows
 		 * @see        `Nene::IMonitor::position()`.
 		 */
 		[[nodiscard]]
-		const Vector2Di& position() const noexcept
+		const Vector2Di& position() const noexcept override
 		{
 			return area_.position;
 		}
@@ -106,16 +106,34 @@ namespace Nene::Windows
 		 * @see        `Nene::IMonitor::size()`.
 		 */
 		[[nodiscard]]
-		const Size2Di& size() const noexcept
+		const Size2Di& size() const noexcept override
 		{
 			return area_.size;
+		}
+
+		/**
+		 * @see        `Nene::IMonitor::width()`.
+		 */
+		[[nodiscard]]
+		Int32 width() const noexcept override
+		{
+			return area_.width();
+		}
+
+		/**
+		 * @see        `Nene::IMonitor::height()`.
+		 */
+		[[nodiscard]]
+		Int32 height() const noexcept override
+		{
+			return area_.height();
 		}
 
 		/**
 		 * @see        `Nene::IMonitor::isPrimary()`.
 		 */
 		[[nodiscard]]
-		bool isPrimary() const noexcept
+		bool isPrimary() const noexcept override
 		{
 			return primary_;
 		}

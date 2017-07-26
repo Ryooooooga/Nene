@@ -219,8 +219,8 @@ namespace Nene
 
 
 			// Set information header.
-			const auto width           = static_cast<png_uint_32>(image.size().width  );
-			const auto height          = static_cast<png_uint_32>(image.size().height );
+			const auto width           = static_cast<png_uint_32>(image.width()  );
+			const auto height          = static_cast<png_uint_32>(image.height() );
 			const int  bitDepth        = 8;
 			const int  colorType       = PNG_COLOR_TYPE_RGBA;
 			const int  interlaceType   = PNG_INTERLACE_NONE;

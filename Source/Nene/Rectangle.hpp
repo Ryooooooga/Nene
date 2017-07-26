@@ -125,6 +125,28 @@ namespace Nene
 		}
 
 		/**
+		 * @brief      Returns the width.
+		 *
+		 * @return     The width.
+		 */
+		[[nodiscard]]
+		constexpr T width() const noexcept
+		{
+			return size.width;
+		}
+
+		/**
+		 * @brief      Returns the height.
+		 *
+		 * @return     The height.
+		 */
+		[[nodiscard]]
+		constexpr T height() const noexcept
+		{
+			return size.height;
+		}
+
+		/**
 		 * @brief      Returns the top left location.
 		 *
 		 * @return     The top left location.
