@@ -21,66 +21,58 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_EXCEPTIONS_WINDOWS_DIRECTXEXCEPTION_HPP
-#define INCLUDE_NENE_EXCEPTIONS_WINDOWS_DIRECTXEXCEPTION_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_SCREEN_HPP
+#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_SCREEN_HPP
 
-#include "../../Platform.hpp"
+#include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include "WindowsApiException.hpp"
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+
+#include <memory>
+#include <d3d11.h>
+#include <wrl/client.h>
+#include "../../../Uncopyable.hpp"
+#include "../../IScreen.hpp"
+
+#include "../../../Size2D.hpp" // TODO: include dependencies.
 
 namespace Nene::Windows
 {
+	// Forward declarations.
+	class Window;
+}
+
+namespace Nene::Windows::Direct3D11
+{
 	/**
-	 * @brief      Exception for signaling DirectX errors.
+	 * @brief      Direct3D11 screen implementation.
 	 */
-	class DirectXException
-		: public WindowsApiException
+	class Screen final
+		: public  IScreen
+		, private Uncopyable
 	{
+		Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain_;
+		std::shared_ptr<Window> window_;
+
 	public:
 		/**
 		 * @brief      Constructor.
 		 *
-		 * @param[in]  errorCode  Error code.
-		 * @param[in]  message    Error message.
+		 * @param[in]  device  Direct3D11 device.
+		 * @param[in]  window  The render target window.
+		 * @param[in]  size    The screen size.
 		 */
-		explicit DirectXException(HRESULT errorCode, std::string_view message)
-			: WindowsApiException(static_cast<DWORD>(errorCode), message) {}
+		explicit Screen(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::shared_ptr<Window>& window, const Size2Di& size);
 
 		/**
 		 * @brief      Destructor.
 		 */
-		virtual ~DirectXException() =default;
+		~Screen() =default;
 	};
-
-	/**
-	 * @brief      Throws error when the given code represents error.
-	 *
-	 * @param[in]  result        The result code.
-	 * @param[in]  errorMessage  The error message or generator function.
-	 *
-	 * @tparam     String        `std::string_view` or `() -> std::string`.
-	 */
-	template <typename String>
-	inline std::enable_if_t<std::is_function_v<String>> throwIfFailed(HRESULT result, const String& errorMessage)
-	{
-		if (FAILED(result))
-		{
-			throw DirectXException { result, errorMessage() };
-		}
-	}
-	
-	template <typename String>
-	inline std::enable_if_t<!std::is_function_v<String>> throwIfFailed(HRESULT result, const String& errorMessage)
-	{
-		if (FAILED(result))
-		{
-			throw DirectXException { result, errorMessage };
-		}
-	}
 }
 
 #endif
 
-#endif  // #ifndef INCLUDE_NENE_EXCEPTIONS_WINDOWS_DIRECTXEXCEPTION_HPP
-
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_SCREEN_HPP
