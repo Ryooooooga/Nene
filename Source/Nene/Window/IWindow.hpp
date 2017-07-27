@@ -32,6 +32,7 @@
 namespace Nene
 {
 	// Forward declarations.
+	class IMonitor;
 	class IWindow;
 
 	/**
@@ -213,6 +214,14 @@ namespace Nene
 		virtual bool isHidden() const =0;
 
 		/**
+		 * @brief      Determines if the window is active.
+		 *
+		 * @return     `true` if the window is active, `false` otherwise.
+		 */
+		[[nodiscard]]
+		virtual bool isActive() const =0;
+
+		/**
 		 * @brief      Determines if the window is maximized.
 		 *
 		 * @return     `true` if the window is maximized, `false` otherwise.
@@ -229,12 +238,20 @@ namespace Nene
 		virtual bool isMinimized() const =0;
 
 		/**
-		 * @brief      Determines if the window is active.
+		 * @brief      Determines if the window is fullscreen.
 		 *
-		 * @return     `true` if the window is active, `false` otherwise.
+		 * @return     `true` if the window is fullscreen, `false` otherwise.
 		 */
 		[[nodiscard]]
-		virtual bool isActive() const =0;
+		virtual bool isFullscreen() const =0;
+
+		/**
+		 * @brief      Returns the monitor.
+		 *
+		 * @return     The monitor for the fullscreen.
+		 */
+		[[nodiscard]]
+		virtual const IMonitor& monitor() const =0;
 
 		/**
 		 * @brief      Sets the window caption.
@@ -303,6 +320,24 @@ namespace Nene
 		 * @return     `*this`.
 		 */
 		virtual IWindow& minimize() =0;
+
+		/**
+		 * @brief      Sets window fullscreen.
+		 *
+		 * @param[in]  fullscreen  `true` if the window makes fullscreen.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IWindow& setFullscreen(bool fullscreen) =0;
+
+		/**
+		 * @brief      Sets the monitor for the fullscreen window.
+		 *
+		 * @param      newMonitor  Monitor to set. primary monitor if `newMonitor` is `nullptr`.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IWindow& monitor(std::unique_ptr<IMonitor>&& newMonitor) =0;
 	};
 }
 

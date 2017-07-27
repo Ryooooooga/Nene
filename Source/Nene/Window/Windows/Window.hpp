@@ -50,14 +50,18 @@ namespace Nene::Windows
 		};
 
 		EventObservable<IWindow&, WindowEvent> event_;
+		std::unique_ptr<IMonitor> monitor_;
 		std::wstring className_;
 		std::string  title_;
 		Rectanglei   frame_;
 		Rectanglei   client_;
+		Rectanglei   frameWindowed_;
 		State        state_;
 		HWND         handle_;
 		DWORD        style_;
+		DWORD        styleWindowed_;
 		bool         hidden_;
+		bool         fullscreen_;
 		bool         closing_;
 
 		// Window procedure.
@@ -159,6 +163,12 @@ namespace Nene::Windows
 		Size2Di frameSize() const override;
 
 		/**
+		 * @see        `Nene::IWindow::monitor()`.
+		 */
+		[[nodiscard]]
+		const IMonitor& monitor() const override;
+
+		/**
 		 * @see        `Nene::IWindow::hasMaximizeBox()`.
 		 */
 		[[nodiscard]]
@@ -189,6 +199,12 @@ namespace Nene::Windows
 		bool isHidden() const override;
 
 		/**
+		 * @see        `Nene::IWindow::isActive()`.
+		 */
+		[[nodiscard]]
+		bool isActive() const override;
+
+		/**
 		 * @see        `Nene::IWindow::isMaximized()`.
 		 */
 		[[nodiscard]]
@@ -201,10 +217,10 @@ namespace Nene::Windows
 		bool isMinimized() const override;
 
 		/**
-		 * @see        `Nene::IWindow::isActive()`.
+		 * @see        `Nene::IWindow::isFullscreen()`.
 		 */
 		[[nodiscard]]
-		bool isActive() const override;
+		bool isFullscreen() const override;
 
 		/**
 		 * @see        `Nene::IWindow::title()`.
@@ -245,6 +261,16 @@ namespace Nene::Windows
 		 * @see        `Nene::IWindow::minimize()`.
 		 */
 		Window& minimize() override;
+
+		/**
+		 * @see        `Nene::IWindow::setFullscreen()`.
+		 */
+		Window& setFullscreen(bool fullscreen) override;
+
+		/**
+		 * @see        `Nene::IWindow::monitor()`.
+		 */
+		Window& monitor(std::unique_ptr<IMonitor>&& newMonitor) override;
 	};
 }
 

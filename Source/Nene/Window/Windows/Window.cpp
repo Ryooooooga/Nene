@@ -204,18 +204,25 @@ namespace Nene::Windows
 
 	Window::Window(std::string_view title, const Size2Di& size)
 		: event_()
+		, monitor_()
 		, className_()
 		, title_(title)
 		, client_()
 		, frame_()
+		, frameWindowed_()
 		, handle_()
 		, style_(WS_OVERLAPPEDWINDOW)
+		, styleWindowed_()
 		, state_(State::normal)
 		, hidden_(true)
+		, fullscreen_(false)
 		, closing_(false)
 	{
 		assert(size.width  >= 0);
 		assert(size.height >= 0);
+
+		// Get primary monitor.
+		monitor_ = Monitor::primary();
 
 		// Register class.
 		className_ = fmt::format(L"Nene:{}", static_cast<const void*>(this));
@@ -246,14 +253,12 @@ namespace Nene::Windows
 		});
 
 		// Compute window size.
-		const auto monitor = Monitor::primary();
-
 		RECT rect =
 		{
-			static_cast<LONG>(monitor->center().x - (size.width  + 1) / 2),
-			static_cast<LONG>(monitor->center().y - (size.height + 1) / 2),
-			static_cast<LONG>(monitor->center().x + (size.width  + 0) / 2),
-			static_cast<LONG>(monitor->center().y + (size.height + 0) / 2),
+			static_cast<LONG>(monitor_->center().x - (size.width  + 1) / 2),
+			static_cast<LONG>(monitor_->center().y - (size.height + 1) / 2),
+			static_cast<LONG>(monitor_->center().x + (size.width  + 0) / 2),
+			static_cast<LONG>(monitor_->center().y + (size.height + 0) / 2),
 		};
 
 		::AdjustWindowRect(&rect, style_, FALSE);
@@ -383,17 +388,17 @@ namespace Nene::Windows
 
 	bool Window::hasMaximizeBox() const
 	{
-		return !!(style_ & WS_MAXIMIZEBOX);
+		return !!((fullscreen_ ? styleWindowed_ : style_) & WS_MAXIMIZEBOX);
 	}
 
 	bool Window::hasMinimizeBox() const
 	{
-		return !!(style_ & WS_MINIMIZEBOX);
+		return !!((fullscreen_ ? styleWindowed_ : style_) & WS_MINIMIZEBOX);
 	}
 
 	bool Window::isResizable() const
 	{
-		return !!(style_ & WS_THICKFRAME);
+		return !!((fullscreen_ ? styleWindowed_ : style_) & WS_THICKFRAME);
 	}
 
 	bool Window::isShown() const
@@ -406,6 +411,11 @@ namespace Nene::Windows
 		return hidden_;
 	}
 
+	bool Window::isActive() const
+	{
+		return handle_ == ::GetActiveWindow();
+	}
+
 	bool Window::isMaximized() const
 	{
 		return state_ == State::maximized;
@@ -416,14 +426,19 @@ namespace Nene::Windows
 		return state_ == State::minimized;
 	}
 
-	bool Window::isActive() const
-	{
-		return handle_ == ::GetActiveWindow();
-	}
-
 	std::string Window::title() const
 	{
 		return title_;
+	}
+
+	bool Window::isFullscreen() const
+	{
+		return fullscreen_;
+	}
+
+	const IMonitor& Window::monitor() const
+	{
+		return *monitor_;
 	}
 
 	Window& Window::title(const std::string& newTitle)
@@ -435,6 +450,14 @@ namespace Nene::Windows
 
 	Window& Window::maximizeBox(bool enabled)
 	{
+		if (fullscreen_)
+		{
+			styleWindowed_ &= ~WS_MAXIMIZEBOX;
+			styleWindowed_ |= enabled ? WS_MAXIMIZEBOX : 0;
+
+			return *this;
+		}
+
 		if (hasMaximizeBox() != enabled)
 		{
 			UINT flags = 0;
@@ -454,6 +477,14 @@ namespace Nene::Windows
 
 	Window& Window::minimizeBox(bool enabled)
 	{
+		if (fullscreen_)
+		{
+			styleWindowed_ &= ~WS_MINIMIZEBOX;
+			styleWindowed_ |= enabled ? WS_MINIMIZEBOX : 0;
+
+			return *this;
+		}
+
 		if (hasMinimizeBox() != enabled)
 		{
 			UINT flags = 0;
@@ -473,6 +504,14 @@ namespace Nene::Windows
 
 	Window& Window::resizable(bool enabled)
 	{
+		if (fullscreen_)
+		{
+			styleWindowed_ &= ~WS_THICKFRAME;
+			styleWindowed_ |= enabled ? WS_THICKFRAME : 0;
+
+			return *this;
+		}
+
 		if (isResizable() != enabled)
 		{
 			UINT flags = 0;
@@ -500,6 +539,13 @@ namespace Nene::Windows
 		if (visibility)
 		{
 			// Show window.
+			if (fullscreen_)
+			{
+				::ShowWindow(handle_, SW_SHOWNA);
+
+				return *this;
+			}
+
 			switch (state_)
 			{
 				case State::normal:
@@ -529,7 +575,7 @@ namespace Nene::Windows
 	Window& Window::activate(bool activity)
 	{
 		::SetActiveWindow(activity ? handle_ : nullptr);
-		
+
 		return *this;
 	}
 
@@ -567,6 +613,51 @@ namespace Nene::Windows
 		{
 			state_ = State::minimized;
 		}
+
+		return *this;
+	}
+
+	Window& Window::setFullscreen(bool fullscreen)
+	{
+		if (fullscreen_ == fullscreen)
+		{
+			return *this;
+		}
+
+		if (fullscreen)
+		{
+			fullscreen_ = true;
+
+			// Save window state.
+			frameWindowed_ = frame_;
+			styleWindowed_ = style_;
+
+			UINT flags = 0;
+			flags |= SWP_FRAMECHANGED;
+			flags |= isShown() ? SWP_SHOWWINDOW : SWP_HIDEWINDOW;
+
+			::SetWindowLongPtrW(handle_, GWL_STYLE, WS_OVERLAPPED);
+			::SetWindowPos(handle_, HWND_TOP, monitor_->position().x, monitor_->position().y, monitor_->width(), monitor_->height(), flags);
+		}
+		else
+		{
+			fullscreen_ = false;
+
+			// Restore window state.
+			UINT flags = 0;
+			flags |= SWP_FRAMECHANGED;
+			flags |= isShown() ? SWP_SHOWWINDOW : SWP_HIDEWINDOW;
+
+			::SetWindowLongPtrW(handle_, GWL_STYLE, styleWindowed_);
+			::SetWindowPos(handle_, HWND_TOP, frameWindowed_.position.x, frameWindowed_.position.y, frameWindowed_.width(), frameWindowed_.height(), flags);
+		}
+
+		return *this;
+	}
+
+	Window& Window::monitor(std::unique_ptr<IMonitor>&& monitor)
+	{
+		monitor_ = monitor ? std::move(monitor) : Monitor::primary();
 
 		return *this;
 	}
