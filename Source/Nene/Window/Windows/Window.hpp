@@ -271,6 +271,14 @@ namespace Nene::Windows
 		 * @see        `Nene::IWindow::monitor()`.
 		 */
 		Window& monitor(std::unique_ptr<IMonitor>&& newMonitor) override;
+
+		/**
+		 * @brief      Returns the window handle.
+		 *
+		 * @return     The window handle.
+		 */
+		[[nodiscard]]
+		HWND handle() const noexcept;
 	};
 }
 

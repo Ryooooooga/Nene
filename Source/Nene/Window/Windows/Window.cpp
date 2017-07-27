@@ -661,6 +661,11 @@ namespace Nene::Windows
 
 		return *this;
 	}
+
+	HWND Window::handle() const noexcept
+	{
+		return handle_;
+	}
 }
 
 #endif
