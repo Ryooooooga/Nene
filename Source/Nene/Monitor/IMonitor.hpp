@@ -25,7 +25,7 @@
 #define INCLUDE_NENE_MONITOR_IMONITOR_HPP
 
 #include <string>
-#include "../Rectangle.hpp"
+#include "../Geometry/Rectangle.hpp"
 
 namespace Nene
 {

@@ -25,7 +25,7 @@
 #define INCLUDE_NENE_WINDOW_IWINDOW_HPP
 
 #include <memory>
-#include "../Rectangle.hpp"
+#include "../Geometry/Rectangle.hpp"
 #include "../Event/IEventObserver.hpp"
 #include "WindowEvent.hpp"
 

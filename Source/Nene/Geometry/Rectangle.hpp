@@ -24,8 +24,8 @@
 #ifndef INCLUDE_NENE_RECTANGLE_HPP
 #define INCLUDE_NENE_RECTANGLE_HPP
 
-#include "Vector2D.hpp"
-#include "Size2D.hpp"
+#include "../Vector2D.hpp"
+#include "../Size2D.hpp"
 
 namespace Nene
 {
