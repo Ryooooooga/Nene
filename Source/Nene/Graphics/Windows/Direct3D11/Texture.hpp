@@ -53,8 +53,19 @@ namespace Nene::Windows::Direct3D11
 	public:
 		/**
 		 * @brief      Constructor.
+		 *
+		 * @param[in]  texture  Direct3D11 texture.
 		 */
 		explicit Texture(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture);
+
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  device   Direct3D11 device.
+		 * @param[in]  image    The source image.
+		 * @param[in]  dynamic  `true` if using as a render target texture.
+		 */
+		explicit Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Image& image, bool dynamic);
 
 		/**
 		 * @brief      Destructor.

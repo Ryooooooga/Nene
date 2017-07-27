@@ -24,7 +24,7 @@
 #ifndef INCLUDE_NENE_GRAPHICS_ITEXTURE_HPP
 #define INCLUDE_NENE_GRAPHICS_ITEXTURE_HPP
 
-#include "../Size2D.hpp"
+#include "../Image.hpp"
 
 namespace Nene
 {

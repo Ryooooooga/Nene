@@ -69,6 +69,11 @@ namespace Nene::Windows::Direct3D11
 		 * @see        `Nene::IGraphics::screen()`.
 		 */
 		std::shared_ptr<IScreen> screen(const std::shared_ptr<IWindow>& window, const Size2Di& size) override;
+
+		/**
+		 * @see        `Nene::IGraphics::texture()`.
+		 */
+		std::shared_ptr<ITexture> texture(const Image& image) override;
 	};
 }
 

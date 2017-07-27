@@ -35,6 +35,7 @@
 #include "../../../Window/Windows/Window.hpp"
 #include "Graphics.hpp"
 #include "Screen.hpp"
+#include "Texture.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
@@ -108,6 +109,11 @@ namespace Nene::Windows::Direct3D11
 		return window_Windows
 			? std::make_shared<Screen>(device_, window_Windows, size)
 			: throw EngineException { u8"Window must be a Windows API window." };
+	}
+
+	std::shared_ptr<ITexture> Graphics::texture(const Image& image)
+	{
+		return std::make_shared<Texture>(device_, image, false);
 	}
 }
 

@@ -30,7 +30,9 @@
 namespace Nene
 {
 	// Forward declarations.
+	class Image;
 	class IScreen;
+	class ITexture;
 	class IWindow;
 
 	/**
@@ -69,6 +71,16 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		virtual std::shared_ptr<IScreen> screen(const std::shared_ptr<IWindow>& window, const Size2Di& size) =0;
+
+		/**
+		 * @brief      Creates the texture from images.
+		 *
+		 * @param[in]  image  The source image.
+		 *
+		 * @return     The texture instance.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<ITexture> texture(const Image& image) =0;
 	};
 }
 
