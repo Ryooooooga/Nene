@@ -99,6 +99,7 @@ namespace Nene::Windows
 				if (self)
 				{
 					self->closing_ = true;
+
 					self->event_.notify(*self, WindowEvent::closing);
 				}
 
@@ -121,16 +122,22 @@ namespace Nene::Windows
 					{
 						self->frame_  = frameRect(hWnd);
 						self->client_ = clientRect(hWnd);
+						self->state_  = State::normal;
+
 						self->event_.notify(*self, WindowEvent::sized);
 					}
 					else if (wParam == SIZE_MINIMIZED)
 					{
+						self->state_ = State::minimized;
+
 						self->event_.notify(*self, WindowEvent::minimized);
 					}
 					else if (wParam == SIZE_MAXIMIZED)
 					{
 						self->frame_  = frameRect(hWnd);
 						self->client_ = clientRect(hWnd);
+						self->state_  = State::maximized;
+
 						self->event_.notify(*self, WindowEvent::sized);
 						self->event_.notify(*self, WindowEvent::maximized);
 					}
@@ -203,6 +210,7 @@ namespace Nene::Windows
 		, frame_()
 		, handle_()
 		, style_(WS_OVERLAPPEDWINDOW)
+		, state_(State::normal)
 		, hidden_(true)
 		, closing_(false)
 	{
@@ -272,6 +280,8 @@ namespace Nene::Windows
 
 		frame_  = frameRect(handle_);
 		client_ = clientRect(handle_);
+
+		activate(true);
 	}
 
 	Window::~Window()
@@ -396,6 +406,21 @@ namespace Nene::Windows
 		return hidden_;
 	}
 
+	bool Window::isMaximized() const
+	{
+		return state_ == State::maximized;
+	}
+
+	bool Window::isMinimized() const
+	{
+		return state_ == State::minimized;
+	}
+
+	bool Window::isActive() const
+	{
+		return handle_ == ::GetActiveWindow();
+	}
+
 	std::string Window::title() const
 	{
 		return title_;
@@ -467,10 +492,80 @@ namespace Nene::Windows
 
 	Window& Window::show(bool visibility)
 	{
-		if (visibility != isShown())
+		if (visibility == isShown())
 		{
-			// TODO: Maximize/Minimize
-			::ShowWindow(handle_, visibility ? SW_SHOWNA : SW_HIDE);
+			return *this;
+		}
+
+		if (visibility)
+		{
+			// Show window.
+			switch (state_)
+			{
+				case State::normal:
+					::ShowWindow(handle_, SW_SHOWNA);
+					break;
+
+				case State::maximized:
+					::ShowWindow(handle_, SW_SHOWNA);
+					::ShowWindow(handle_, SW_MAXIMIZE);
+					break;
+
+				case State::minimized:
+					::ShowWindow(handle_, SW_SHOWNA);
+					::ShowWindow(handle_, SW_MINIMIZE);
+					break;
+			}
+		}
+		else
+		{
+			// Hide window.
+			::ShowWindow(handle_, SW_HIDE);
+		}
+
+		return *this;
+	}
+
+	Window& Window::activate(bool activity)
+	{
+		::SetActiveWindow(activity ? handle_ : nullptr);
+		
+		return *this;
+	}
+
+	Window& Window::maximize()
+	{
+		if (state_ == State::maximized)
+		{
+			return *this;
+		}
+
+		if (!hidden_)
+		{
+			::ShowWindow(handle_, SW_MAXIMIZE);
+		}
+		else
+		{
+			state_ = State::maximized;
+		}
+
+		return *this;
+	}
+
+	Window& Window::minimize()
+	{
+		if (state_ == State::minimized)
+		{
+			return *this;
+		}
+
+		if (!hidden_)
+		{
+			::ShowWindow(handle_, SW_MINIMIZE);
+		}
+		else
+		{
+			state_ = State::minimized;
 		}
 
 		return *this;

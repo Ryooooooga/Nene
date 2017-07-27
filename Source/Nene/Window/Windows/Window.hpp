@@ -44,12 +44,17 @@ namespace Nene::Windows
 		: public  IWindow
 		, private Uncopyable
 	{
-		EventObservable<IWindow&, WindowEvent> event_;
+		enum State
+		{
+			normal, maximized, minimized,
+		};
 
+		EventObservable<IWindow&, WindowEvent> event_;
 		std::wstring className_;
 		std::string  title_;
 		Rectanglei   frame_;
 		Rectanglei   client_;
+		State        state_;
 		HWND         handle_;
 		DWORD        style_;
 		bool         hidden_;
@@ -184,6 +189,24 @@ namespace Nene::Windows
 		bool isHidden() const override;
 
 		/**
+		 * @see        `Nene::IWindow::isMaximized()`.
+		 */
+		[[nodiscard]]
+		bool isMaximized() const override;
+
+		/**
+		 * @see        `Nene::IWindow::isMinimized()`.
+		 */
+		[[nodiscard]]
+		bool isMinimized() const override;
+
+		/**
+		 * @see        `Nene::IWindow::isActive()`.
+		 */
+		[[nodiscard]]
+		bool isActive() const override;
+
+		/**
 		 * @see        `Nene::IWindow::title()`.
 		 */
 		Window& title(const std::string& newTitle) override;
@@ -207,6 +230,21 @@ namespace Nene::Windows
 		 * @see        `Nene::IWindow::show()`.
 		 */
 		Window& show(bool visibility) override;
+
+		/**
+		 * @see        `Nene::IWindow::activate()`.
+		 */
+		Window& activate(bool activity) override;
+
+		/**
+		 * @see        `Nene::IWindow::maximize()`.
+		 */
+		Window& maximize() override;
+
+		/**
+		 * @see        `Nene::IWindow::minimize()`.
+		 */
+		Window& minimize() override;
 	};
 }
 

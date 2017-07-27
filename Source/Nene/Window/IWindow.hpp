@@ -207,10 +207,34 @@ namespace Nene
 		/**
 		 * @brief      Determines if the window is not visible.
 		 *
-		 * @return     `true` if the window is not visible, `false` otherwise.
+		 * @return     `true` if the window is hidden, `false` otherwise.
 		 */
 		[[nodiscard]]
 		virtual bool isHidden() const =0;
+
+		/**
+		 * @brief      Determines if the window is maximized.
+		 *
+		 * @return     `true` if the window is maximized, `false` otherwise.
+		 */
+		[[nodiscard]]
+		virtual bool isMaximized() const =0;
+
+		/**
+		 * @brief      Determines if the window is minimized.
+		 *
+		 * @return     `true` if the window is minimized, `false` otherwise.
+		 */
+		[[nodiscard]]
+		virtual bool isMinimized() const =0;
+
+		/**
+		 * @brief      Determines if the window is active.
+		 *
+		 * @return     `true` if the window is active, `false` otherwise.
+		 */
+		[[nodiscard]]
+		virtual bool isActive() const =0;
 
 		/**
 		 * @brief      Sets the window caption.
@@ -256,6 +280,29 @@ namespace Nene
 		 * @return     `*this`.
 		 */
 		virtual IWindow& show(bool visibility) =0;
+
+		/**
+		 * @brief      Activates the window.
+		 *
+		 * @param[in]  activity  `true` if activate.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IWindow& activate(bool activity) =0;
+
+		/**
+		 * @brief      Maximizes the window.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IWindow& maximize() =0;
+
+		/**
+		 * @brief      Minimizes the window.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IWindow& minimize() =0;
 	};
 }
 
