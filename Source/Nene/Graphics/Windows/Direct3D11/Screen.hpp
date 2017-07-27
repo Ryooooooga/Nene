@@ -46,6 +46,9 @@ namespace Nene::Windows
 
 namespace Nene::Windows::Direct3D11
 {
+	// Forward declarations.
+	class DynamicTexture;
+
 	/**
 	 * @brief      Direct3D11 screen implementation.
 	 */
@@ -54,7 +57,9 @@ namespace Nene::Windows::Direct3D11
 		, private Uncopyable
 	{
 		Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain_;
-		std::shared_ptr<Window> window_;
+
+		std::shared_ptr<Window>         window_;
+		std::shared_ptr<DynamicTexture> renderTarget_;
 
 	public:
 		/**

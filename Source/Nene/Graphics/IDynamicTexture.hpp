@@ -21,53 +21,30 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_ITEXTURE_HPP
-#define INCLUDE_NENE_GRAPHICS_ITEXTURE_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_IDYNAMICTEXTURE_HPP
+#define INCLUDE_NENE_GRAPHICS_IDYNAMICTEXTURE_HPP
 
-#include "../Image.hpp"
+#include "ITexture.hpp"
 
 namespace Nene
 {
 	/**
-	 * @brief      Texture interface.
+	 * @brief      Dynamic texture interface.
 	 */
-	class ITexture
+	class IDynamicTexture
+		: public ITexture
 	{
 	public:
 		/**
 		 * @brief      Constructor.
 		 */
-		ITexture() noexcept =default;
+		IDynamicTexture() noexcept =default;
 
 		/**
 		 * @brief      Destructor.
 		 */
-		virtual ~ITexture() =default;
-
-		/**
-		 * @brief      Returns the width of the texture.
-		 *
-		 * @return     The width of the texture.
-		 */
-		[[nodiscard]]
-		virtual Int32 width() const =0;
-
-		/**
-		 * @brief      Returns the height of the texture.
-		 *
-		 * @return     The height of the texture.
-		 */
-		[[nodiscard]]
-		virtual Int32 height() const =0;
-
-		/**
-		 * @brief      Returns the size of the texture.
-		 *
-		 * @return     The size of the texture.
-		 */
-		[[nodiscard]]
-		virtual Size2Di size() const =0;
+		virtual ~IDynamicTexture() =default;
 	};
 }
 
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_ITEXTURE_HPP
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_IDYNAMICTEXTURE_HPP

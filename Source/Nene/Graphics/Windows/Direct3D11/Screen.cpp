@@ -26,6 +26,7 @@
 
 #include "../../../Exceptions/Windows/DirectXException.hpp"
 #include "../../../Window/Windows/Window.hpp"
+#include "DynamicTexture.hpp"
 #include "Screen.hpp"
 
 namespace Nene::Windows::Direct3D11
@@ -33,6 +34,7 @@ namespace Nene::Windows::Direct3D11
 	Screen::Screen(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::shared_ptr<Window>& window, const Size2Di& size)
 		: swapChain_()
 		, window_(window)
+		, renderTarget_()
 	{
 		assert(device);
 		assert(window);
@@ -85,6 +87,9 @@ namespace Nene::Windows::Direct3D11
 		throwIfFailed(
 			swapChain_->GetBuffer(0, IID_ID3D11Texture2D, reinterpret_cast<void**>(backBuffer.GetAddressOf())),
 			u8"Failed to get back buffer texture.");
+
+		// Create render target.
+		renderTarget_ = std::make_shared<DynamicTexture>(backBuffer);
 	}
 }
 
