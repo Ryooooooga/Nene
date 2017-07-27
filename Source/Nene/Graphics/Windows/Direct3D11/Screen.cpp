@@ -24,7 +24,6 @@
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include <cassert>
 #include "../../../Exceptions/Windows/DirectXException.hpp"
 #include "../../../Window/Windows/Window.hpp"
 #include "Screen.hpp"
