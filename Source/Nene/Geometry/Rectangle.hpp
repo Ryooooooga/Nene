@@ -21,8 +21,8 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_RECTANGLE_HPP
-#define INCLUDE_NENE_RECTANGLE_HPP
+#ifndef INCLUDE_NENE_GEOMETRY_RECTANGLE_HPP
+#define INCLUDE_NENE_GEOMETRY_RECTANGLE_HPP
 
 #include "../Vector2D.hpp"
 #include "../Size2D.hpp"
@@ -246,4 +246,4 @@ namespace Nene
 	using Rectangled = Rectangle<Float64>;
 }
 
-#endif  // #ifndef INCLUDE_NENE_RECTANGLE_HPP
+#endif  // #ifndef INCLUDE_NENE_GEOMETRY_RECTANGLE_HPP
