@@ -30,7 +30,7 @@
 namespace Nene
 {
 	/**
-	 * @brief      Rectangle.
+	 * @brief      Rectangle geometry.
 	 *
 	 * @tparam     T     Element type.
 	 */
@@ -202,7 +202,18 @@ namespace Nene
 		}
 
 		/**
-		 * @brief      Binary operator `=`.
+		 * @brief      Computes area of the rectangle.
+		 *
+		 * @return     Area of the rectangle.
+		 */
+		[[nodiscard]]
+		constexpr T area() const noexcept
+		{
+			return size.area();
+		}
+
+		/**
+		 * @brief      Copy operator `=`.
 		 *
 		 * @param[in]  a     Right hand side operand.
 		 *
