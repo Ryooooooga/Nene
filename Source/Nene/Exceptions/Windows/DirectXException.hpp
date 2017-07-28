@@ -27,6 +27,7 @@
 #include "../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
+#include <functional>
 #include "WindowsApiException.hpp"
 
 namespace Nene::Windows
@@ -58,24 +59,20 @@ namespace Nene::Windows
 	 *
 	 * @param[in]  result        The result code.
 	 * @param[in]  errorMessage  The error message or generator function.
-	 *
-	 * @tparam     String        `std::string_view` or `() -> std::string`.
 	 */
-	template <typename String>
-	inline std::enable_if_t<std::is_function_v<String>> throwIfFailed(HRESULT result, const String& errorMessage)
-	{
-		if (FAILED(result))
-		{
-			throw DirectXException { result, errorMessage() };
-		}
-	}
-	
-	template <typename String>
-	inline std::enable_if_t<!std::is_function_v<String>> throwIfFailed(HRESULT result, const String& errorMessage)
+	inline void throwIfFailed(HRESULT result, std::string_view errorMessage)
 	{
 		if (FAILED(result))
 		{
 			throw DirectXException { result, errorMessage };
+		}
+	}
+
+	inline void throwIfFailed(HRESULT result, const std::function<std::string()>& errorMessage)
+	{
+		if (FAILED(result))
+		{
+			throw DirectXException { result, errorMessage() };
 		}
 	}
 }
