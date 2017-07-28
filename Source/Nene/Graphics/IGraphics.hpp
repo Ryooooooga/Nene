@@ -34,6 +34,7 @@ namespace Nene
 {
 	// Forward declarations.
 	class Image;
+	class IDynamicTexture;
 	class IPixelShader;
 	class IScreen;
 	class ITexture;
@@ -191,6 +192,26 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		virtual std::shared_ptr<ITexture> texture(const Image& image) =0;
+
+		/**
+		 * @brief      Creates the empty dynamic texture.
+		 *
+		 * @param[in]  size  The texture size.
+		 *
+		 * @return     The dynamic texture instance.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IDynamicTexture> dynamicTexture(const Size2Di& size) =0;
+
+		/**
+		 * @brief      Creates the dynamic texture from images.
+		 *
+		 * @param[in]  image  The source image.
+		 *
+		 * @return     The dynamic texture instance.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IDynamicTexture> dynamicTexture(const Image& image) =0;
 	};
 }
 

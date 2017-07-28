@@ -59,6 +59,10 @@ namespace Nene::Windows::Direct3D11
 		: texture_(std::make_unique<Texture>(texture))
 		, renderTarget_(createRenderTargetView(texture_->texture2D())) {}
 
+	DynamicTexture::DynamicTexture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size)
+		: texture_(std::make_unique<Texture>(device, size, true))
+		, renderTarget_(createRenderTargetView(texture_->texture2D())) {}
+
 	DynamicTexture::DynamicTexture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Image& image)
 		: texture_(std::make_unique<Texture>(device, image, true))
 		, renderTarget_(createRenderTargetView(texture_->texture2D())) {}

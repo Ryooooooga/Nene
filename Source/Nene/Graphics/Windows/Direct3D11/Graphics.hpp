@@ -49,7 +49,7 @@ namespace Nene::Windows::Direct3D11
 	{
 		Microsoft::WRL::ComPtr<ID3D11Device> device_;
 
-		std::unique_ptr<Context> context_;
+		std::shared_ptr<Context> context_;
 
 		D3D_DRIVER_TYPE   driverType_;
 		D3D_FEATURE_LEVEL featureLevel_;
@@ -136,6 +136,15 @@ namespace Nene::Windows::Direct3D11
 		 */
 		[[nodiscard]]
 		std::shared_ptr<ITexture> texture(const Image& image) override;
+
+		/**
+		 * @see        `Nene::IGraphics::dynamicTexture()`.
+		 */
+		[[nodiscard]]
+		std::shared_ptr<IDynamicTexture> dynamicTexture(const Size2Di& image) override;
+
+		[[nodiscard]]
+		std::shared_ptr<IDynamicTexture> dynamicTexture(const Image& image) override;
 	};
 }
 

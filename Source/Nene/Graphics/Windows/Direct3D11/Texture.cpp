@@ -75,6 +75,41 @@ namespace Nene::Windows::Direct3D11
 		shaderResource_ = createShaderResourceView(texture_);
 	}
 
+	Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, bool dynamic)
+		: texture_()
+		, shaderResource_()
+		, size_(size)
+	{
+		assert(device);
+		assert(size.width  > 0);
+		assert(size.height > 0);
+
+		// Create texture.
+		UINT bindFlags = 0;
+		bindFlags |= D3D11_BIND_SHADER_RESOURCE;
+		bindFlags |= dynamic ? D3D11_BIND_RENDER_TARGET : 0;
+
+		D3D11_TEXTURE2D_DESC texDesc = {};
+		texDesc.Width              = static_cast<UINT>(size_.width);
+		texDesc.Height             = static_cast<UINT>(size_.height);
+		texDesc.MipLevels          = 1;
+		texDesc.ArraySize          = 1;
+		texDesc.Format             = DXGI_FORMAT_R8G8B8A8_UNORM;
+		texDesc.SampleDesc.Count   = 1;
+		texDesc.SampleDesc.Quality = 0;
+		texDesc.Usage              = D3D11_USAGE_DEFAULT;
+		texDesc.BindFlags          = bindFlags;
+		texDesc.CPUAccessFlags     = 0;
+		texDesc.MiscFlags          = 0;
+
+		throwIfFailed(
+			device->CreateTexture2D(&texDesc, nullptr, texture_.GetAddressOf()),
+			u8"Failed to create Direct3D11 texture2D.");
+
+		// Create shader resource view.
+		shaderResource_ = createShaderResourceView(texture_);
+	}
+
 	Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Image& image, bool dynamic)
 		: texture_()
 		, shaderResource_()

@@ -62,6 +62,14 @@ namespace Nene::Windows::Direct3D11
 		/**
 		 * @brief      Constructor.
 		 *
+		 * @param[in]  device  Direct3D11 device.
+		 * @param[in]  size    The texture size.
+		 */
+		explicit DynamicTexture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size);
+
+		/**
+		 * @brief      Constructor.
+		 *
 		 * @param[in]  device   Direct3D11 device.
 		 * @param[in]  image    The source image.
 		 */

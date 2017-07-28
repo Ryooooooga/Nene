@@ -35,6 +35,7 @@
 #include "../../../Exceptions/Windows/DirectXException.hpp"
 #include "../../../Window/Windows/Window.hpp"
 #include "Context.hpp"
+#include "DynamicTexture.hpp"
 #include "Graphics.hpp"
 #include "IndexBuffer.hpp"
 #include "PixelShader.hpp"
@@ -148,7 +149,7 @@ namespace Nene::Windows::Direct3D11
 		throwIfFailed(hr, u8"Failed to create Direct3D11 device.");
 
 		// Create context.
-		context_ = std::make_unique<Context>(device_);
+		context_ = std::make_shared<Context>(device_);
 	}
 
 	Graphics::~Graphics() =default;
@@ -254,6 +255,16 @@ namespace Nene::Windows::Direct3D11
 	std::shared_ptr<ITexture> Graphics::texture(const Image& image)
 	{
 		return std::make_shared<Texture>(device_, image, false);
+	}
+
+	std::shared_ptr<IDynamicTexture> Graphics::dynamicTexture(const Size2Di& size)
+	{
+		return std::make_shared<DynamicTexture>(device_, size);
+	}
+
+	std::shared_ptr<IDynamicTexture> Graphics::dynamicTexture(const Image& image)
+	{
+		return std::make_shared<DynamicTexture>(device_, image);
 	}
 }
 
