@@ -31,6 +31,7 @@
 #  pragma comment(lib, "d3dcompiler.lib")
 #endif
 
+#include <d3dcompiler.h>
 #include "../../../Exceptions/Windows/DirectXException.hpp"
 #include "../../../Window/Windows/Window.hpp"
 #include "Graphics.hpp"
@@ -41,10 +42,60 @@
 
 namespace Nene::Windows::Direct3D11
 {
+	namespace
+	{
+		std::vector<Byte> compileShader(const std::string& sourceName, ByteArrayView shaderSource, const char* target, const std::string& entryPoint)
+		{
+			assert(target);
+
+			UINT shaderFlags = D3D10_SHADER_ENABLE_STRICTNESS;
+	#if defined(NENE_DEBUG)
+			shaderFlags |= D3D10_SHADER_DEBUG;
+			shaderFlags |= D3D10_SHADER_SKIP_OPTIMIZATION;
+	#endif
+
+			Microsoft::WRL::ComPtr<ID3DBlob> code;
+			Microsoft::WRL::ComPtr<ID3DBlob> error;
+
+			throwIfFailed(
+				::D3DCompile(
+					shaderSource.data(),
+					shaderSource.size(),
+					sourceName.c_str(),
+					nullptr,
+					nullptr,
+					entryPoint.c_str(),
+					target,
+					shaderFlags,
+					0,
+					code.GetAddressOf(),
+					error.GetAddressOf()),
+				[&]()
+				{
+					return fmt::format(
+						u8"Failed to compile shader.\n"
+						u8"Name: {}\n"
+						u8"Target: {}\n"
+						u8"Entry point: {}\n"
+						u8"Error: {}",
+						sourceName,
+						target,
+						entryPoint,
+						static_cast<const char*>(error->GetBufferPointer()));
+				});
+
+			const auto begin = static_cast<const Byte*>(code->GetBufferPointer());
+			const auto end   = begin + code->GetBufferSize();
+
+			return std::vector<Byte>(begin, end);
+		}
+	}
+
 	Graphics::Graphics()
 		: device_()
 		, immediateContext_()
 		, driverType_(D3D_DRIVER_TYPE_UNKNOWN)
+		, featureLevel_()
 	{
 		// Create device.
 		UINT creationFlags = 0;
@@ -70,7 +121,6 @@ namespace Nene::Windows::Direct3D11
 
 		for (const auto driverType : driverTypes)
 		{
-			D3D_FEATURE_LEVEL featureLevel;
 
 			hr = ::D3D11CreateDevice(
 				nullptr,
@@ -81,8 +131,8 @@ namespace Nene::Windows::Direct3D11
 				std::extent_v<decltype(featureLevels)>,
 				D3D11_SDK_VERSION,
 				device_.GetAddressOf(),
-				&featureLevel,
-				immediateContext_.GetAddressOf());
+				&featureLevel_,
+				nullptr);
 
 			if (SUCCEEDED(hr))
 			{
@@ -121,6 +171,46 @@ namespace Nene::Windows::Direct3D11
 	std::shared_ptr<IIndexBuffer<UInt32>> Graphics::indexBuffer(UInt32 capacity)
 	{
 		return std::make_shared<IndexBuffer<UInt32>>(device_, capacity);
+	}
+
+	std::vector<Byte> Graphics::compileVertexShader(const std::string& sourceName, ByteArrayView shaderSource, const std::string& entryPoint)
+	{
+		const char* target =
+			featureLevel_ >= D3D_FEATURE_LEVEL_11_0 ? u8"vs_5_0" :
+			featureLevel_ >= D3D_FEATURE_LEVEL_10_1 ? u8"vs_4_1" : u8"vs_4_0";
+
+		return compileShader(sourceName, shaderSource, target, entryPoint);
+	}
+
+	std::vector<Byte> Graphics::compileVertexShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint)
+	{
+		const auto source = ByteArrayView
+		{
+			reinterpret_cast<const Byte*>(shaderSource.data()),
+			shaderSource.size(),
+		};
+
+		return compileVertexShader(sourceName, source, entryPoint);
+	}
+
+	std::vector<Byte> Graphics::compilePixelShader(const std::string& sourceName, ByteArrayView shaderSource, const std::string& entryPoint)
+	{
+		const char* target =
+			featureLevel_ >= D3D_FEATURE_LEVEL_11_0 ? u8"ps_5_0" :
+			featureLevel_ >= D3D_FEATURE_LEVEL_10_1 ? u8"ps_4_1" : u8"ps_4_0";
+
+		return compileShader(sourceName, shaderSource, target, entryPoint);
+	}
+
+	std::vector<Byte> Graphics::compilePixelShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint)
+	{
+		const auto source = ByteArrayView
+		{
+			reinterpret_cast<const Byte*>(shaderSource.data()),
+			shaderSource.size(),
+		};
+
+		return compilePixelShader(sourceName, source, entryPoint);
 	}
 
 	std::shared_ptr<ITexture> Graphics::texture(const Image& image)

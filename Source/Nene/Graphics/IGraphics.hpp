@@ -25,6 +25,8 @@
 #define INCLUDE_NENE_GRAPHICS_IGRAPHICS_HPP
 
 #include <memory>
+#include <string_view>
+#include "../ArrayView.hpp"
 #include "../Size2D.hpp"
 #include "../Vertex2D.hpp"
 
@@ -32,8 +34,10 @@ namespace Nene
 {
 	// Forward declarations.
 	class Image;
+	class IPixelShader;
 	class IScreen;
 	class ITexture;
+	class IVertexShader;
 	class IWindow;
 
 	template <typename Index>
@@ -97,6 +101,36 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		virtual std::shared_ptr<IIndexBuffer<UInt32>> indexBuffer(UInt32 capacity) =0;
+
+		/**
+		 * @brief      Compiles the vertex shader and returns the compiled shader binary.
+		 *
+		 * @param[in]  sourceName    The shader source name.
+		 * @param[in]  shaderSource  The shader source.
+		 * @param[in]  entryPoint    The entry point (for HLSL only).
+		 *
+		 * @return     Compiled vertex shader binary.
+		 */
+		[[nodiscard]]
+		virtual std::vector<Byte> compileVertexShader(const std::string& sourceName, ByteArrayView shaderSource, const std::string& entryPoint = u8"main") =0;
+
+		[[nodiscard]]
+		virtual std::vector<Byte> compileVertexShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint = u8"main") =0;
+
+		/**
+		 * @brief      Compiles the pixel shader and returns the compiled shader binary.
+		 *
+		 * @param[in]  sourceName    The shader source name.
+		 * @param[in]  shaderSource  The shader source.
+		 * @param[in]  entryPoint    The entry point (for HLSL only).
+		 *
+		 * @return     Compiled pixel shader binary.
+		 */
+		[[nodiscard]]
+		virtual std::vector<Byte> compilePixelShader(const std::string& sourceName, ByteArrayView shaderSource, const std::string& entryPoint = u8"main") =0;
+
+		[[nodiscard]]
+		virtual std::vector<Byte> compilePixelShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint = u8"main") =0;
 
 		/**
 		 * @brief      Creates the texture from images.

@@ -47,7 +47,8 @@ namespace Nene::Windows::Direct3D11
 		Microsoft::WRL::ComPtr<ID3D11Device>        device_;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
 
-		D3D_DRIVER_TYPE driverType_;
+		D3D_DRIVER_TYPE   driverType_;
+		D3D_FEATURE_LEVEL featureLevel_;
 
 	public:
 		/**
@@ -83,6 +84,24 @@ namespace Nene::Windows::Direct3D11
 		 */
 		[[nodiscard]]
 		std::shared_ptr<IIndexBuffer<UInt32>> indexBuffer(UInt32 capacity) override;
+
+		/**
+		 * @see        `Nene::IGraphics::compileVertexShader()`.
+		 */
+		[[nodiscard]]
+		std::vector<Byte> compileVertexShader(const std::string& sourceName, ByteArrayView shaderSource, const std::string& entryPoint = u8"main") override;
+
+		[[nodiscard]]
+		std::vector<Byte> compileVertexShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint = u8"main") override;
+
+		/**
+		 * @see        `Nene::IGraphics::compilePixelShader()`.
+		 */
+		[[nodiscard]]
+		std::vector<Byte> compilePixelShader(const std::string& sourceName, ByteArrayView shaderSource, const std::string& entryPoint = u8"main") override;
+
+		[[nodiscard]]
+		std::vector<Byte> compilePixelShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint = u8"main") override;
 
 		/**
 		 * @see        `Nene::IGraphics::texture()`.
