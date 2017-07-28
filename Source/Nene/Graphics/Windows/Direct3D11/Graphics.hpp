@@ -37,6 +37,9 @@
 
 namespace Nene::Windows::Direct3D11
 {
+	// Forward declarations.
+	class Context;
+
 	/**
 	 * @brief      Direct3D11 graphics implementation.
 	 */
@@ -44,8 +47,9 @@ namespace Nene::Windows::Direct3D11
 		: public  IGraphics
 		, private Uncopyable
 	{
-		Microsoft::WRL::ComPtr<ID3D11Device>        device_;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
+		Microsoft::WRL::ComPtr<ID3D11Device> device_;
+
+		std::unique_ptr<Context> context_;
 
 		D3D_DRIVER_TYPE   driverType_;
 		D3D_FEATURE_LEVEL featureLevel_;
@@ -59,7 +63,7 @@ namespace Nene::Windows::Direct3D11
 		/**
 		 * @brief      Destructor.
 		 */
-		~Graphics() =default;
+		~Graphics();
 
 		/**
 		 * @see        `Nene::IGraphics::screen()`.

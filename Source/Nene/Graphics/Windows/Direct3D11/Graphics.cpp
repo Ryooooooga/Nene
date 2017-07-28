@@ -34,6 +34,7 @@
 #include <d3dcompiler.h>
 #include "../../../Exceptions/Windows/DirectXException.hpp"
 #include "../../../Window/Windows/Window.hpp"
+#include "Context.hpp"
 #include "Graphics.hpp"
 #include "IndexBuffer.hpp"
 #include "Screen.hpp"
@@ -93,7 +94,7 @@ namespace Nene::Windows::Direct3D11
 
 	Graphics::Graphics()
 		: device_()
-		, immediateContext_()
+		, context_()
 		, driverType_(D3D_DRIVER_TYPE_UNKNOWN)
 		, featureLevel_()
 	{
@@ -143,7 +144,12 @@ namespace Nene::Windows::Direct3D11
 		}
 
 		throwIfFailed(hr, u8"Failed to create Direct3D11 device.");
+
+		// Create context.
+		context_ = std::make_unique<Context>(device_);
 	}
+
+	Graphics::~Graphics() =default;
 
 	std::shared_ptr<IScreen> Graphics::screen(const std::shared_ptr<IWindow>& window)
 	{
