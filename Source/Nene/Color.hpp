@@ -100,7 +100,7 @@ namespace Nene
 		 * @param[in]  color
 		 * @param[in]  alpha
 		 */
-		constexpr explicit Color4(const Color4f& color) noexcept;
+		constexpr Color4(const Color4f& color) noexcept;
 
 		/**
 		 * @brief      Constructor.
@@ -354,7 +354,7 @@ namespace Nene
 		 * @param[in]  color
 		 * @param[in]  alpha
 		 */
-		constexpr explicit Color4f(const Color4& color) noexcept;
+		constexpr Color4f(const Color4& color) noexcept;
 
 		/**
 		 * @brief      Constructor.
