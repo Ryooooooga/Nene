@@ -41,7 +41,7 @@ namespace Nene::Windows::Direct3D11
 	 */
 	template <typename Vertex>
 	class VertexBuffer final
-		: public  IVertexBuffer<Vertex>
+		: public  ITypedVertexBuffer<Vertex>
 		, private Uncopyable
 	{
 		Microsoft::WRL::ComPtr<ID3D11Buffer> buffer_;
@@ -70,6 +70,15 @@ namespace Nene::Windows::Direct3D11
 		UInt32 size() const noexcept override
 		{
 			return capacity_;
+		}
+
+		/**
+		 * @see        `Nene::IVertexBuffer::byteStride()`.
+		 */
+		[[nodiscard]]
+		UInt32 byteStride() const noexcept override
+		{
+			return sizeof(Vertex);
 		}
 	};
 }

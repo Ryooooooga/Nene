@@ -176,12 +176,12 @@ namespace Nene::Windows::Direct3D11
 			: throw InvalidTypeException { u8"Argument must be a Windows API window." };
 	}
 
-	std::shared_ptr<IVertexBuffer<Vertex2D>> Graphics::vertexBuffer2D(UInt32 capacity)
+	std::shared_ptr<ITypedVertexBuffer<Vertex2D>> Graphics::vertexBuffer2D(UInt32 capacity)
 	{
 		return std::make_shared<VertexBuffer<Vertex2D>>(device_, capacity);
 	}
 
-	std::shared_ptr<IIndexBuffer<UInt32>> Graphics::indexBuffer(UInt32 capacity)
+	std::shared_ptr<ITypedIndexBuffer<UInt32>> Graphics::indexBuffer(UInt32 capacity)
 	{
 		return std::make_shared<IndexBuffer<UInt32>>(device_, capacity);
 	}

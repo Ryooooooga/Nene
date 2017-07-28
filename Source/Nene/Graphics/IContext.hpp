@@ -31,15 +31,12 @@ namespace Nene
 {
 	// Forward declarations.
 	class IDynamicTexture;
+	class IIndexBuffer;
 	class IPixelShader;
 	class IScreen;
 	class ITexture;
-	class IVertexShader;
-
-	template <typename Index>
-	class IIndexBuffer;
-	template <typename Vertex>
 	class IVertexBuffer;
+	class IVertexShader;
 
 	/**
 	 * @brief      Graphics context interface.

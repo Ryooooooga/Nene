@@ -87,13 +87,13 @@ namespace Nene::Windows::Direct3D11
 		 * @see        `Nene::IGraphics::vertexBuffer2D()`.
 		 */
 		[[nodiscard]]
-		std::shared_ptr<IVertexBuffer<Vertex2D>> vertexBuffer2D(UInt32 capacity) override;
+		std::shared_ptr<ITypedVertexBuffer<Vertex2D>> vertexBuffer2D(UInt32 capacity) override;
 
 		/**
 		 * @see        `Nene::IGraphics::indexBuffer()`.
 		 */
 		[[nodiscard]]
-		std::shared_ptr<IIndexBuffer<UInt32>> indexBuffer(UInt32 capacity) override;
+		std::shared_ptr<ITypedIndexBuffer<UInt32>> indexBuffer(UInt32 capacity) override;
 
 		/**
 		 * @see        `Nene::IGraphics::compileVertexShader()`.

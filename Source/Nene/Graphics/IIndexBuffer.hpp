@@ -31,17 +31,10 @@ namespace Nene
 {
 	/**
 	 * @brief      Index buffer interface.
-	 *
-	 * @tparam     Index  Index type.
 	 */
-	template <typename Index>
 	class IIndexBuffer
 	{
-		static_assert(std::is_unsigned_v<Index>);
-
 	public:
-		using index_type = Index;
-
 		/**
 		 * @brief      Constructor.
 		 */
@@ -59,7 +52,43 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		virtual UInt32 size() const noexcept =0;
+
+		/**
+		 * @brief      Returns byte width of the index type.
+		 *
+		 * @return     Byte width of the index type.
+		 */
+		[[nodiscard]]
+		virtual UInt32 byteStride() const noexcept =0;
 	};
+
+	/**
+	 * @brief      Index buffer interface with index type.
+	 *
+	 * @tparam     Index  Index type.
+	 */
+	template <typename Index>
+	class ITypedIndexBuffer
+		: public IIndexBuffer
+	{
+		static_assert(std::is_unsigned_v<Index>);
+
+	public:
+		using index_type = Index;
+
+		/**
+		 * @brief      Constructor.
+		 */
+		ITypedIndexBuffer() noexcept =default;
+
+		/**
+		 * @brief      Destructor.
+		 */
+		virtual ~ITypedIndexBuffer() =default;
+	};
+
+	using IIndexBufferUInt16 = ITypedIndexBuffer<UInt16>;
+	using IIndexBufferUInt32 = ITypedIndexBuffer<UInt32>;
 }
 
 #endif  // #ifndef INCLUDE_NENE_GRAPHICS_IINDEXBUFFER_HPP

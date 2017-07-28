@@ -43,9 +43,9 @@ namespace Nene
 	class IWindow;
 
 	template <typename Index>
-	class IIndexBuffer;
+	class ITypedIndexBuffer;
 	template <typename Vertex>
-	class IVertexBuffer;
+	class ITypedVertexBuffer;
 
 	/**
 	 * @brief      Graphics interface.
@@ -99,7 +99,7 @@ namespace Nene
 		 * @return     The vertex buffer instance.
 		 */
 		[[nodiscard]]
-		virtual std::shared_ptr<IVertexBuffer<Vertex2D>> vertexBuffer2D(UInt32 capacity) =0;
+		virtual std::shared_ptr<ITypedVertexBuffer<Vertex2D>> vertexBuffer2D(UInt32 capacity) =0;
 
 		/**
 		 * @brief      Creates the index buffer instance.
@@ -109,7 +109,7 @@ namespace Nene
 		 * @return     The index buffer instance.
 		 */
 		[[nodiscard]]
-		virtual std::shared_ptr<IIndexBuffer<UInt32>> indexBuffer(UInt32 capacity) =0;
+		virtual std::shared_ptr<ITypedIndexBuffer<UInt32>> indexBuffer(UInt32 capacity) =0;
 
 		/**
 		 * @brief      Compiles the vertex shader and returns the compiled shader binary.

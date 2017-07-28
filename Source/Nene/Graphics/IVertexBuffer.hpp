@@ -30,15 +30,10 @@ namespace Nene
 {
 	/**
 	 * @brief      Vertex buffer interface.
-	 *
-	 * @tparam     Vertex  Vertex type.
 	 */
-	template <typename Vertex>
 	class IVertexBuffer
 	{
 	public:
-		using vertex_type = Vertex;
-
 		/**
 		 * @brief      Constructor.
 		 */
@@ -56,7 +51,40 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		virtual UInt32 size() const noexcept =0;
+
+		/**
+		 * @brief      Returns byte width of the vertex type.
+		 *
+		 * @return     Byte width of the vertex type.
+		 */
+		[[nodiscard]]
+		virtual UInt32 byteStride() const noexcept =0;
 	};
+
+	/**
+	 * @brief      Vertex buffer interface.
+	 *
+	 * @tparam     Vertex  Vertex type.
+	 */
+	template <typename Vertex>
+	class ITypedVertexBuffer
+		: public IVertexBuffer
+	{
+	public:
+		using vertex_type = Vertex;
+
+		/**
+		 * @brief      Constructor.
+		 */
+		ITypedVertexBuffer() noexcept =default;
+
+		/**
+		 * @brief      Destructor.
+		 */
+		virtual ~ITypedVertexBuffer() =default;
+	};
+
+	using IVertexBuffer2D = ITypedVertexBuffer<Vertex2D>;
 }
 
 #endif  // #ifndef INCLUDE_NENE_GRAPHICS_IVERTEXBUFFER_HPP
