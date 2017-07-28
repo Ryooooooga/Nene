@@ -21,77 +21,60 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
-#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_VERTEXBUFFER_HPP
+#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_VERTEXBUFFER_HPP
 
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-
-#include <d3d11.h>
-#include <wrl/client.h>
+#include <memory>
 #include "../../../Uncopyable.hpp"
-#include "../../IGraphics.hpp"
+#include "../../IVertexBuffer.hpp"
+#include "Detail/Buffer.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
 	/**
-	 * @brief      Direct3D11 graphics implementation.
+	 * @brief      Direct3D11 vertex buffer implementation.
+	 *
+	 * @tparam     Vertex  Vertex type.
 	 */
-	class Graphics final
-		: public  IGraphics
+	template <typename Vertex>
+	class VertexBuffer final
+		: public  IVertexBuffer<Vertex>
 		, private Uncopyable
 	{
-		Microsoft::WRL::ComPtr<ID3D11Device>        device_;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
-
-		D3D_DRIVER_TYPE driverType_;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> buffer_;
+		UInt32 capacity_;
 
 	public:
 		/**
 		 * @brief      Constructor.
+		 *
+		 * @param[in]  device    Direct3D11 device.
+		 * @param[in]  capacity  The capacity of the vertex buffer.
 		 */
-		explicit Graphics();
+		explicit VertexBuffer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, UInt32 capacity)
+			: buffer_(Detail::createBuffer(device, D3D11_BIND_VERTEX_BUFFER, sizeof(Vertex), capacity))
+			, capacity_(capacity) {}
 
 		/**
 		 * @brief      Destructor.
 		 */
-		~Graphics() =default;
+		~VertexBuffer() =default;
 
 		/**
-		 * @see        `Nene::IGraphics::screen()`.
+		 * @see        `Nene::IVertexBuffer::size()`.
 		 */
 		[[nodiscard]]
-		std::shared_ptr<IScreen> screen(const std::shared_ptr<IWindow>& window) override;
-
-		/**
-		 * @see        `Nene::IGraphics::screen()`.
-		 */
-		[[nodiscard]]
-		std::shared_ptr<IScreen> screen(const std::shared_ptr<IWindow>& window, const Size2Di& size) override;
-
-		/**
-		 * @see        `Nene::IGraphics::vertexBuffer2D()`.
-		 */
-		[[nodiscard]]
-		std::shared_ptr<IVertexBuffer<Vertex2D>> vertexBuffer2D(UInt32 capacity) override;
-
-		/**
-		 * @see        `Nene::IGraphics::indexBuffer()`.
-		 */
-		[[nodiscard]]
-		std::shared_ptr<IIndexBuffer<UInt32>> indexBuffer(UInt32 capacity) override;
-
-		/**
-		 * @see        `Nene::IGraphics::texture()`.
-		 */
-		[[nodiscard]]
-		std::shared_ptr<ITexture> texture(const Image& image) override;
+		UInt32 size() const noexcept override
+		{
+			return capacity_;
+		}
 	};
 }
 
 #endif
 
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_GRAPHICS_HPP
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_VERTEXBUFFER_HPP
+

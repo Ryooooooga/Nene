@@ -34,8 +34,10 @@
 #include "../../../Exceptions/Windows/DirectXException.hpp"
 #include "../../../Window/Windows/Window.hpp"
 #include "Graphics.hpp"
+#include "IndexBuffer.hpp"
 #include "Screen.hpp"
 #include "Texture.hpp"
+#include "VertexBuffer.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
@@ -109,6 +111,16 @@ namespace Nene::Windows::Direct3D11
 		return window_Windows
 			? std::make_shared<Screen>(device_, window_Windows, size)
 			: throw EngineException { u8"Window must be a Windows API window." };
+	}
+
+	std::shared_ptr<IVertexBuffer<Vertex2D>> Graphics::vertexBuffer2D(UInt32 capacity)
+	{
+		return std::make_shared<VertexBuffer<Vertex2D>>(device_, capacity);
+	}
+
+	std::shared_ptr<IIndexBuffer<UInt32>> Graphics::indexBuffer(UInt32 capacity)
+	{
+		return std::make_shared<IndexBuffer<UInt32>>(device_, capacity);
 	}
 
 	std::shared_ptr<ITexture> Graphics::texture(const Image& image)

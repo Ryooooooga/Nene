@@ -26,6 +26,7 @@
 
 #include <memory>
 #include "../Size2D.hpp"
+#include "../Vertex2D.hpp"
 
 namespace Nene
 {
@@ -34,6 +35,11 @@ namespace Nene
 	class IScreen;
 	class ITexture;
 	class IWindow;
+
+	template <typename Index>
+	class IIndexBuffer;
+	template <typename Vertex>
+	class IVertexBuffer;
 
 	/**
 	 * @brief      Graphics interface.
@@ -71,6 +77,26 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		virtual std::shared_ptr<IScreen> screen(const std::shared_ptr<IWindow>& window, const Size2Di& size) =0;
+
+		/**
+		 * @brief      Creates the 2D vertex buffer instance.
+		 *
+		 * @param[in]  capacity  Capacity of the vertex buffer.
+		 *
+		 * @return     The vertex buffer instance.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IVertexBuffer<Vertex2D>> vertexBuffer2D(UInt32 capacity) =0;
+
+		/**
+		 * @brief      Creates the index buffer instance.
+		 *
+		 * @param[in]  capacity  Capacity of the index buffer.
+		 *
+		 * @return     The index buffer instance.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IIndexBuffer<UInt32>> indexBuffer(UInt32 capacity) =0;
 
 		/**
 		 * @brief      Creates the texture from images.
