@@ -282,7 +282,7 @@ namespace Nene
 		 * @return     A slice of the array.
 		 */
 		[[nodiscard]]
-		constexpr ArrayView substr(std::size_t position, std::size_t length = std::size_t {-1}) const
+		constexpr ArrayView substr(std::size_t position, std::size_t length = SIZE_MAX) const
 		{
 			if (position >= size_)
 			{
