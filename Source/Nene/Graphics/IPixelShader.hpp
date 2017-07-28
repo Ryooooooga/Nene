@@ -27,8 +27,6 @@
 #include "../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#include "../ArrayView.hpp"
-
 namespace Nene
 {
 	/**
@@ -46,14 +44,6 @@ namespace Nene
 		 * @brief      Constructor.
 		 */
 		virtual ~IPixelShader() =default;
-
-		/**
-		 * @brief      Returns the compile pixel shader binary.
-		 *
-		 * @return     The compiled pixel shader binary.
-		 */
-		[[nodiscard]]
-		virtual ByteArrayView compiledBinary() const noexcept =0;
 	};
 }
 

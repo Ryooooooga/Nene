@@ -99,6 +99,18 @@ namespace Nene::Windows::Direct3D11
 		std::vector<Byte> compileVertexShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint = u8"main") override;
 
 		/**
+		 * @see        `Nene::IGraphics::vertexShader()`.
+		 */
+		[[nodiscard]]
+		std::shared_ptr<IVertexShader> vertexShader(const std::string& sourceName, ByteArrayView shaderSource, const std::string& entryPoint = u8"main") override;
+
+		[[nodiscard]]
+		std::shared_ptr<IVertexShader> vertexShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint = u8"main") override;
+
+		[[nodiscard]]
+		std::shared_ptr<IVertexShader> vertexShader(ByteArrayView compiledBinary) override;
+
+		/**
 		 * @see        `Nene::IGraphics::compilePixelShader()`.
 		 */
 		[[nodiscard]]
@@ -106,6 +118,18 @@ namespace Nene::Windows::Direct3D11
 
 		[[nodiscard]]
 		std::vector<Byte> compilePixelShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint = u8"main") override;
+
+		/**
+		 * @see        `Nene::IGraphics::pixelShader()`.
+		 */
+		[[nodiscard]]
+		std::shared_ptr<IPixelShader> pixelShader(const std::string& sourceName, ByteArrayView shaderSource, const std::string& entryPoint = u8"main") override;
+
+		[[nodiscard]]
+		std::shared_ptr<IPixelShader> pixelShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint = u8"main") override;
+
+		[[nodiscard]]
+		std::shared_ptr<IPixelShader> pixelShader(ByteArrayView compiledBinary) override;
 
 		/**
 		 * @see        `Nene::IGraphics::texture()`.

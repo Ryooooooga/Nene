@@ -21,32 +21,55 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
-#define INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIERECT3D11_VERTEXSHADER_HPP
+#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIERECT3D11_VERTEXSHADER_HPP
 
-#include "../Platform.hpp"
+#include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-namespace Nene
+#include <d3d11.h>
+#include <wrl/client.h>
+#include "../../../ArrayView.hpp"
+#include "../../../Uncopyable.hpp"
+#include "../../IVertexShader.hpp"
+
+namespace Nene::Windows::Direct3D11
 {
 	/**
-	 * @brief      Vertex shader interface.
+	 * @brief      Vertex shader implementation.
 	 */
-	class IVertexShader
+	class VertexShader final
+		: public IVertexShader
 	{
+		Microsoft::WRL::ComPtr<ID3D11VertexShader> shader_;
+
 	public:
 		/**
 		 * @brief      Constructor.
+		 *
+		 * @param[in]  device          Direct3D11 device.
+		 * @param[in]  compiledBinary  The compiled shader binary.
 		 */
-		IVertexShader() noexcept =default;
+		explicit VertexShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, ByteArrayView compiledBinary);
 
 		/**
-		 * @brief      Constructor.
+		 * @brief      Destructor.
 		 */
-		virtual ~IVertexShader() =default;
+		~VertexShader() =default;
+
+		/**
+		 * @brief      Returns Direct3D11 vertex shader object.
+		 *
+		 * @return     Direct3D11 vertex shader object.
+		 */
+		[[nodiscard]]
+		Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader() const noexcept
+		{
+			return shader_;
+		}
 	};
 }
 
 #endif
 
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIERECT3D11_VERTEXSHADER_HPP

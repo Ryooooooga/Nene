@@ -21,32 +21,27 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
-#define INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP
-
-#include "../Platform.hpp"
+#include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-namespace Nene
-{
-	/**
-	 * @brief      Vertex shader interface.
-	 */
-	class IVertexShader
-	{
-	public:
-		/**
-		 * @brief      Constructor.
-		 */
-		IVertexShader() noexcept =default;
+#include "PixelShader.hpp"
+#include "../../../Exceptions/Windows/DirectXException.hpp"
 
-		/**
-		 * @brief      Constructor.
-		 */
-		virtual ~IVertexShader() =default;
-	};
+namespace Nene::Windows::Direct3D11
+{
+	PixelShader::PixelShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, ByteArrayView compiledBinary)
+		: shader_()
+	{
+		assert(device);
+
+		throwIfFailed(
+			device->CreatePixelShader(
+				compiledBinary.data(),
+				compiledBinary.size(),
+				nullptr,
+				shader_.GetAddressOf()),
+			u8"Failed to create Direct3D11 pixel shader.");
+	}
 }
 
 #endif
-
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_IVERTEXSHADER_HPP

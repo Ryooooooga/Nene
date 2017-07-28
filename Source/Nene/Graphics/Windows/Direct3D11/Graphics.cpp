@@ -37,9 +37,11 @@
 #include "Context.hpp"
 #include "Graphics.hpp"
 #include "IndexBuffer.hpp"
+#include "PixelShader.hpp"
 #include "Screen.hpp"
 #include "Texture.hpp"
 #include "VertexBuffer.hpp"
+#include "VertexShader.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
@@ -199,6 +201,21 @@ namespace Nene::Windows::Direct3D11
 		return compileVertexShader(sourceName, source, entryPoint);
 	}
 
+	std::shared_ptr<IVertexShader> Graphics::vertexShader(const std::string& sourceName, ByteArrayView shaderSource, const std::string& entryPoint)
+	{
+		return vertexShader(compileVertexShader(sourceName, shaderSource, entryPoint));
+	}
+
+	std::shared_ptr<IVertexShader> Graphics::vertexShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint)
+	{
+		return vertexShader(compileVertexShader(sourceName, shaderSource, entryPoint));
+	}
+
+	std::shared_ptr<IVertexShader> Graphics::vertexShader(ByteArrayView compiledBinary)
+	{
+		return std::make_shared<VertexShader>(device_, compiledBinary);
+	}
+
 	std::vector<Byte> Graphics::compilePixelShader(const std::string& sourceName, ByteArrayView shaderSource, const std::string& entryPoint)
 	{
 		const char* target =
@@ -217,6 +234,21 @@ namespace Nene::Windows::Direct3D11
 		};
 
 		return compilePixelShader(sourceName, source, entryPoint);
+	}
+
+	std::shared_ptr<IPixelShader> Graphics::pixelShader(const std::string& sourceName, ByteArrayView shaderSource, const std::string& entryPoint)
+	{
+		return pixelShader(compilePixelShader(sourceName, shaderSource, entryPoint));
+	}
+
+	std::shared_ptr<IPixelShader> Graphics::pixelShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint)
+	{
+		return pixelShader(compilePixelShader(sourceName, shaderSource, entryPoint));
+	}
+
+	std::shared_ptr<IPixelShader> Graphics::pixelShader(ByteArrayView compiledBinary)
+	{
+		return std::make_shared<PixelShader>(device_, compiledBinary);
 	}
 
 	std::shared_ptr<ITexture> Graphics::texture(const Image& image)

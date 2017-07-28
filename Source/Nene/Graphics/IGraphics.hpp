@@ -118,6 +118,31 @@ namespace Nene
 		virtual std::vector<Byte> compileVertexShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint = u8"main") =0;
 
 		/**
+		 * @brief      Creates the vertex shader object.
+		 *
+		 * @param[in]  sourceName    The shader source name.
+		 * @param[in]  shaderSource  The shader source.
+		 * @param[in]  entryPoint    The entry point (for HLSL only).
+		 *
+		 * @return     The vertex shader object.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IVertexShader> vertexShader(const std::string& sourceName, ByteArrayView shaderSource, const std::string& entryPoint = u8"main") =0;
+
+		[[nodiscard]]
+		virtual std::shared_ptr<IVertexShader> vertexShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint = u8"main") =0;
+
+		/**
+		 * @brief      Creates the vertex shader object from compiled shader binary.
+		 *
+		 * @param[in]  compiledBinary  The compiled shader binary.
+		 *
+		 * @return     The vertex shader object.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IVertexShader> vertexShader(ByteArrayView compiledBinary) =0;
+
+		/**
 		 * @brief      Compiles the pixel shader and returns the compiled shader binary.
 		 *
 		 * @param[in]  sourceName    The shader source name.
@@ -131,6 +156,31 @@ namespace Nene
 
 		[[nodiscard]]
 		virtual std::vector<Byte> compilePixelShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint = u8"main") =0;
+
+		/**
+		 * @brief      Creates the pixel shader object.
+		 *
+		 * @param[in]  sourceName    The shader source name.
+		 * @param[in]  shaderSource  The shader source.
+		 * @param[in]  entryPoint    The entry point (for HLSL only).
+		 *
+		 * @return     The pixel shader object.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IPixelShader> pixelShader(const std::string& sourceName, ByteArrayView shaderSource, const std::string& entryPoint = u8"main") =0;
+
+		[[nodiscard]]
+		virtual std::shared_ptr<IPixelShader> pixelShader(const std::string& sourceName, std::string_view shaderSource, const std::string& entryPoint = u8"main") =0;
+
+		/**
+		 * @brief      Creates the pixel shader object from compiled shader binary.
+		 *
+		 * @param[in]  compiledBinary  The compiled shader binary.
+		 *
+		 * @return     The pixel shader object.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IPixelShader> pixelShader(ByteArrayView compiledBinary) =0;
 
 		/**
 		 * @brief      Creates the texture from images.
