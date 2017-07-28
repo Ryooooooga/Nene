@@ -26,6 +26,10 @@
 
 namespace Nene
 {
+	// Forward declarations.
+	class IDynamicTexture;
+	class IWindow;
+
 	/**
 	 * @brief      Screen interface.
 	 */
@@ -41,6 +45,22 @@ namespace Nene
 		 * @brief      Destructor.
 		 */
 		virtual ~IScreen() =default;
+
+		/**
+		 * @brief      Returns the render target window.
+		 *
+		 * @return     The render target window.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IWindow> window() const =0;
+
+		/**
+		 * @brief      Returns the render target texture.
+		 *
+		 * @return     The render target texture.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IDynamicTexture> renderTarget() const =0;
 	};
 }
 

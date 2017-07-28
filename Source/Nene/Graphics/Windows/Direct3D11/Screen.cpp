@@ -91,6 +91,16 @@ namespace Nene::Windows::Direct3D11
 		// Create render target.
 		renderTarget_ = std::make_shared<DynamicTexture>(backBuffer);
 	}
+
+	std::shared_ptr<IWindow> Screen::window() const
+	{
+		return window_;
+	}
+
+	std::shared_ptr<IDynamicTexture> Screen::renderTarget() const
+	{
+		return renderTarget_;
+	}
 }
 
 #endif

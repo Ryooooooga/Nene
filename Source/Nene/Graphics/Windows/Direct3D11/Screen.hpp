@@ -75,6 +75,18 @@ namespace Nene::Windows::Direct3D11
 		 * @brief      Destructor.
 		 */
 		~Screen() =default;
+
+		/**
+		 * @see        `Nene::IScreen::window()`.
+		 */
+		[[nodiscard]]
+		std::shared_ptr<IWindow> window() const override;
+
+		/**
+		 * @see        `Nene::IScreen::renderTarget()`.
+		 */
+		[[nodiscard]]
+		std::shared_ptr<IDynamicTexture> renderTarget() const override;
 	};
 }
 
