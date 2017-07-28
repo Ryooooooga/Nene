@@ -21,72 +21,105 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_CONTEXT_HPP
-#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_CONTEXT_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_COMMANDBUFFER_HPP
+#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_COMMANDBUFFER_HPP
 
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-
+#include <memory>
+#include <variant>
+#include <vector>
 #include <d3d11.h>
 #include <wrl/client.h>
+#include "../../../ArrayView.hpp"
+#include "../../../Color.hpp"
 #include "../../../Uncopyable.hpp"
-#include "../../IContext.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
-	// Forward declarations.
-	struct CommandClearRenderTarget;
-	struct CommandNop;
+	struct CommandClearRenderTarget
+	{
+		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTarget;
+		Color4f clearColor;
+	};
 
-	class CommandList;
+	struct CommandNop
+	{
+	};
+
+	using Command = std::variant
+	<
+		CommandClearRenderTarget,
+		CommandNop
+	>;
 
 	/**
-	 * @brief      Direct3D11 graphics context.
+	 * @brief      Rendering command list.
 	 */
-	class Context final
-		: public  IContext
-		, private Uncopyable
+	class CommandList final
+		: private Uncopyable
 	{
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
-
-		std::unique_ptr<CommandList> commandList_;
-
-		void executeCommand(const CommandClearRenderTarget& command);
-		void executeCommand(const CommandNop&               command);
+		std::vector<Command> commands_;
 
 	public:
 		/**
 		 * @brief      Constructor.
-		 *
-		 * @param[in]  device  Direct3D11 device.
 		 */
-		explicit Context(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
+		explicit CommandList()
+			: commands_ { CommandNop {} }
+		{
+			commands_.reserve(2048);
+		}
 
 		/**
 		 * @brief      Destructor.
 		 */
-		~Context();
+		~CommandList() =default;
 
 		/**
-		 * @see        `Nene::IContext::flush()`.
+		 * @brief      Clears command list.
 		 */
-		Context& flush() override;
+		void clear()
+		{
+			commands_.resize(1);
+		}
 
 		/**
-		 * @see        `Nene::IContext::present()`.
+		 * @brief      Returns the rendering command list.
+		 *
+		 * @return     The rendering command list.
 		 */
-		Context& present(const std::shared_ptr<IScreen>& screen) override;
+		[[nodiscard]]
+		ArrayView<Command> commands() const noexcept
+		{
+			return ArrayView<Command> {commands_}.substr(1);
+		}
 
 		/**
-		 * @see        `Nene::IContext::clear()`.
+		 * @brief      Gets the last command if exists, or push new command.
+		 *
+		 * @tparam     CommandType  Command type.
+		 *
+		 * @return     Reference to the command.
 		 */
-		Context& clear(const std::shared_ptr<IDynamicTexture>& texture, const Color4f& clearColor) override;
+		template <typename CommandType>
+		[[nodiscard]]
+		CommandType& lastCommandOrPush()
+		{
+			if (auto p = std::get_if<CommandType>(&commands_.back()))
+			{
+				return *p;
+			}
+
+			// Add command.
+			commands_.emplace_back(CommandType {});
+
+			return std::get<CommandType>(commands_.back());
+		}
 	};
 }
 
 #endif
 
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_CONTEXT_HPP
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_COMMANDBUFFER_HPP

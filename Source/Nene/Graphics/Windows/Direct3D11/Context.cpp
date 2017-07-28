@@ -26,6 +26,7 @@
 
 #include <cassert>
 #include "../../../Exceptions/InvalidTypeException.hpp"
+#include "CommandList.hpp"
 #include "Context.hpp"
 #include "DynamicTexture.hpp"
 #include "Screen.hpp"
@@ -34,14 +35,49 @@ namespace Nene::Windows::Direct3D11
 {
 	Context::Context(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
 		: immediateContext_()
+		, commandList_()
 	{
 		assert(device);
 
+		// Get context.
 		device->GetImmediateContext(immediateContext_.GetAddressOf());
+
+		// Create resources.
+		commandList_ = std::make_unique<CommandList>();
+	}
+
+	Context::~Context() =default;
+
+	void Context::executeCommand(const CommandClearRenderTarget& command)
+	{
+		const FLOAT color[4] =
+		{
+			command.clearColor.red,
+			command.clearColor.green,
+			command.clearColor.blue,
+			command.clearColor.alpha,
+		};
+
+		immediateContext_->ClearRenderTargetView(command.renderTarget.Get(), color);
+	}
+
+	void Context::executeCommand([[maybe_unused]] const CommandNop& command)
+	{
 	}
 
 	Context& Context::flush()
 	{
+		// Execute command
+		for (const auto& command : commandList_->commands())
+		{
+			std::visit([this](const auto& command)
+			{
+				executeCommand(command);
+			}, command);
+		}
+
+		// Clear command list.
+		commandList_->clear();
 
 		return *this;
 	}
@@ -76,10 +112,9 @@ namespace Nene::Windows::Direct3D11
 		}
 
 		// Clear texture.
-		// TODO: prototype.
-		const FLOAT color[4] = { clearColor.red, clearColor.green, clearColor.blue, clearColor.alpha };
-
-		immediateContext_->ClearRenderTargetView(texture_Direct3D11->renderTargetView().Get(), color);
+		auto& command = commandList_->lastCommandOrPush<CommandClearRenderTarget>();
+		command.renderTarget = texture_Direct3D11->renderTargetView();
+		command.clearColor   = clearColor;
 
 		return *this;
 	}
