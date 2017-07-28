@@ -38,15 +38,15 @@ namespace Nene
 		: red(red), green(green), blue(blue), alpha(alpha) {}
 
 	constexpr Color4::Color4(UInt32 color) noexcept
-		: red   ((color >>  8) & 0xff)
-		, green ((color >> 16) & 0xff)
-		, blue  ((color >> 24) & 0xff)
-		, alpha ((color >>  0) & 0xff) {}
+		: red   ((color >> 16) & 0xff)
+		, green ((color >>  8) & 0xff)
+		, blue  ((color >>  0) & 0xff)
+		, alpha ((color >> 24) & 0xff) {}
 
 	constexpr Color4::Color4(UInt32 color, UInt8 alpha) noexcept
-		: red   ((color >>  8) & 0xff)
-		, green ((color >> 16) & 0xff)
-		, blue  ((color >> 24) & 0xff)
+		: red   ((color >> 16) & 0xff)
+		, green ((color >>  8) & 0xff)
+		, blue  ((color >>  0) & 0xff)
 		, alpha (alpha) {}
 
 	constexpr Color4::Color4(const Color4f& color) noexcept
@@ -227,15 +227,15 @@ namespace Nene
 		, alpha (alpha ) {}
 
 	constexpr Color4f::Color4f(UInt32 color) noexcept
-		: red   (((color >>  8) & 0xff) / 255.f)
-		, green (((color >> 16) & 0xff) / 255.f)
-		, blue  (((color >> 24) & 0xff) / 255.f)
-		, alpha (((color >>  0) & 0xff) / 255.f) {}
+		: red   (((color >> 16) & 0xff) / 255.f)
+		, green (((color >>  8) & 0xff) / 255.f)
+		, blue  (((color >>  0) & 0xff) / 255.f)
+		, alpha (((color >> 24) & 0xff) / 255.f) {}
 
 	constexpr Color4f::Color4f(UInt32 color, Float32 alpha) noexcept
-		: red   (((color >>  8) & 0xff) / 255.f)
-		, green (((color >> 16) & 0xff) / 255.f)
-		, blue  (((color >> 24) & 0xff) / 255.f)
+		: red   (((color >> 16) & 0xff) / 255.f)
+		, green (((color >>  8) & 0xff) / 255.f)
+		, blue  (((color >>  0) & 0xff) / 255.f)
 		, alpha (alpha) {}
 
 	constexpr Color4f::Color4f(const Color4& color) noexcept
