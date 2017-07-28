@@ -87,6 +87,17 @@ namespace Nene::Windows::Direct3D11
 		 */
 		[[nodiscard]]
 		std::shared_ptr<IDynamicTexture> renderTarget() const override;
+
+		/**
+		 * @brief      Returns DXGI swap chain.
+		 *
+		 * @return     DXGI swap chain.
+		 */
+		[[nodiscard]]
+		Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain() const noexcept
+		{
+			return swapChain_;
+		}
 	};
 }
 

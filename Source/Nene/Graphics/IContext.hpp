@@ -21,61 +21,68 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_CONTEXT_HPP
-#define INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_CONTEXT_HPP
+#ifndef INCLUDE_NENE_GRAPHICS_ICONTEXT_HPP
+#define INCLUDE_NENE_GRAPHICS_ICONTEXT_HPP
 
-#include "../../../Platform.hpp"
-#if defined(NENE_OS_WINDOWS)
+#include <memory>
+#include "../Color.hpp"
 
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-
-#include <d3d11.h>
-#include <wrl/client.h>
-#include "../../../Uncopyable.hpp"
-#include "../../IContext.hpp"
-
-namespace Nene::Windows::Direct3D11
+namespace Nene
 {
-	/**
-	 * @brief      Direct3D11 graphics context.
-	 */
-	class Context final
-		: public  IContext
-		, private Uncopyable
-	{
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
+	// Forward declarations.
+	class IDynamicTexture;
+	class IPixelShader;
+	class IScreen;
+	class ITexture;
+	class IVertexShader;
 
+	template <typename Index>
+	class IIndexBuffer;
+	template <typename Vertex>
+	class IVertexBuffer;
+
+	/**
+	 * @brief      Graphics context interface.
+	 */
+	class IContext
+	{
 	public:
 		/**
 		 * @brief      Constructor.
-		 *
-		 * @param[in]  device  Direct3D11 device.
 		 */
-		explicit Context(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
+		IContext() noexcept =default;
 
 		/**
 		 * @brief      Destructor.
 		 */
-		~Context() =default;
+		virtual ~IContext() =default;
 
 		/**
-		 * @see        `Nene::IContext::flush()`.
+		 * @brief      Excutes all rendering commands.
+		 *
+		 * @return     `*this`.
 		 */
-		Context& flush() override;
+		virtual IContext& flush() =0;
 
 		/**
-		 * @see        `Nene::IContext::present()`.
+		 * @brief      Presents the screen.
+		 *
+		 * @param[in]  screen  The screen instance.
+		 *
+		 * @return     `*this`.
 		 */
-		Context& present(const std::shared_ptr<IScreen>& screen) override;
+		virtual IContext& present(const std::shared_ptr<IScreen>& screen) =0;
 
 		/**
-		 * @see        `Nene::IContext::clear()`.
+		 * @brief      Clears the dynamic texture.
+		 *
+		 * @param[in]  texture     The dynamic texture to clear.
+		 * @param[in]  clearColor  The clear color.
+		 *
+		 * @return     `*this`.
 		 */
-		Context& clear(const std::shared_ptr<IDynamicTexture>& texture, const Color4f& clearColor) override;
+		virtual IContext& clear(const std::shared_ptr<IDynamicTexture>& texture, const Color4f& clearColor) =0;
 	};
 }
 
-#endif
-
-#endif  // #ifndef INCLUDE_NENE_GRAPHICS_WINDOWS_DIRECT3D11_CONTEXT_HPP
+#endif  // #ifndef INCLUDE_NENE_GRAPHICS_ICONTEXT_HPP

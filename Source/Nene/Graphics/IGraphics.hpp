@@ -34,6 +34,7 @@ namespace Nene
 {
 	// Forward declarations.
 	class Image;
+	class IContext;
 	class IDynamicTexture;
 	class IPixelShader;
 	class IScreen;
@@ -61,6 +62,13 @@ namespace Nene
 		 * @brief      Destructor.
 		 */
 		virtual ~IGraphics() =default;
+
+		/**
+		 * @brief      Returns graphics context.
+		 *
+		 * @return     Graphics context.
+		 */
+		virtual std::shared_ptr<IContext> context() =0;
 
 		/**
 		 * @brief      Creates the screen instance.

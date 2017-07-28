@@ -63,7 +63,13 @@ namespace Nene::Windows::Direct3D11
 		/**
 		 * @brief      Destructor.
 		 */
-		~Graphics();
+		~Graphics() =default;
+
+		/**
+		 * @see        `Nene::IGraphics::context()`.
+		 */
+		[[nodiscard]]
+		std::shared_ptr<IContext> context() override;
 
 		/**
 		 * @see        `Nene::IGraphics::screen()`.

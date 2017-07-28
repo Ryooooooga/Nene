@@ -25,7 +25,10 @@
 #if defined(NENE_OS_WINDOWS)
 
 #include <cassert>
+#include "../../../Exceptions/InvalidTypeException.hpp"
 #include "Context.hpp"
+#include "DynamicTexture.hpp"
+#include "Screen.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
@@ -35,6 +38,50 @@ namespace Nene::Windows::Direct3D11
 		assert(device);
 
 		device->GetImmediateContext(immediateContext_.GetAddressOf());
+	}
+
+	Context& Context::flush()
+	{
+
+		return *this;
+	}
+
+	Context& Context::present(const std::shared_ptr<IScreen>& screen)
+	{
+		const auto screen_Direct3D11 = std::dynamic_pointer_cast<Screen>(screen);
+
+		// Type check.
+		if (!screen_Direct3D11)
+		{
+			throw InvalidTypeException { u8"Argument must be a Direct3D11 screen." };
+		}
+
+		// Flush command buffer.
+		flush();
+
+		// Present screen.
+		screen_Direct3D11->swapChain()->Present(1, 0);
+
+		return *this;
+	}
+
+	Context& Context::clear(const std::shared_ptr<IDynamicTexture>& texture, const Color4f& clearColor)
+	{
+		const auto texture_Direct3D11 = std::dynamic_pointer_cast<DynamicTexture>(texture);
+
+		// Type check.
+		if (!texture_Direct3D11)
+		{
+			throw InvalidTypeException { u8"Argument must be a Direct3D11 dynamic texture." };
+		}
+
+		// Clear texture.
+		// TODO: prototype.
+		const FLOAT color[4] = { clearColor.red, clearColor.green, clearColor.blue, clearColor.alpha };
+
+		immediateContext_->ClearRenderTargetView(texture_Direct3D11->renderTargetView().Get(), color);
+
+		return *this;
 	}
 }
 

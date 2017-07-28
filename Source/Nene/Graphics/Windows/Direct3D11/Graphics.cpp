@@ -153,7 +153,10 @@ namespace Nene::Windows::Direct3D11
 		context_ = std::make_shared<Context>(device_);
 	}
 
-	Graphics::~Graphics() =default;
+	std::shared_ptr<IContext> Graphics::context()
+	{
+		return context_;
+	}
 
 	std::shared_ptr<IScreen> Graphics::screen(const std::shared_ptr<IWindow>& window)
 	{
@@ -170,7 +173,7 @@ namespace Nene::Windows::Direct3D11
 
 		return window_Windows
 			? std::make_shared<Screen>(device_, window_Windows, size)
-			: throw InvalidTypeException { u8"Window must be a Windows API window." };
+			: throw InvalidTypeException { u8"Argument must be a Windows API window." };
 	}
 
 	std::shared_ptr<IVertexBuffer<Vertex2D>> Graphics::vertexBuffer2D(UInt32 capacity)
