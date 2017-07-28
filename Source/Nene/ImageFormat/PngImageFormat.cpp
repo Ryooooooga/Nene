@@ -104,12 +104,12 @@ namespace Nene
 		// Initialize libpng.
 		if (!(png = ::png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, error, warning)))
 		{
-			throw EngineException { u8"Failed to create png read struct." };
+			throw PngImageFormatException { u8"Failed to create png read struct." };
 		}
 
 		if (!(info = ::png_create_info_struct(png)))
 		{
-			throw EngineException { u8"Failed to cerate png info struct." };
+			throw PngImageFormatException { u8"Failed to cerate png info struct." };
 		}
 
 		// Set callback.
@@ -206,12 +206,12 @@ namespace Nene
 			// Initialize libpng.
 			if (!(png = ::png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, error, warning)))
 			{
-				throw EngineException { u8"Failed to create png write struct." };
+				throw PngImageFormatException { u8"Failed to create png write struct." };
 			}
 
 			if (!(info = ::png_create_info_struct(png)))
 			{
-				throw EngineException { u8"Failed to cerate png info struct." };
+				throw PngImageFormatException { u8"Failed to cerate png info struct." };
 			}
 
 			// Set callback.
