@@ -38,12 +38,13 @@
 namespace Nene::Windows::Direct3D11
 {
 	Context::Context(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
-		: immediateContext_()
-		, commandList_()
-		, spriteBatch_()
-		, renderTarget_()
-		, vertexShader_()
-		, pixelShader_()
+		: immediateContext_ ()
+		, commandList_      ()
+		, spriteBatch_      ()
+		, renderTarget_     ()
+		, vertexShader_     ()
+		, pixelShader_      ()
+		, viewport_         ()
 	{
 		assert(device);
 
@@ -52,7 +53,9 @@ namespace Nene::Windows::Direct3D11
 
 		// Create resources.
 		commandList_ = std::make_unique<CommandList>();
-		spriteBatch_ = std::make_unique<SpriteBatch>(device);
+		spriteBatch_ = std::make_unique<SpriteBatch>(immediateContext_);
+
+		assert(spriteBatch_);
 	}
 
 	Context::~Context() =default;
@@ -83,17 +86,21 @@ namespace Nene::Windows::Direct3D11
 		immediateContext_->ClearRenderTargetView(command.renderTarget.Get(), color);
 	}
 
-	void Context::executeCommand(const CommandSetVertexBuffer& command)
+	void Context::executeCommand(const CommandSetViewport& command)
 	{
-		UINT stride = 0;
-		UINT offset = 0;
+		D3D11_VIEWPORT viewports[1] =
+		{
+			{
+				/*.TopLeftX = */command.viewport.position.x,
+				/*.TopLeftY = */command.viewport.position.y,
+				/*.Width    = */command.viewport.size.width,
+				/*.Height   = */command.viewport.size.height,
+				/*.MinDepth = */0.f,
+				/*.MaxDepth = */1.f,
+			}
+		};
 
-		immediateContext_->IASetVertexBuffers(0, 1, command.vertexBuffer.GetAddressOf(), &stride, &offset);
-	}
-
-	void Context::executeCommand(const CommandSetIndexBuffer& command)
-	{
-		immediateContext_->IASetIndexBuffer(command.indexBuffer.Get(), command.format, 0);
+		immediateContext_->RSSetViewports(std::extent_v<decltype(viewports)>, viewports);
 	}
 
 	void Context::executeCommand(const CommandSetVertexShader& command)
@@ -107,12 +114,30 @@ namespace Nene::Windows::Direct3D11
 		immediateContext_->PSSetShader(command.pixelShader.Get(), nullptr, 0);
 	}
 
+	void Context::executeCommand(const CommandDraw& command)
+	{
+		immediateContext_->DrawIndexed(command.indexCount, command.indexOffset, 0);
+	}
+
 	void Context::executeCommand([[maybe_unused]] const CommandNop& command)
 	{
 	}
 
 	Context& Context::flush()
 	{
+		// Update batch.
+		spriteBatch_->updateBuffers(0, 0);
+
+		// Set buffers.
+		UINT stride = spriteBatch_->vertexBuffer()->byteStride();
+		UINT offset = 0;
+
+		immediateContext_->IASetVertexBuffers(0, 1, spriteBatch_->vertexBuffer()->vertexBuffer().GetAddressOf(), &stride, &offset);
+		immediateContext_->IASetIndexBuffer(spriteBatch_->indexBuffer()->indexBuffer().Get(), spriteBatch_->indexBuffer()->format(), 0);
+
+		// Initialize context state.
+		immediateContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 		// Execute command
 		for (const auto& command : commandList_->commands())
 		{
@@ -125,7 +150,12 @@ namespace Nene::Windows::Direct3D11
 		// Clear command list.
 		commandList_->clear();
 
+		// Clear sprite batch.
+		spriteBatch_->clear();
+
 		// Clear state.
+		viewport(viewport_);
+
 		if (renderTarget_)
 		{
 			renderTarget(std::exchange(renderTarget_, nullptr));
@@ -206,55 +236,14 @@ namespace Nene::Windows::Direct3D11
 		return *this;
 	}
 
-	Context& Context::vertexBuffer(const std::shared_ptr<IVertexBuffer>& nextVertexBuffer)
+	Context& Context::viewport(const Rectanglef& viewport)
 	{
-		// Type check.
-		const auto vertexBuffer_Direct3D11 = std::dynamic_pointer_cast<VertexBufferBase>(nextVertexBuffer);
-
-		if (!vertexBuffer_Direct3D11)
+		commandList_->overwriteLastOrPush(CommandSetViewport
 		{
-			throw InvalidTypeException { u8"Argument must be a Direct3D11 vertex shader." };
-		}
-
-		if (vertexBuffer_Direct3D11 == vertexBuffer_)
-		{
-			return *this;
-		}
-
-		// Push command.
-		commandList_->overwriteLastOrPush(CommandSetVertexBuffer
-		{
-			vertexBuffer_Direct3D11->vertexBuffer(),
+			viewport,
 		});
 
-		vertexBuffer_ = vertexBuffer_Direct3D11;
-
-		return *this;
-	}
-
-	Context& Context::indexBuffer(const std::shared_ptr<IIndexBuffer>& nextIndexBuffer)
-	{
-		// Type check.
-		const auto indexBuffer_Direct3D11 = std::dynamic_pointer_cast<IndexBufferBase>(nextIndexBuffer);
-
-		if (!indexBuffer_Direct3D11)
-		{
-			throw InvalidTypeException { u8"Argument must be a Direct3D11 index shader." };
-		}
-
-		if (indexBuffer_Direct3D11 == indexBuffer_)
-		{
-			return *this;
-		}
-
-		// Push command.
-		commandList_->overwriteLastOrPush(CommandSetIndexBuffer
-		{
-			indexBuffer_Direct3D11->indexBuffer(),
-			indexBuffer_Direct3D11->format(),
-		});
-
-		indexBuffer_ = indexBuffer_Direct3D11;
+		viewport_ = viewport;
 
 		return *this;
 	}
@@ -312,19 +301,52 @@ namespace Nene::Windows::Direct3D11
 		return *this;
 	}
 
+	Context& Context::draw(ArrayView<Vertex2D> vertices, ArrayView<UInt32> indices)
+	{
+		Vertex2D* vertexBuffer;
+		UInt32*   indexBuffer;
+		UInt32    indexOffset;
+
+		if (vertices.size() > (std::numeric_limits<UInt32>::max)() || indices.size() > (std::numeric_limits<UInt32>::max)())
+		{
+			return *this;
+		}
+
+		UInt32 numVertices = static_cast<UInt32>(vertices.size());
+		UInt32 numIndices  = static_cast<UInt32>(indices.size());
+
+		if (!spriteBatch_->nextBuffer(vertexBuffer, indexBuffer, indexOffset, numVertices, numIndices))
+		{
+			return *this;
+		}
+
+		for (const auto& vertex : vertices)
+		{
+			*(vertexBuffer++) = vertex;
+		}
+
+		for (const auto index : indices)
+		{
+			*(indexBuffer++) = index + indexOffset;
+		}
+
+		commandList_->push(CommandDraw
+		{
+			spriteBatch_->indexPos() - numIndices,
+			numIndices,
+		});
+
+		return *this;
+	}
+
 	std::shared_ptr<IDynamicTexture> Context::renderTarget() const noexcept
 	{
 		return renderTarget_;
 	}
 
-	std::shared_ptr<IVertexBuffer> Context::vertexBuffer() const noexcept
+	Rectanglef Context::viewport() const noexcept
 	{
-		return vertexBuffer_;
-	}
-
-	std::shared_ptr<IIndexBuffer> Context::indexBuffer() const noexcept
-	{
-		return indexBuffer_;
+		return viewport_;
 	}
 
 	std::shared_ptr<IVertexShader> Context::vertexShader() const noexcept

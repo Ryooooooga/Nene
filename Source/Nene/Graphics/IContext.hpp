@@ -25,7 +25,9 @@
 #define INCLUDE_NENE_GRAPHICS_ICONTEXT_HPP
 
 #include <memory>
-#include "../Color.hpp"
+#include "../ArrayView.hpp"
+#include "../Vertex2D.hpp"
+#include "../Geometry/Rectangle.hpp"
 
 namespace Nene
 {
@@ -89,22 +91,13 @@ namespace Nene
 		virtual IContext& clear(const Color4f& clearColor) =0;
 
 		/**
-		 * @brief      Sets the current vertex buffer.
+		 * @brief      Sets the viewport.
 		 *
-		 * @param[in]  nextVertexBuffer  The vertex buffer to set.
-		 *
-		 * @return     `*this`.
-		 */
-		virtual IContext& vertexBuffer(const std::shared_ptr<IVertexBuffer>& nextVertexBuffer) =0;
-
-		/**
-		 * @brief      Sets the current index buffer.
-		 *
-		 * @param[in]  nextIndexBuffer  The index buffer to set.
+		 * @param[in]  nextViewport  The viewport to set.
 		 *
 		 * @return     `*this`.
 		 */
-		virtual IContext& indexBuffer(const std::shared_ptr<IIndexBuffer>& nextIndexBuffer) =0;
+		virtual IContext& viewport(const Rectanglef& nextViewport) =0;
 
 		/**
 		 * @brief      Sets the current vertex shader.
@@ -125,6 +118,16 @@ namespace Nene
 		virtual IContext& pixelShader(const std::shared_ptr<IPixelShader>& nextPixelShader) =0;
 
 		/**
+		 * @brief      Draw polygon.
+		 *
+		 * @param[in]  vertices  Vertices.
+		 * @param[in]  indices   Indices.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IContext& draw(ArrayView<Vertex2D> vertices, ArrayView<UInt32> indices) =0;
+
+		/**
 		 * @brief      Returns the current render target texture.
 		 *
 		 * @return     The current render target texture.
@@ -133,20 +136,12 @@ namespace Nene
 		virtual std::shared_ptr<IDynamicTexture> renderTarget() const =0;
 
 		/**
-		 * @brief      Returns the current vertex buffer.
+		 * @brief      Returns the current viewport.
 		 *
-		 * @return     The current vertex buffer.
+		 * @return     The current viewport.
 		 */
 		[[nodiscard]]
-		virtual std::shared_ptr<IVertexBuffer> vertexBuffer() const =0;
-
-		/**
-		 * @brief      Returns the current index buffer.
-		 *
-		 * @return     The current index buffer.
-		 */
-		[[nodiscard]]
-		virtual std::shared_ptr<IIndexBuffer> indexBuffer() const =0;
+		virtual Rectanglef viewport() const =0;
 
 		/**
 		 * @brief      Returns the current vertex shader.

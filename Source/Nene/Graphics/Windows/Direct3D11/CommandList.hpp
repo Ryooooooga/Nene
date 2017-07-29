@@ -35,6 +35,7 @@
 #include "../../../ArrayView.hpp"
 #include "../../../Color.hpp"
 #include "../../../Uncopyable.hpp"
+#include "../../../Geometry/Rectangle.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
@@ -49,15 +50,9 @@ namespace Nene::Windows::Direct3D11
 		Color4f clearColor;
 	};
 
-	struct CommandSetVertexBuffer
+	struct CommandSetViewport
 	{
-		Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
-	};
-
-	struct CommandSetIndexBuffer
-	{
-		Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
-		DXGI_FORMAT format;
+		Rectanglef viewport;
 	};
 
 	struct CommandSetVertexShader
@@ -71,6 +66,12 @@ namespace Nene::Windows::Direct3D11
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
 	};
 
+	struct CommandDraw
+	{
+		UInt32 indexOffset;
+		UInt32 indexCount;
+	};
+
 	struct CommandNop
 	{
 	};
@@ -79,10 +80,10 @@ namespace Nene::Windows::Direct3D11
 	<
 		CommandSetRenderTarget,
 		CommandClearRenderTarget,
-		CommandSetVertexBuffer,
-		CommandSetIndexBuffer,
+		CommandSetViewport,
 		CommandSetVertexShader,
 		CommandSetPixelShader,
+		CommandDraw,
 		CommandNop
 	>;
 

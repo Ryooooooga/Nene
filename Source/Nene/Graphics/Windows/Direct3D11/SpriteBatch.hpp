@@ -51,6 +51,8 @@ namespace Nene::Windows::Direct3D11
 	class SpriteBatch final
 		: private Uncopyable
 	{
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext> context_;
+
 		std::shared_ptr<VertexBuffer<Vertex2D>> vertexBuffer_;
 		std::shared_ptr<IndexBuffer<UInt32>>    indexBuffer_;
 
@@ -64,13 +66,20 @@ namespace Nene::Windows::Direct3D11
 		/**
 		 * @brief      Constructor.
 		 *
+		 * @param[in]  context  Direct3D11 device context.
 		 */
-		explicit SpriteBatch(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
+		explicit SpriteBatch(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
 
 		/**
 		 * @brief      Destructor.
 		 */
 		~SpriteBatch() =default;
+
+		void clear()
+		{
+			vertexPos_ = 0;
+			indexPos_  = 0;
+		}
 
 		/**
 		 * @brief      Get next buffer pointers.
@@ -84,6 +93,14 @@ namespace Nene::Windows::Direct3D11
 		 * @return     `true` if succeeded, `false` otherwise.
 		 */
 		bool nextBuffer(Vertex2D*& vertices, UInt32*& indices, UInt32& indexOffset, UInt32 vertexCount, UInt32 indexCount);
+
+		/**
+		 * @brief      Updates buffer data.
+		 *
+		 * @param[in]  vertexOffset  The vertex position offset.
+		 * @param[in]  indexOffset   The index position offset.
+		 */
+		void updateBuffers(UInt32 vertexOffset, UInt32 indexOffset);
 
 		/**
 		 * @brief      Returns the vertex buffer.
@@ -105,6 +122,17 @@ namespace Nene::Windows::Direct3D11
 		std::shared_ptr<IndexBuffer<UInt32>> indexBuffer() const noexcept
 		{
 			return indexBuffer_;
+		}
+
+		/**
+		 * @brief      Returns the current index writing position.
+		 *
+		 * @return     The current index writing position.
+		 */
+		[[nodiscard]]
+		UInt32 indexPos() const noexcept
+		{
+			return indexPos_;
 		}
 	};
 }

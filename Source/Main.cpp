@@ -27,38 +27,90 @@
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 
+#include <iostream>
 #include <crtdbg.h>
 #include <Windows.h>
-#include "Nene/Engine/Windows/Engine.hpp"
-#include "Nene/Graphics/IGraphics.hpp"
-#include "Nene/Window/IWindow.hpp"
-#include "Nene/Color.hpp"
+#include "Nene/Console.hpp"
+#include "Nene/Pallet.hpp"
+#include "Nene/Dialog/MessageDialog.hpp"
+#include "Nene/Window/Windows/Window.hpp"
+#include "Nene/Graphics/IContext.hpp"
+#include "Nene/Graphics/IScreen.hpp"
+#include "Nene/Graphics/Windows/Direct3D11/Graphics.hpp"
+
+#include "Nene/File.hpp"
 
 int WINAPI wWinMain([[maybe_unused]] HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance, [[maybe_unused]] LPWSTR lpCmdLine, [[maybe_unused]] int nCmdShow)
 {
-	try
-	{
 #ifdef NENE_DEBUG
-		::_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	::_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-		auto engine   = std::make_shared<Nene::Windows::Engine>();
-		auto graphics = engine->graphics();
-		auto window   = engine->window(u8"ねねっち", { 640, 480 });
-		auto screen   = engine->graphics()->screen(window);
+	try
+	{
+		using namespace Nene;
+		using namespace Nene::Windows;
 
-		window->show();
+		Console::show();
 
-		while (window->update())
+		auto window1      = std::make_shared<Window>(u8"ねねっち", Size2Di {640, 480});
+		auto window2      = std::make_shared<Window>(u8"あおっち", Size2Di {640, 480});
+		auto graphics     = std::make_unique<Direct3D11::Graphics>();
+		auto context      = graphics->context();
+		auto screen1      = graphics->screen(window1);
+		auto screen2      = graphics->screen(window2);
+		auto path         = std::experimental::filesystem::u8path(u8"Assets/Shaders/Shader2D.hlsl");
+		auto source       = File::read(path);
+		auto vertexShader = graphics->vertexShader(path.u8string(), source, u8"VS_shape");
+		auto pixelShader  = graphics->pixelShader(path.u8string(), source, u8"PS_shape");
+
+		window1->show(true);
+		window2->show(true);
+
+		Vertex2D v[3] =
 		{
-			::Sleep(1);
-		}
+			{ {0.f, 0.f}, 0xffff0000, {0.f, 0.f} },
+			{ {1.f, 0.f}, 0xff00ff00, {0.f, 0.f} },
+			{ {0.f, 1.f}, 0xff0000ff, {0.f, 0.f} },
+		};
 
+		UInt32 i[3] =
+		{
+			0, 2, 1
+		};
+
+		context->viewport({ 0.f, 0.f, 320.f, 480.f });
+
+		while (!window1->update().isClosing() && !window2->update().isClosing())
+		{
+			context->renderTarget(screen1->renderTarget());
+			context->clear(0xffff0000);
+
+			context->vertexShader(vertexShader);
+			context->pixelShader(pixelShader);
+
+			context->draw(v, i);
+
+			context->present(screen1);
+
+			context->renderTarget(screen2->renderTarget());
+			context->clear(0xff0000ff);
+
+			context->vertexShader(vertexShader);
+			context->pixelShader(pixelShader);
+
+			context->draw(v, i);
+
+			context->present(screen2);
+		}
+		
 		return 0;
 	}
 	catch (const std::exception& e)
 	{
-		::MessageBoxA(nullptr, e.what(), typeid(e).name(), MB_ICONSTOP);
+		Nene::messageDialog(typeid(e).name(), e.what())
+			->icon(Nene::MessageDialogIcon::error)
+			.show();
 
 		return -1;
 	}

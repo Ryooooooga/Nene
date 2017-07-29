@@ -40,18 +40,16 @@ namespace Nene::Windows::Direct3D11
 	// Forward declarations.
 	struct CommandSetRenderTarget;
 	struct CommandClearRenderTarget;
-	struct CommandSetVertexBuffer;
-	struct CommandSetIndexBuffer;
+	struct CommandSetViewport;
 	struct CommandSetVertexShader;
 	struct CommandSetPixelShader;
+	struct CommandDraw;
 	struct CommandNop;
 
 	class CommandList;
 	class DynamicTexture;
-	class IndexBufferBase;
 	class PixelShader;
 	class SpriteBatch;
-	class VertexBufferBase;
 	class VertexShader;
 
 	/**
@@ -66,18 +64,18 @@ namespace Nene::Windows::Direct3D11
 		std::unique_ptr<CommandList>    commandList_;
 		std::unique_ptr<SpriteBatch>    spriteBatch_;
 
-		std::shared_ptr<DynamicTexture>   renderTarget_;
-		std::shared_ptr<VertexBufferBase> vertexBuffer_;
-		std::shared_ptr<IndexBufferBase>  indexBuffer_;
-		std::shared_ptr<VertexShader>     vertexShader_;
-		std::shared_ptr<PixelShader>      pixelShader_;
+		std::shared_ptr<DynamicTexture> renderTarget_;
+		std::shared_ptr<VertexShader>   vertexShader_;
+		std::shared_ptr<PixelShader>    pixelShader_;
+
+		Rectanglef viewport_;
 
 		void executeCommand(const CommandSetRenderTarget&   command);
 		void executeCommand(const CommandClearRenderTarget& command);
-		void executeCommand(const CommandSetVertexBuffer&   command);
-		void executeCommand(const CommandSetIndexBuffer&    command);
+		void executeCommand(const CommandSetViewport&       command);
 		void executeCommand(const CommandSetVertexShader&   command);
 		void executeCommand(const CommandSetPixelShader&    command);
+		void executeCommand(const CommandDraw&              command);
 		void executeCommand(const CommandNop&               command);
 
 	public:
@@ -109,19 +107,14 @@ namespace Nene::Windows::Direct3D11
 		Context& renderTarget(const std::shared_ptr<IDynamicTexture>& nextRenderTarget) override;
 
 		/**
+		 * @see        `Nene::IContext::viewport()`.
+		 */
+		Context& viewport(const Rectanglef& nextViewport) override;
+
+		/**
 		 * @see        `Nene::IContext::clear()`.
 		 */
 		Context& clear(const Color4f& clearColor) override;
-
-		/**
-		 * @see        `Nene::IContext::vertexBuffer()`.
-		 */
-		Context& vertexBuffer(const std::shared_ptr<IVertexBuffer>& nextVertexBuffer) override;
-
-		/**
-		 * @see        `Nene::IContext::indexBuffer()`.
-		 */
-		Context& indexBuffer(const std::shared_ptr<IIndexBuffer>& nextIndexBuffer) override;
 
 		/**
 		 * @see        `Nene::IContext::vertexShader()`.
@@ -134,22 +127,22 @@ namespace Nene::Windows::Direct3D11
 		Context& pixelShader(const std::shared_ptr<IPixelShader>& nextPixelShader) override;
 
 		/**
+		 * @see        `Nene::IContext::draw()`.
+		 */
+		Context& draw(ArrayView<Vertex2D> vertices, ArrayView<UInt32> indices) override;
+
+		/**
 		 * @see        `Nene::IContext::renderTarget()`.
 		 */
 		[[nodiscard]]
 		std::shared_ptr<IDynamicTexture> renderTarget() const noexcept override;
 
-		/**
-		 * @see        `Nene::IContext::vertexBuffer()`.
-		 */
-		[[nodiscard]]
-		std::shared_ptr<IVertexBuffer> vertexBuffer() const noexcept override;
 
 		/**
-		 * @see        `Nene::IContext::indexBuffer()`.
+		 * @see        `Nene::IContext::viewport()`.
 		 */
 		[[nodiscard]]
-		std::shared_ptr<IIndexBuffer> indexBuffer() const noexcept override;
+		Rectanglef viewport() const noexcept override;
 
 		/**
 		 * @see        `Nene::IContext::vertexShader()`.

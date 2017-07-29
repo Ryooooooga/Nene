@@ -24,6 +24,7 @@
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
+#include "../../../Exceptions/Windows/DirectXException.hpp"
 #include "IndexBuffer.hpp"
 #include "SpriteBatch.hpp"
 #include "VertexBuffer.hpp"
@@ -39,20 +40,33 @@ namespace Nene::Windows::Direct3D11
 		constexpr UInt32 maxNumIndices    = indexBufferSize  * 1;
 	}
 
-	SpriteBatch::SpriteBatch(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
-		: vertexBuffer_ (std::make_shared<VertexBuffer<Vertex2D>>(device, vertexBufferSize))
-		, indexBuffer_  (std::make_shared<IndexBuffer<UInt32>>(device, indexBufferSize))
+	SpriteBatch::SpriteBatch(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
+		: context_      (context)
+		, vertexBuffer_ ()
+		, indexBuffer_  ()
 		, vertices_     (vertexBufferSize)
 		, indices_      (indexBufferSize)
 		, vertexPos_    (0)
 		, indexPos_     (0)
 	{
+		assert(context);
+
+		// Get device.
+		Microsoft::WRL::ComPtr<ID3D11Device> device;
+		context->GetDevice(device.GetAddressOf());
+
+		// Create buffers.
+		vertexBuffer_ = std::make_shared<VertexBuffer<Vertex2D>>(device, vertexBufferSize);
+		indexBuffer_  = std::make_shared<IndexBuffer<UInt32>>(device, indexBufferSize);
 	}
 
 	bool SpriteBatch::nextBuffer(Vertex2D*& vertices, UInt32*& indices, UInt32& indexOffset, UInt32 vertexCount, UInt32 indexCount)
 	{
 		if (vertexCount >= vertices_.size() - vertexPos_ || indexCount >= indices_.size() - indexPos_)
 		{
+			// TODO: next batch.
+			std::puts("Next batch.");
+
 			return false;
 		}
 
@@ -64,6 +78,29 @@ namespace Nene::Windows::Direct3D11
 		indexPos_  += indexCount;
 
 		return true;
+	}
+
+	void SpriteBatch::updateBuffers(UInt32 vertexOffset, UINT indexOffset)
+	{
+		D3D11_MAPPED_SUBRESOURCE resource;
+
+		// Update vertex buffer.
+		throwIfFailed(
+			context_->Map(vertexBuffer_->vertexBuffer().Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource),
+			u8"Failed to update vertex buffer.");
+
+		memcpy(resource.pData, vertices_.data() + vertexOffset, sizeof(Vertex2D) * vertexBufferSize);
+
+		context_->Unmap(vertexBuffer_->vertexBuffer().Get(), 0);
+
+		// Update index buffer.
+		throwIfFailed(
+			context_->Map(indexBuffer_->indexBuffer().Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource),
+			u8"Failed to update index buffer.");
+
+		memcpy(resource.pData, indices_.data() + indexOffset, sizeof(UInt32) * indexBufferSize);
+
+		context_->Unmap(indexBuffer_->indexBuffer().Get(), 0);
 	}
 }
 
