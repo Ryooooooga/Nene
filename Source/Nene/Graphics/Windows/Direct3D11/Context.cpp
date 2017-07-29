@@ -29,13 +29,18 @@
 #include "CommandList.hpp"
 #include "Context.hpp"
 #include "DynamicTexture.hpp"
+#include "PixelShader.hpp"
 #include "Screen.hpp"
+#include "VertexShader.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
 	Context::Context(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
 		: immediateContext_()
 		, commandList_()
+		, renderTarget_()
+		, vertexShader_()
+		, pixelShader_()
 	{
 		assert(device);
 
@@ -48,6 +53,19 @@ namespace Nene::Windows::Direct3D11
 
 	Context::~Context() =default;
 
+	void Context::executeCommand(const CommandSetRenderTarget& command)
+	{
+		ID3D11RenderTargetView* const renderTargetViews[1] =
+		{
+			command.renderTarget.Get(),
+		};
+
+		immediateContext_->OMSetRenderTargets(
+			std::extent_v<decltype(renderTargetViews)>,
+			renderTargetViews,
+			nullptr);
+	}
+
 	void Context::executeCommand(const CommandClearRenderTarget& command)
 	{
 		const FLOAT color[4] =
@@ -59,6 +77,17 @@ namespace Nene::Windows::Direct3D11
 		};
 
 		immediateContext_->ClearRenderTargetView(command.renderTarget.Get(), color);
+	}
+
+	void Context::executeCommand(const CommandSetVertexShader& command)
+	{
+		immediateContext_->VSSetShader(command.vertexShader.Get(), nullptr, 0);
+		immediateContext_->IASetInputLayout(command.inputLayout.Get());
+	}
+
+	void Context::executeCommand(const CommandSetPixelShader& command)
+	{
+		immediateContext_->PSSetShader(command.pixelShader.Get(), nullptr, 0);
 	}
 
 	void Context::executeCommand([[maybe_unused]] const CommandNop& command)
@@ -79,14 +108,30 @@ namespace Nene::Windows::Direct3D11
 		// Clear command list.
 		commandList_->clear();
 
+		// Clear state.
+		if (renderTarget_)
+		{
+			renderTarget(std::exchange(renderTarget_, nullptr));
+		}
+
+		if (vertexShader_)
+		{
+			vertexShader(std::exchange(vertexShader_, nullptr));
+		}
+
+		if (pixelShader_)
+		{
+			pixelShader(std::exchange(pixelShader_, nullptr));
+		}
+
 		return *this;
 	}
 
 	Context& Context::present(const std::shared_ptr<IScreen>& screen)
 	{
+		// Type check.
 		const auto screen_Direct3D11 = std::dynamic_pointer_cast<Screen>(screen);
 
-		// Type check.
 		if (!screen_Direct3D11)
 		{
 			throw InvalidTypeException { u8"Argument must be a Direct3D11 screen." };
@@ -101,22 +146,115 @@ namespace Nene::Windows::Direct3D11
 		return *this;
 	}
 
-	Context& Context::clear(const std::shared_ptr<IDynamicTexture>& texture, const Color4f& clearColor)
+	Context& Context::renderTarget(const std::shared_ptr<IDynamicTexture>& nextRenderTarget)
 	{
-		const auto texture_Direct3D11 = std::dynamic_pointer_cast<DynamicTexture>(texture);
-
 		// Type check.
-		if (!texture_Direct3D11)
+		const auto renderTarget_Direct3D11 = std::dynamic_pointer_cast<DynamicTexture>(nextRenderTarget);
+
+		if (!renderTarget_Direct3D11)
 		{
 			throw InvalidTypeException { u8"Argument must be a Direct3D11 dynamic texture." };
 		}
 
-		// Clear texture.
-		auto& command = commandList_->lastCommandOrPush<CommandClearRenderTarget>();
-		command.renderTarget = texture_Direct3D11->renderTargetView();
-		command.clearColor   = clearColor;
+		if (renderTarget_Direct3D11 == renderTarget_)
+		{
+			return *this;
+		}
+
+		// Push command.
+		commandList_->overwriteLastOrPush(CommandSetRenderTarget
+		{
+			renderTarget_Direct3D11->renderTargetView(),
+		});
+
+		renderTarget_ = renderTarget_Direct3D11;
 
 		return *this;
+	}
+
+	Context& Context::clear(const Color4f& clearColor)
+	{
+		if (!renderTarget_)
+		{
+			throw EngineException { u8"Render target has not been set." };
+		}
+
+		// Clear texture.
+		commandList_->overwriteLastOrPush(CommandClearRenderTarget
+		{
+			renderTarget_->renderTargetView(),
+			clearColor,
+		});
+
+		return *this;
+	}
+
+	Context& Context::vertexShader(const std::shared_ptr<IVertexShader>& nextVertexShader)
+	{
+		// Type check.
+		const auto vertexShader_Direct3D11 = std::dynamic_pointer_cast<VertexShader>(nextVertexShader);
+
+		if (!vertexShader_Direct3D11)
+		{
+			throw InvalidTypeException { u8"Argument must be a Direct3D11 vertex shader." };
+		}
+
+		if (vertexShader_Direct3D11 == vertexShader_)
+		{
+			return *this;
+		}
+
+		// Push command.
+		commandList_->overwriteLastOrPush(CommandSetVertexShader
+		{
+			vertexShader_Direct3D11->vertexShader(),
+			vertexShader_Direct3D11->inputLayout(),
+		});
+
+		vertexShader_ = vertexShader_Direct3D11;
+
+		return *this;
+	}
+
+	Context& Context::pixelShader(const std::shared_ptr<IPixelShader>& nextPixelShader)
+	{
+		// Type check.
+		const auto pixelShader_Direct3D11 = std::dynamic_pointer_cast<PixelShader>(nextPixelShader);
+
+		if (!pixelShader_Direct3D11)
+		{
+			throw InvalidTypeException { u8"Argument must be a Direct3D11 pixel shader." };
+		}
+
+		if (pixelShader_Direct3D11 == pixelShader_)
+		{
+			return *this;
+		}
+
+		// Push command.
+		commandList_->overwriteLastOrPush(CommandSetPixelShader
+		{
+			pixelShader_Direct3D11->pixelShader(),
+		});
+
+		pixelShader_ = pixelShader_Direct3D11;
+
+		return *this;
+	}
+
+	std::shared_ptr<IDynamicTexture> Context::renderTarget() const noexcept
+	{
+		return renderTarget_;
+	}
+
+	std::shared_ptr<IVertexShader> Context::vertexShader() const noexcept
+	{
+		return vertexShader_;
+	}
+
+	std::shared_ptr<IPixelShader> Context::pixelShader() const noexcept
+	{
+		return pixelShader_;
 	}
 }
 

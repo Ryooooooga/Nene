@@ -71,14 +71,64 @@ namespace Nene
 		virtual IContext& present(const std::shared_ptr<IScreen>& screen) =0;
 
 		/**
-		 * @brief      Clears the dynamic texture.
+		 * @brief      Sets the render target texture.
 		 *
-		 * @param[in]  texture     The dynamic texture to clear.
+		 * @param[in]  newRenderTarget  The new render target.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IContext& renderTarget(const std::shared_ptr<IDynamicTexture>& newRenderTarget) =0;
+
+		/**
+		 * @brief      Clears the current render target.
+		 *
 		 * @param[in]  clearColor  The clear color.
 		 *
 		 * @return     `*this`.
 		 */
-		virtual IContext& clear(const std::shared_ptr<IDynamicTexture>& texture, const Color4f& clearColor) =0;
+		virtual IContext& clear(const Color4f& clearColor) =0;
+
+		/**
+		 * @brief      Sets the current vertex shader.
+		 *
+		 * @param[in]  nextVertexShader  The vertex shader to set.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IContext& vertexShader(const std::shared_ptr<IVertexShader>& nextVertexShader) =0;
+
+		/**
+		 * @brief      Sets the current pixel shader.
+		 *
+		 * @param[in]  nextPixelShader  The pixel shader to set.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IContext& pixelShader(const std::shared_ptr<IPixelShader>& nextPixelShader) =0;
+
+		/**
+		 * @brief      Returns the current render target texture.
+		 *
+		 * @return     The current render target texture.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IDynamicTexture> renderTarget() const =0;
+
+		/**
+		 * @brief      Returns the current vertex shader.
+		 *
+		 * @return     The current vertex shader.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IVertexShader> vertexShader() const =0;
+
+		/**
+		 * @brief      Returns the current pixel shader.
+		 *
+		 * @return     The current pixel shader.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IPixelShader> pixelShader() const =0;
 	};
 }
 

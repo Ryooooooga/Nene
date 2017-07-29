@@ -38,10 +38,26 @@
 
 namespace Nene::Windows::Direct3D11
 {
+	struct CommandSetRenderTarget
+	{
+		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTarget;
+	};
+
 	struct CommandClearRenderTarget
 	{
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTarget;
 		Color4f clearColor;
+	};
+
+	struct CommandSetVertexShader
+	{
+		Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
+		Microsoft::WRL::ComPtr<ID3D11InputLayout>  inputLayout;
+	};
+
+	struct CommandSetPixelShader
+	{
+		Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
 	};
 
 	struct CommandNop
@@ -50,7 +66,10 @@ namespace Nene::Windows::Direct3D11
 
 	using Command = std::variant
 	<
+		CommandSetRenderTarget,
 		CommandClearRenderTarget,
+		CommandSetVertexShader,
+		CommandSetPixelShader,
 		CommandNop
 	>;
 
@@ -97,25 +116,38 @@ namespace Nene::Windows::Direct3D11
 		}
 
 		/**
-		 * @brief      Gets the last command if exists, or push new command.
+		 * @brief      Pushes new command.
+		 *
+		 * @param      command      The command data.
 		 *
 		 * @tparam     CommandType  Command type.
-		 *
-		 * @return     Reference to the command.
 		 */
 		template <typename CommandType>
-		[[nodiscard]]
-		CommandType& lastCommandOrPush()
+		void push(CommandType&& command)
+		{
+			commands_.emplace_back(std::move(command));
+		}
+
+		/**
+		 * @brief      Gets the last command if exists, or pushes new command.
+		 *
+		 * @param      command      The command data.
+		 *
+		 * @tparam     CommandType  Command type.
+		 */
+		template <typename CommandType>
+		void overwriteLastOrPush(CommandType& command)
 		{
 			if (auto p = std::get_if<CommandType>(&commands_.back()))
 			{
-				return *p;
+				// Overwrite.
+				*p = std::move(command);
 			}
-
-			// Add command.
-			commands_.emplace_back(CommandType {});
-
-			return std::get<CommandType>(commands_.back());
+			else
+			{
+				// Push command.
+				push(std::move(command));
+			}
 		}
 	};
 }

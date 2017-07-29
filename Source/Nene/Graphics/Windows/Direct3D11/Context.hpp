@@ -38,10 +38,16 @@
 namespace Nene::Windows::Direct3D11
 {
 	// Forward declarations.
+	struct CommandSetRenderTarget;
 	struct CommandClearRenderTarget;
+	struct CommandSetVertexShader;
+	struct CommandSetPixelShader;
 	struct CommandNop;
 
 	class CommandList;
+	class DynamicTexture;
+	class PixelShader;
+	class VertexShader;
 
 	/**
 	 * @brief      Direct3D11 graphics context.
@@ -52,9 +58,16 @@ namespace Nene::Windows::Direct3D11
 	{
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediateContext_;
 
-		std::unique_ptr<CommandList> commandList_;
+		std::unique_ptr<CommandList>    commandList_;
 
+		std::shared_ptr<DynamicTexture> renderTarget_;
+		std::shared_ptr<VertexShader>   vertexShader_;
+		std::shared_ptr<PixelShader>    pixelShader_;
+
+		void executeCommand(const CommandSetRenderTarget&   command);
 		void executeCommand(const CommandClearRenderTarget& command);
+		void executeCommand(const CommandSetVertexShader&   command);
+		void executeCommand(const CommandSetPixelShader&    command);
 		void executeCommand(const CommandNop&               command);
 
 	public:
@@ -81,9 +94,42 @@ namespace Nene::Windows::Direct3D11
 		Context& present(const std::shared_ptr<IScreen>& screen) override;
 
 		/**
+		 * @see        `Nene::IContext::renderTarget()`.
+		 */
+		Context& renderTarget(const std::shared_ptr<IDynamicTexture>& nextRenderTarget) override;
+
+		/**
 		 * @see        `Nene::IContext::clear()`.
 		 */
-		Context& clear(const std::shared_ptr<IDynamicTexture>& texture, const Color4f& clearColor) override;
+		Context& clear(const Color4f& clearColor) override;
+
+		/**
+		 * @see        `Nene::IContext::vertexShader()`.
+		 */
+		Context& vertexShader(const std::shared_ptr<IVertexShader>& nextVertexShader) override;
+
+		/**
+		 * @see        `Nene::IContext::pixelShader()`.
+		 */
+		Context& pixelShader(const std::shared_ptr<IPixelShader>& nextPixelShader) override;
+
+		/**
+		 * @see        `Nene::IContext::renderTarget()`.
+		 */
+		[[nodiscard]]
+		std::shared_ptr<IDynamicTexture> renderTarget() const noexcept override;
+
+		/**
+		 * @see        `Nene::IContext::vertexShader()`.
+		 */
+		[[nodiscard]]
+		std::shared_ptr<IVertexShader> vertexShader() const noexcept override;
+
+		/**
+		 * @see        `Nene::IContext::pixelShader()`.
+		 */
+		[[nodiscard]]
+		std::shared_ptr<IPixelShader> pixelShader() const noexcept override;
 	};
 }
 
