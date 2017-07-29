@@ -38,7 +38,8 @@ namespace Nene::Windows::Direct3D11
 	 * @brief      Direct3D11 vertex buffer implementation base.
 	 */
 	class VertexBufferBase
-		: private Uncopyable
+		: public  IVertexBuffer
+		, private Uncopyable
 	{
 	protected:
 		Microsoft::WRL::ComPtr<ID3D11Buffer> buffer_;

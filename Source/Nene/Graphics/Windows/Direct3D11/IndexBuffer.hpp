@@ -29,6 +29,7 @@
 
 #include <memory>
 #include "../../../Uncopyable.hpp"
+#include "../../../Exceptions/InvalidTypeException.hpp"
 #include "../../IIndexBuffer.hpp"
 #include "Detail/Buffer.hpp"
 
@@ -38,11 +39,13 @@ namespace Nene::Windows::Direct3D11
 	 * @brief      Direct3D11 index buffer implementation base.
 	 */
 	class IndexBufferBase
-		: private Uncopyable
+		: public  IIndexBuffer
+		, private Uncopyable
 	{
 	protected:
 		Microsoft::WRL::ComPtr<ID3D11Buffer> buffer_;
 		UInt32 capacity_;
+		DXGI_FORMAT format_;
 
 		/**
 		 * @brief      Constructor.
@@ -53,7 +56,14 @@ namespace Nene::Windows::Direct3D11
 		 */
 		explicit IndexBufferBase(const Microsoft::WRL::ComPtr<ID3D11Device>& device, UINT byteStride, UInt32 capacity)
 			: buffer_(Detail::createBuffer(device, D3D11_BIND_INDEX_BUFFER, byteStride, capacity))
-			, capacity_(capacity) {}
+			, capacity_(capacity)
+			, format_()
+		{
+			format_ =
+				byteStride == 1 ? DXGI_FORMAT_R8_UINT  :
+				byteStride == 2 ? DXGI_FORMAT_R16_UINT :
+				byteStride == 4 ? DXGI_FORMAT_R32_UINT : throw InvalidTypeException { u8"Unsupported index type." };
+		}
 
 	public:
 		/**
@@ -70,6 +80,17 @@ namespace Nene::Windows::Direct3D11
 		Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer() const noexcept
 		{
 			return buffer_;
+		}
+
+		/**
+		 * @brief      Returns the index format.
+		 *
+		 * @return     The index format.
+		 */
+		[[nodiscard]]
+		DXGI_FORMAT format() const noexcept
+		{
+			return format_;
 		}
 	};
 

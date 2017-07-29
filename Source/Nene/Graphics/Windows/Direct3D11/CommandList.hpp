@@ -49,6 +49,17 @@ namespace Nene::Windows::Direct3D11
 		Color4f clearColor;
 	};
 
+	struct CommandSetVertexBuffer
+	{
+		Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
+	};
+
+	struct CommandSetIndexBuffer
+	{
+		Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
+		DXGI_FORMAT format;
+	};
+
 	struct CommandSetVertexShader
 	{
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
@@ -68,6 +79,8 @@ namespace Nene::Windows::Direct3D11
 	<
 		CommandSetRenderTarget,
 		CommandClearRenderTarget,
+		CommandSetVertexBuffer,
+		CommandSetIndexBuffer,
 		CommandSetVertexShader,
 		CommandSetPixelShader,
 		CommandNop

@@ -32,7 +32,6 @@
 #endif
 
 #include <d3dcompiler.h>
-#include "../../../Exceptions/InvalidTypeException.hpp"
 #include "../../../Exceptions/Windows/DirectXException.hpp"
 #include "../../../Window/Windows/Window.hpp"
 #include "Context.hpp"

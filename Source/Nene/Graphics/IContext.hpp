@@ -89,6 +89,24 @@ namespace Nene
 		virtual IContext& clear(const Color4f& clearColor) =0;
 
 		/**
+		 * @brief      Sets the current vertex buffer.
+		 *
+		 * @param[in]  nextVertexBuffer  The vertex buffer to set.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IContext& vertexBuffer(const std::shared_ptr<IVertexBuffer>& nextVertexBuffer) =0;
+
+		/**
+		 * @brief      Sets the current index buffer.
+		 *
+		 * @param[in]  nextIndexBuffer  The index buffer to set.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IContext& indexBuffer(const std::shared_ptr<IIndexBuffer>& nextIndexBuffer) =0;
+
+		/**
 		 * @brief      Sets the current vertex shader.
 		 *
 		 * @param[in]  nextVertexShader  The vertex shader to set.
@@ -113,6 +131,22 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		virtual std::shared_ptr<IDynamicTexture> renderTarget() const =0;
+
+		/**
+		 * @brief      Returns the current vertex buffer.
+		 *
+		 * @return     The current vertex buffer.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IVertexBuffer> vertexBuffer() const =0;
+
+		/**
+		 * @brief      Returns the current index buffer.
+		 *
+		 * @return     The current index buffer.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<IIndexBuffer> indexBuffer() const =0;
 
 		/**
 		 * @brief      Returns the current vertex shader.
