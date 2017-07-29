@@ -39,7 +39,8 @@ namespace Nene::Windows::Direct3D11
 	 * @brief      Pixel shader implementation.
 	 */
 	class PixelShader final
-		: public IPixelShader
+		: public  IPixelShader
+		, private Uncopyable
 	{
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> shader_;
 

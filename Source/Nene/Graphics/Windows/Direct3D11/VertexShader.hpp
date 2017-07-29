@@ -39,9 +39,11 @@ namespace Nene::Windows::Direct3D11
 	 * @brief      Vertex shader implementation.
 	 */
 	class VertexShader final
-		: public IVertexShader
+		: public  IVertexShader
+		, private Uncopyable
 	{
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> shader_;
+		Microsoft::WRL::ComPtr<ID3D11InputLayout>  layout_;
 
 	public:
 		/**
@@ -66,6 +68,17 @@ namespace Nene::Windows::Direct3D11
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader() const noexcept
 		{
 			return shader_;
+		}
+
+		/**
+		 * @brief      Returns Direct3D11 input layout object.
+		 *
+		 * @return     Direct3D11 input layout object.
+		 */
+		[[nodiscard]]
+		Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout() const noexcept
+		{
+			return layout_;
 		}
 	};
 }
