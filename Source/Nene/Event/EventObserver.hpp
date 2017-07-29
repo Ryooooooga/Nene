@@ -25,6 +25,7 @@
 #define INCLUDE_NENE_EVENT_EVENTOBSERVER_HPP
 
 #include <functional>
+#include <memory>
 #include "../Uncopyable.hpp"
 #include "IEventObserver.hpp"
 

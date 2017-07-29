@@ -30,6 +30,7 @@
 #include <cassert>
 #include <Windows.h>
 #include "../../Encoding.hpp"
+#include "../../Window/Windows/Window.hpp"
 #include "MessageDialog.hpp"
 
 namespace Nene::Windows
@@ -38,10 +39,8 @@ namespace Nene::Windows
 	{
 		MessageDialogButton showDialog(std::string_view title, std::string_view message, MessageDialogType type, MessageDialogIcon icon, const std::shared_ptr<const IWindow>& parent)
 		{
-			// TODO: owner window.
-			//const auto owner = std::dynamic_pointer_cast<const Windows::Window>(parent);
-			//const HWND hWnd  = owner ? owner->handle() : nullptr;
-			const HWND hWnd  = nullptr;
+			const auto owner = std::dynamic_pointer_cast<const Windows::Window>(parent);
+			const HWND hWnd  = owner ? owner->handle() : nullptr;
 
 			UINT uType = 0;
 
