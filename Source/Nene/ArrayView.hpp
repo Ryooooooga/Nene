@@ -284,7 +284,7 @@ namespace Nene
 		[[nodiscard]]
 		constexpr ArrayView substr(std::size_t position, std::size_t length = SIZE_MAX) const
 		{
-			if (position >= size_)
+			if (position > size_)
 			{
 				throw std::out_of_range { u8"out of range: Nene::ArrayView<T>::at()" };
 			}
