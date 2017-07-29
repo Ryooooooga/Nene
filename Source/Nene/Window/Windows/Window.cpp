@@ -108,8 +108,9 @@ namespace Nene::Windows
 
 			case WM_PAINT:
 			{
-				HDC hDC = ::BeginPaint(hWnd, nullptr);
-				::EndPaint(hWnd, nullptr);
+				PAINTSTRUCT ps;
+				::BeginPaint(hWnd, &ps);
+				::EndPaint(hWnd, &ps);
 
 				return 0;
 			}

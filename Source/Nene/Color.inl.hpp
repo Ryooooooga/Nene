@@ -63,10 +63,10 @@ namespace Nene
 
 	constexpr Color4& Color4::set(UInt8 _red, UInt8 _green, UInt8 _blue, UInt8 _alpha) noexcept
 	{
-		red   = red;
-		green = green;
-		blue  = blue;
-		alpha = alpha;
+		red   = _red;
+		green = _green;
+		blue  = _blue;
+		alpha = _alpha;
 
 		return *this;
 	}
@@ -86,7 +86,7 @@ namespace Nene
 		red   = color.red;
 		green = color.green;
 		blue  = color.blue;
-		alpha = alpha;
+		alpha = _alpha;
 
 		return *this;
 	}
@@ -106,7 +106,7 @@ namespace Nene
 		red   = static_cast<UInt8>(std::clamp(color.red   , 0.f, 1.f) * 255);
 		green = static_cast<UInt8>(std::clamp(color.green , 0.f, 1.f) * 255);
 		blue  = static_cast<UInt8>(std::clamp(color.blue  , 0.f, 1.f) * 255);
-		alpha = alpha;
+		alpha = _alpha;
 
 		return *this;
 	}
@@ -312,7 +312,7 @@ namespace Nene
 		red   = color.red;
 		green = color.green;
 		blue  = color.blue;
-		alpha = alpha;
+		alpha = _alpha;
 
 		return *this;
 	}

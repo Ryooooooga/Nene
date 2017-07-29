@@ -150,7 +150,7 @@ namespace Nene::Windows::Direct3D11
 		 * @tparam     CommandType  Command type.
 		 */
 		template <typename CommandType>
-		void overwriteLastOrPush(CommandType& command)
+		void overwriteLastOrPush(CommandType&& command)
 		{
 			if (auto p = std::get_if<CommandType>(&commands_.back()))
 			{

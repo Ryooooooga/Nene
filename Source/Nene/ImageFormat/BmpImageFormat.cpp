@@ -296,6 +296,6 @@ namespace Nene
 
 	void BmpImageFormat::encode(const Image& image, IWriter& writer, [[maybe_unused]] Int32 quality)
 	{
-		encode(image, std::move(writer));
+		encode(image, writer);
 	}
 }
