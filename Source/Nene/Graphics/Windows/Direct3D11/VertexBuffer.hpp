@@ -35,18 +35,54 @@
 namespace Nene::Windows::Direct3D11
 {
 	/**
+	 * @brief      Direct3D11 vertex buffer implementation base.
+	 */
+	class VertexBufferBase
+		: private Uncopyable
+	{
+	protected:
+		Microsoft::WRL::ComPtr<ID3D11Buffer> buffer_;
+		UInt32 capacity_;
+
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  device      Direct3D11 device.
+		 * @param[in]  byteStride  Byte size of the vertex type.
+		 * @param[in]  capacity    The capacity of the vertex buffer.
+		 */
+		explicit VertexBufferBase(const Microsoft::WRL::ComPtr<ID3D11Device>& device, UINT byteStride, UInt32 capacity)
+			: buffer_(Detail::createBuffer(device, D3D11_BIND_VERTEX_BUFFER, byteStride, capacity))
+			, capacity_(capacity) {}
+
+	public:
+		/**
+		 * @brief      Destructor.
+		 */
+		virtual ~VertexBufferBase() =default;
+
+		/**
+		 * @brief      Returns Direct3D11 vertex buffer.
+		 *
+		 * @return     Direct3D11 vertex buffer.
+		 */
+		[[nodiscard]]
+		Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer() const noexcept
+		{
+			return buffer_;
+		}
+	};
+
+	/**
 	 * @brief      Direct3D11 vertex buffer implementation.
 	 *
 	 * @tparam     Vertex  Vertex type.
 	 */
 	template <typename Vertex>
 	class VertexBuffer final
-		: public  ITypedVertexBuffer<Vertex>
-		, private Uncopyable
+		: public ITypedVertexBuffer<Vertex>
+		, public VertexBufferBase
 	{
-		Microsoft::WRL::ComPtr<ID3D11Buffer> buffer_;
-		UInt32 capacity_;
-
 	public:
 		/**
 		 * @brief      Constructor.
@@ -55,8 +91,7 @@ namespace Nene::Windows::Direct3D11
 		 * @param[in]  capacity  The capacity of the vertex buffer.
 		 */
 		explicit VertexBuffer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, UInt32 capacity)
-			: buffer_(Detail::createBuffer(device, D3D11_BIND_VERTEX_BUFFER, sizeof(Vertex), capacity))
-			, capacity_(capacity) {}
+			: VertexBufferBase(device, sizeof(Vertex), capacity) {}
 
 		/**
 		 * @brief      Destructor.

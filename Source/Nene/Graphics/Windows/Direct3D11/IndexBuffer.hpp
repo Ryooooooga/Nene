@@ -35,18 +35,54 @@
 namespace Nene::Windows::Direct3D11
 {
 	/**
+	 * @brief      Direct3D11 index buffer implementation base.
+	 */
+	class IndexBufferBase
+		: private Uncopyable
+	{
+	protected:
+		Microsoft::WRL::ComPtr<ID3D11Buffer> buffer_;
+		UInt32 capacity_;
+
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  device      Direct3D11 device.
+		 * @param[in]  byteStride  Byte size of the index type.
+		 * @param[in]  capacity    The capacity of the index buffer.
+		 */
+		explicit IndexBufferBase(const Microsoft::WRL::ComPtr<ID3D11Device>& device, UINT byteStride, UInt32 capacity)
+			: buffer_(Detail::createBuffer(device, D3D11_BIND_INDEX_BUFFER, byteStride, capacity))
+			, capacity_(capacity) {}
+
+	public:
+		/**
+		 * @brief      Destructor.
+		 */
+		virtual ~IndexBufferBase() =default;
+
+		/**
+		 * @brief      Returns Direct3D11 index buffer.
+		 *
+		 * @return     Direct3D11 index buffer.
+		 */
+		[[nodiscard]]
+		Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer() const noexcept
+		{
+			return buffer_;
+		}
+	};
+
+	/**
 	 * @brief      Direct3D11 index buffer implementation.
 	 *
 	 * @tparam     Index  Index type.
 	 */
 	template <typename Index>
 	class IndexBuffer final
-		: public  ITypedIndexBuffer<Index>
-		, private Uncopyable
+		: public ITypedIndexBuffer<Index>
+		, public IndexBufferBase
 	{
-		Microsoft::WRL::ComPtr<ID3D11Buffer> buffer_;
-		UInt32 capacity_;
-
 	public:
 		/**
 		 * @brief      Constructor.
@@ -55,8 +91,7 @@ namespace Nene::Windows::Direct3D11
 		 * @param[in]  capacity  The capacity of the index buffer.
 		 */
 		explicit IndexBuffer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, UInt32 capacity)
-			: buffer_(Detail::createBuffer(device, D3D11_BIND_INDEX_BUFFER, sizeof(Index), capacity))
-			, capacity_(capacity) {}
+			: IndexBufferBase(device, sizeof(Index), capacity) {}
 
 		/**
 		 * @brief      Destructor.
