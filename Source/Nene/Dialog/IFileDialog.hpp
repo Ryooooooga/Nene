@@ -102,14 +102,6 @@ namespace Nene
 		virtual path_type filename() const =0;
 
 		/**
-		 * @brief      Determines if the multiselection is allowed.
-		 *
-		 * @return     `true` if multiselection allowed, `false` otherwise.
-		 */
-		[[nodiscard]]
-		virtual bool canMultiselect() const =0;
-
-		/**
 		 * @brief      Sets the dialog caption.
 		 *
 		 * @param[in]  _title  The caption to set, `std::nullopt` if use system default title.
@@ -154,15 +146,6 @@ namespace Nene
 		 * @return     `*this`.
 		 */
 		virtual IFileDialog& filename(const path_type& _filename) =0;
-
-		/**
-		 * @brief      Allow or disallow multiselection.
-		 *
-		 * @param[in]  enabled  The multiselection enabled flag.
-		 *
-		 * @return     `*this`.
-		 */
-		virtual IFileDialog& multiselect(bool enabled) = 0;
 
 		/**
 		 * @brief      Displays the file dialog.

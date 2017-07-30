@@ -65,6 +65,7 @@ namespace Nene::Windows
 		flags |= OFN_EXPLORER;
 		flags |= OFN_NOCHANGEDIR;
 		flags |= multiselect_ ? OFN_ALLOWMULTISELECT : 0;
+		flags |= fileExists_  ? OFN_FILEMUSTEXIST    : 0;
 
 		OPENFILENAMEW ofn = {};
 		ofn.lStructSize     = sizeof(ofn);
@@ -76,7 +77,7 @@ namespace Nene::Windows
 		ofn.nMaxFile        = bufferSize;
 		ofn.lpstrInitialDir = directory_.c_str();
 		ofn.lpstrTitle      = title ? title->c_str() : nullptr;
-		ofn.Flags           = flags | OFN_FILEMUSTEXIST; // TODO:
+		ofn.Flags           = flags;
 
 		if (!::GetOpenFileNameW(&ofn))
 		{

@@ -45,6 +45,7 @@ namespace Nene::Windows
 		std::vector<Filter>        filters_;
 		std::size_t                filterIndex_;
 		bool                       multiselect_;
+		bool                       fileExists_;
 
 	public:
 		/**
@@ -56,7 +57,8 @@ namespace Nene::Windows
 			, title_()
 			, filters_()
 			, filterIndex_(0)
-			, multiselect_(false) {}
+			, multiselect_(false)
+			, fileExists_(true) {}
 
 		/**
 		 * @brief      Destructor.
@@ -109,12 +111,21 @@ namespace Nene::Windows
 		}
 
 		/**
-		 * @see        `Nene::IFileDialog::canMultiselect()`.
+		 * @see        `Nene::IFileDialog::multiselect()`.
 		 */
 		[[nodiscard]]
-		bool canMultiselect() const override
+		bool multiselect() const override
 		{
 			return multiselect_;
+		}
+
+		/**
+		 * @see        `Nene::IFileDialog::checkFileExists()`.
+		 */
+		[[nodiscard]]
+		bool checkFileExists() const override
+		{
+			return fileExists_;
 		}
 
 		/**
@@ -173,12 +184,21 @@ namespace Nene::Windows
 		}
 
 		/**
-		 * @see        `Nene::IFileDialog::multiselect()`.
 		 * @see        `Nene::IOpenFileDialog::multiselect()`.
 		 */
 		OpenFileDialog& multiselect(bool enabled) override
 		{
 			multiselect_ = enabled;
+
+			return *this;
+		}
+
+		/**
+		 * @see        `Nene::IOpenFileDialog::checkFileExists()`.
+		 */
+		OpenFileDialog& checkFileExists(bool enabled) override
+		{
+			fileExists_ = enabled;
 
 			return *this;
 		}

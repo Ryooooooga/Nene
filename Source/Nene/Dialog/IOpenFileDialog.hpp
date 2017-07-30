@@ -46,6 +46,22 @@ namespace Nene
 		virtual ~IOpenFileDialog() =default;
 
 		/**
+		 * @brief      Determines if the multiselection is allowed.
+		 *
+		 * @return     `true` if multiselection allowed, `false` otherwise.
+		 */
+		[[nodiscard]]
+		virtual bool multiselect() const =0;
+
+		/**
+		 * @brief      Determines if the dialog checks file existence.
+		 *
+		 * @return     `true` if check file, `false` otherwise.
+		 */
+		[[nodiscard]]
+		virtual bool checkFileExists() const =0;
+
+		/**
 		 * @see        `Nene::IFileDialog::title()`.
 		 */
 		virtual IOpenFileDialog& title(const std::optional<std::string_view>& _title) override =0;
@@ -71,9 +87,22 @@ namespace Nene
 		virtual IOpenFileDialog& filename(const path_type& _filename) override =0;
 
 		/**
-		 * @see        `Nene::IFileDialog::multiselect()`.
+		 * @brief      Allows or disallows multiselection.
+		 *
+		 * @param[in]  enabled  The multiselection enabled flag.
+		 *
+		 * @return     `*this`.
 		 */
-		virtual IOpenFileDialog& multiselect(bool enabled) override =0;
+		virtual IOpenFileDialog& multiselect(bool enabled) =0;
+
+		/**
+		 * @brief      Sets file existence checking flag.
+		 *
+		 * @param[in]  enabled  The file check enabled flag.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IOpenFileDialog& checkFileExists(bool enabled) =0;
 	};
 }
 
