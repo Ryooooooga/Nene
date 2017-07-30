@@ -35,28 +35,28 @@
 
 namespace Nene::Windows
 {
-	MessageDialogButton MessageDialog::show(const std::shared_ptr<const IWindow>& owner) const
+	IMessageDialog::Button MessageDialog::show(const std::shared_ptr<const IWindow>& owner) const
 	{
 		const auto owner_Windows = std::dynamic_pointer_cast<const Windows::Window>(owner);
-		const HWND hWnd          = owner_Windows ? owner_Windows->handle() : nullptr;
+		const HWND hWndOwner     = owner_Windows ? owner_Windows->handle() : nullptr;
 
 		UINT uType = 0;
 
 		switch (type_)
 		{
-		case MessageDialogType::ok:
+		case Type::ok:
 			uType |= MB_OK;
 			break;
 
-		case MessageDialogType::okCancel:
+		case Type::okCancel:
 			uType |= MB_OKCANCEL;
 			break;
 
-		case MessageDialogType::yesNo:
+		case Type::yesNo:
 			uType |= MB_YESNO;
 			break;
 
-		case MessageDialogType::yesNoCancel:
+		case Type::yesNoCancel:
 			uType |= MB_YESNOCANCEL;
 			break;
 
@@ -67,23 +67,23 @@ namespace Nene::Windows
 
 		switch (icon_)
 		{
-		case MessageDialogIcon::normal:
+		case Icon::normal:
 			uType |= 0;
 			break;
 
-		case MessageDialogIcon::info:
+		case Icon::info:
 			uType |= MB_ICONINFORMATION;
 			break;
 
-		case MessageDialogIcon::question:
+		case Icon::question:
 			uType |= MB_ICONQUESTION;
 			break;
 
-		case MessageDialogIcon::warning:
+		case Icon::warning:
 			uType |= MB_ICONWARNING;
 			break;
 
-		case MessageDialogIcon::error:
+		case Icon::error:
 			uType |= MB_ICONERROR;
 			break;
 
@@ -93,7 +93,7 @@ namespace Nene::Windows
 		}
 
 		const auto button = ::MessageBoxW(
-			hWnd,
+			hWndOwner,
 			Encoding::toWide(message_).c_str(),
 			Encoding::toWide(title_).c_str(),
 			uType);
@@ -101,19 +101,19 @@ namespace Nene::Windows
 		switch (button)
 		{
 		case IDOK:
-			return MessageDialogButton::ok;
+			return Button::ok;
 
 		case IDCANCEL:
-			return MessageDialogButton::cancel;
+			return Button::cancel;
 
 		case IDYES:
-			return MessageDialogButton::yes;
+			return Button::yes;
 
 		case IDNO:
-			return MessageDialogButton::no;
+			return Button::no;
 
 		default:
-			return MessageDialogButton::none;
+			return Button::none;
 		}
 	}
 }

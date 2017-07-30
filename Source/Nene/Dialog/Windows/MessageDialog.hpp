@@ -40,10 +40,10 @@ namespace Nene::Windows
 		: public  IMessageDialog
 		, private Uncopyable
 	{
-		std::string       title_;
-		std::string       message_;
-		MessageDialogType type_;
-		MessageDialogIcon icon_;
+		std::string title_;
+		std::string message_;
+		Type        type_;
+		Icon        icon_;
 
 	public:
 		/**
@@ -55,8 +55,8 @@ namespace Nene::Windows
 		explicit MessageDialog(std::string_view title, std::string_view message)
 			: title_(title)
 			, message_(message)
-			, type_(MessageDialogType::ok)
-			, icon_(MessageDialogIcon::normal) {}
+			, type_(Type::ok)
+			, icon_(Icon::normal) {}
 
 		/**
 		 * @brief      Destructor.
@@ -67,7 +67,7 @@ namespace Nene::Windows
 		 * @see        `Nene::IMessageDialog::title()`.
 		 */
 		[[nodiscard]]
-		std::string title() const noexcept override
+		std::string title() const override
 		{
 			return title_;
 		}
@@ -76,7 +76,7 @@ namespace Nene::Windows
 		 * @see        `Nene::IMessageDialog::message()`.
 		 */
 		[[nodiscard]]
-		std::string message() const noexcept override
+		std::string message() const override
 		{
 			return message_;
 		}
@@ -85,7 +85,7 @@ namespace Nene::Windows
 		 * @see        `Nene::IMessageDialog::type()`.
 		 */
 		[[nodiscard]]
-		MessageDialogType type() const noexcept override
+		Type type() const noexcept override
 		{
 			return type_;
 		}
@@ -94,7 +94,7 @@ namespace Nene::Windows
 		 * @see        `Nene::IMessageDialog::icon()`.
 		 */
 		[[nodiscard]]
-		MessageDialogIcon icon() const noexcept override
+		Icon icon() const noexcept override
 		{
 			return icon_;
 		}
@@ -102,9 +102,9 @@ namespace Nene::Windows
 		/**
 		 * @see        `Nene::IMessageDialog::title()`.
 		 */
-		IMessageDialog& title(std::string_view title) override
+		IMessageDialog& title(std::string_view _title) override
 		{
-			title_ = static_cast<std::string>(title);
+			title_ = static_cast<std::string>(_title);
 
 			return *this;
 		}
@@ -112,9 +112,9 @@ namespace Nene::Windows
 		/**
 		 * @see        `Nene::IMessageDialog::message()`.
 		 */
-		IMessageDialog& message(std::string_view message) override
+		IMessageDialog& message(std::string_view _message) override
 		{
-			message_ = static_cast<std::string>(message);
+			message_ = static_cast<std::string>(_message);
 
 			return *this;
 		}
@@ -122,9 +122,9 @@ namespace Nene::Windows
 		/**
 		 * @see        `Nene::IMessageDialog::type()`.
 		 */
-		IMessageDialog& type(MessageDialogType type) override
+		IMessageDialog& type(Type _type) override
 		{
-			type_ = type;
+			type_ = _type;
 
 			return *this;
 		}
@@ -132,9 +132,9 @@ namespace Nene::Windows
 		/**
 		 * @see        `Nene::IMessageDialog::icon()`.
 		 */
-		IMessageDialog& icon(MessageDialogIcon icon) override
+		IMessageDialog& icon(Icon _icon) override
 		{
-			icon_ = icon;
+			icon_ = _icon;
 
 			return *this;
 		}
@@ -142,7 +142,7 @@ namespace Nene::Windows
 		/**
 		 * @see        `Nene::IMessageDialog::show()`.
 		 */
-		MessageDialogButton show(const std::shared_ptr<const IWindow>& owner = nullptr) const override;
+		Button show(const std::shared_ptr<const IWindow>& owner = nullptr) const override;
 	};
 }
 

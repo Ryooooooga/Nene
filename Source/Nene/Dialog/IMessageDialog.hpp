@@ -33,46 +33,46 @@ namespace Nene
 	class IWindow;
 
 	/**
-	 * @brief      Message dialog types.
-	 */
-	enum class MessageDialogType
-	{
-		ok,
-		okCancel,
-		yesNo,
-		yesNoCancel,
-	};
-
-	/**
-	 * @brief      Message dialog icon.
-	 */
-	enum class MessageDialogIcon
-	{
-		normal,
-		info,
-		question,
-		warning,
-		error,
-	};
-
-	/**
-	 * @brief      Message dialog buttons.
-	 */
-	enum class MessageDialogButton
-	{
-		none,
-		ok,
-		cancel,
-		yes,
-		no,
-	};
-
-	/**
 	 * @brief      Message dialog interface.
 	 */
 	class IMessageDialog
 	{
 	public:
+		/**
+		 * @brief      Message dialog types.
+		 */
+		enum class Type
+		{
+			ok,
+			okCancel,
+			yesNo,
+			yesNoCancel,
+		};
+
+		/**
+		 * @brief      Message dialog icon.
+		 */
+		enum class Icon
+		{
+			normal,
+			info,
+			question,
+			warning,
+			error,
+		};
+
+		/**
+		 * @brief      Message dialog buttons.
+		 */
+		enum class Button
+		{
+			none,
+			ok,
+			cancel,
+			yes,
+			no,
+		};
+
 		/**
 		 * @brief      Constructor.
 		 */
@@ -89,7 +89,7 @@ namespace Nene
 		 * @return     The caption of the dialog.
 		 */
 		[[nodiscard]]
-		virtual std::string title() const noexcept =0;
+		virtual std::string title() const =0;
 
 		/**
 		 * @brief      Returns the dialog message.
@@ -97,7 +97,7 @@ namespace Nene
 		 * @return     The message message of the dialog.
 		 */
 		[[nodiscard]]
-		virtual std::string message() const noexcept =0;
+		virtual std::string message() const =0;
 
 		/**
 		 * @brief      Returns the dialog type.
@@ -105,7 +105,7 @@ namespace Nene
 		 * @return     The dialog type.
 		 */
 		[[nodiscard]]
-		virtual MessageDialogType type() const noexcept =0;
+		virtual Type type() const =0;
 
 		/**
 		 * @brief      Returns the dialog icon.
@@ -113,43 +113,43 @@ namespace Nene
 		 * @return     The dialog icon.
 		 */
 		[[nodiscard]]
-		virtual MessageDialogIcon icon() const noexcept =0;
+		virtual Icon icon() const =0;
 
 		/**
 		 * @brief      Sets the dialog caption.
 		 *
-		 * @param[in]  title  The caption to set.
+		 * @param[in]  _title  The caption to set.
 		 *
 		 * @return     `*this`.
 		 */
-		virtual IMessageDialog& title(std::string_view title) =0;
+		virtual IMessageDialog& title(std::string_view _title) =0;
 
 		/**
 		 * @brief      Sets the dialog message.
 		 *
-		 * @param[in]  message  The dialog message to set.
+		 * @param[in]  _message  The dialog message to set.
 		 *
 		 * @return     `*this`.
 		 */
-		virtual IMessageDialog& message(std::string_view message) =0;
+		virtual IMessageDialog& message(std::string_view _message) =0;
 
 		/**
 		 * @brief      Sets the dialog type.
 		 *
-		 * @param[in]  type  The dialog type to set.
+		 * @param[in]  _type  The dialog type to set.
 		 *
 		 * @return     `*this`.
 		 */
-		virtual IMessageDialog& type(MessageDialogType type) =0;
+		virtual IMessageDialog& type(Type _type) =0;
 
 		/**
 		 * @brief      Sets the dialog icon.
 		 *
-		 * @param[in]  icon  The dialog icon to set.
+		 * @param[in]  _icon  The dialog icon to set.
 		 *
 		 * @return     `*this`.
 		 */
-		virtual IMessageDialog& icon(MessageDialogIcon icon) =0;
+		virtual IMessageDialog& icon(Icon _icon) =0;
 
 		/**
 		 * @brief      Displays the message dialog.
@@ -158,7 +158,7 @@ namespace Nene
 		 *
 		 * @return     The button selected.
 		 */
-		virtual MessageDialogButton show(const std::shared_ptr<const IWindow>& owner = nullptr) const =0;
+		virtual Button show(const std::shared_ptr<const IWindow>& owner = nullptr) const =0;
 	};
 }
 
