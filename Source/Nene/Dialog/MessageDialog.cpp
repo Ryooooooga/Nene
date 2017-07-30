@@ -21,7 +21,6 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#include "../Platform.hpp"
 #include "MessageDialog.hpp"
 #include "Windows/MessageDialog.hpp"
 

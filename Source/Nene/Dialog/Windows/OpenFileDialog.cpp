@@ -30,7 +30,6 @@
 #include <Windows.h>
 #include <commdlg.h>
 #include "../../Encoding.hpp"
-#include "../../Com/Windows/ComManager.hpp"
 #include "../../Window/Windows/Window.hpp"
 #include "OpenFileDialog.hpp"
 

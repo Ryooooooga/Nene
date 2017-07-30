@@ -25,7 +25,7 @@
 #define INCLUDE_NENE_DIALOG_IMESSAGEDIALOG_HPP
 
 #include <memory>
-#include <string>
+#include <string_view>
 
 namespace Nene
 {
