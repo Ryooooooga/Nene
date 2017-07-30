@@ -29,7 +29,7 @@
 namespace Nene
 {
 	FileReader::FileReader(const std::experimental::filesystem::path& path)
-		: path_(path)
+		: path_(std::experimental::filesystem::absolute(path))
 		, size_()
 		, file_(nullptr, std::fclose)
 	{
@@ -106,7 +106,7 @@ namespace Nene
 		return sizeRead;
 	}
 
-	const std::experimental::filesystem::path& FileReader::path() const noexcept
+	std::experimental::filesystem::path FileReader::path() const
 	{
 		return path_;
 	}

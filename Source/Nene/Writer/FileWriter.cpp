@@ -29,7 +29,7 @@
 namespace Nene
 {
 	FileWriter::FileWriter(const std::experimental::filesystem::path& path)
-		: path_(path)
+		: path_(std::experimental::filesystem::absolute(path))
 		, file_(nullptr, std::fclose)
 	{
 		// Open file.
@@ -87,7 +87,7 @@ namespace Nene
 		return std::fwrite(buffer, 1, size, file_.get());
 	}
 
-	const std::experimental::filesystem::path& FileWriter::path() const noexcept
+	std::experimental::filesystem::path FileWriter::path() const
 	{
 		return path_;
 	}

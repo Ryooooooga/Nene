@@ -95,7 +95,7 @@ namespace Nene
 		 * @return     The input file path.
 		 */
 		[[nodiscard]]
-		const std::experimental::filesystem::path& path() const noexcept;
+		std::experimental::filesystem::path path() const;
 	};
 }
 
