@@ -44,7 +44,11 @@ namespace Nene
 				: callback_(std::move(callback)), callOnSuccess_(callOnSuccess), callOnFailure_(callOnFailure) {}
 
 			Scope(Scope&& scope) noexcept
-				: callback_(std::move(scope.callback_)), callOnSuccess_(scope.callOnSuccess_), callOnFailure_(scope.callOnFailure_) {}
+				: callback_(std::move(scope.callback_)), callOnSuccess_(scope.callOnSuccess_), callOnFailure_(scope.callOnFailure_)
+			{
+				scope.callOnSuccess_ = false;
+				scope.callOnFailure_ = false;
+			}
 
 			~Scope() noexcept(noexcept(callback_()))
 			{
