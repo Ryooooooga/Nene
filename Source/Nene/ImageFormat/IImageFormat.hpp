@@ -39,6 +39,8 @@ namespace Nene
 	class IImageFormat
 	{
 	public:
+		using path_type = std::experimental::filesystem::path;
+
 		/**
 		 * @brief      Constructor.
 		 */
@@ -63,7 +65,7 @@ namespace Nene
 		 * @return     The list of possible extensions of the image format.
 		 */
 		[[nodiscard]]
-		virtual ArrayView<std::experimental::filesystem::path> possibleExtensions() const noexcept =0;
+		virtual ArrayView<path_type> possibleExtensions() const noexcept =0;
 
 		/**
 		 * @brief      Determines if the given data is an image header.

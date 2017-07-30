@@ -160,9 +160,9 @@ namespace Nene
 		return name_;
 	}
 
-	ArrayView<std::experimental::filesystem::path> JpegImageFormat::possibleExtensions() const noexcept
+	ArrayView<IImageFormat::path_type> JpegImageFormat::possibleExtensions() const noexcept
 	{
-		static const std::experimental::filesystem::path extensions[] =
+		static const path_type extensions[] =
 		{
 			".jpg",
 			".jpeg",

@@ -43,12 +43,14 @@ namespace Nene
 		std::unique_ptr<FILE, int(*)(FILE*)> file_;
 
 	public:
+		using path_type = std::experimental::filesystem::path;
+
 		/**
 		 * @brief      Constructor.
 		 *
 		 * @param[in]  path  The file path to write.
 		 */
-		explicit FileWriter(const std::experimental::filesystem::path& path);
+		explicit FileWriter(const path_type& path);
 
 		/**
 		 * @brief      Destructor.
@@ -83,7 +85,7 @@ namespace Nene
 		 * @return     The input file path.
 		 */
 		[[nodiscard]]
-		std::experimental::filesystem::path path() const;
+		path_type path() const;
 	};
 }
 

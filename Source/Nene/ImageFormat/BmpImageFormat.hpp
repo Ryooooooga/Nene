@@ -61,7 +61,7 @@ namespace Nene
 		 * @see        `Nene::IImageFormat::possibleExtensions()`.
 		 */
 		[[nodiscard]]
-		ArrayView<std::experimental::filesystem::path> possibleExtensions() const noexcept override;
+		ArrayView<path_type> possibleExtensions() const noexcept override;
 
 		/**
 		 * @see        `Nene::IImageFormat::isImageHeader()`.

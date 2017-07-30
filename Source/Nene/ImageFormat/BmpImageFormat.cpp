@@ -123,9 +123,9 @@ namespace Nene
 		return name_;
 	}
 
-	ArrayView<std::experimental::filesystem::path> BmpImageFormat::possibleExtensions() const noexcept
+	ArrayView<IImageFormat::path_type> BmpImageFormat::possibleExtensions() const noexcept
 	{
-		static const std::experimental::filesystem::path extensions[] =
+		static const path_type extensions[] =
 		{
 			".bmp",
 		};

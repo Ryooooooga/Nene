@@ -38,12 +38,14 @@ namespace Nene
 		FileWriter writer_;
 
 	public:
+		using path_type = std::experimental::filesystem::path;
+
 		/**
 		 * @brief      Constructor.
 		 *
 		 * @param[in]  path  Log file path.
 		 */
-		explicit FileLogger(const std::experimental::filesystem::path& path)
+		explicit FileLogger(const path_type& path)
 			: writer_(path) {}
 
 		/**

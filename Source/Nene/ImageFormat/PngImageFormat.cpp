@@ -69,9 +69,9 @@ namespace Nene
 		return name_;
 	}
 
-	ArrayView<std::experimental::filesystem::path> PngImageFormat::possibleExtensions() const noexcept
+	ArrayView<IImageFormat::path_type> PngImageFormat::possibleExtensions() const noexcept
 	{
-		static const std::experimental::filesystem::path extensions[] =
+		static const path_type extensions[] =
 		{
 			".png",
 		};
