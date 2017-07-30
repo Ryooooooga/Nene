@@ -35,99 +35,86 @@
 
 namespace Nene::Windows
 {
-	namespace
+	MessageDialogButton MessageDialog::show(const std::shared_ptr<const IWindow>& owner) const
 	{
-		MessageDialogButton showDialog(std::string_view title, std::string_view message, MessageDialogType type, MessageDialogIcon icon, const std::shared_ptr<const IWindow>& parent)
+		const auto owner_Windows = std::dynamic_pointer_cast<const Windows::Window>(owner);
+		const HWND hWnd          = owner_Windows ? owner_Windows->handle() : nullptr;
+
+		UINT uType = 0;
+
+		switch (type_)
 		{
-			const auto owner = std::dynamic_pointer_cast<const Windows::Window>(parent);
-			const HWND hWnd  = owner ? owner->handle() : nullptr;
+		case MessageDialogType::ok:
+			uType |= MB_OK;
+			break;
 
-			UINT uType = 0;
+		case MessageDialogType::okCancel:
+			uType |= MB_OKCANCEL;
+			break;
 
-			switch (type)
-			{
-				case MessageDialogType::ok:
-					uType |= MB_OK;
-					break;
+		case MessageDialogType::yesNo:
+			uType |= MB_YESNO;
+			break;
 
-				case MessageDialogType::okCancel:
-					uType |= MB_OKCANCEL;
-					break;
+		case MessageDialogType::yesNoCancel:
+			uType |= MB_YESNOCANCEL;
+			break;
 
-				case MessageDialogType::yesNo:
-					uType |= MB_YESNO;
-					break;
-
-				case MessageDialogType::yesNoCancel:
-					uType |= MB_YESNOCANCEL;
-					break;
-
-				default:
-					assert(!"Unknown dialog type");
-					break;
-			}
-
-			switch (icon)
-			{
-				case MessageDialogIcon::normal:
-					uType |= 0;
-					break;
-
-				case MessageDialogIcon::info:
-					uType |= MB_ICONINFORMATION;
-					break;
-
-				case MessageDialogIcon::question:
-					uType |= MB_ICONQUESTION;
-					break;
-
-				case MessageDialogIcon::warning:
-					uType |= MB_ICONWARNING;
-					break;
-
-				case MessageDialogIcon::error:
-					uType |= MB_ICONERROR;
-					break;
-
-				default:
-					assert(!"Unknown dialog icon");
-					break;
-			}
-
-			const auto button = ::MessageBoxW(
-				hWnd,
-				Encoding::toWide(message).c_str(),
-				Encoding::toWide(title).c_str(),
-				uType);
-
-			switch (button)
-			{
-				case IDOK:
-					return MessageDialogButton::ok;
-
-				case IDCANCEL:
-					return MessageDialogButton::cancel;
-
-				case IDYES:
-					return MessageDialogButton::yes;
-
-				case IDNO:
-					return MessageDialogButton::no;
-
-				default:
-					return MessageDialogButton::none;
-			}
+		default:
+			assert(!"Unknown dialog type");
+			break;
 		}
-	}
 
-	MessageDialogButton MessageDialog::show(const std::shared_ptr<const IWindow>& parent) const
-	{
-		return showDialog(title_, message_, type_, icon_, parent);
-	}
+		switch (icon_)
+		{
+		case MessageDialogIcon::normal:
+			uType |= 0;
+			break;
 
-	std::future<MessageDialogButton> MessageDialog::showAsync(const std::shared_ptr<const IWindow>& parent) const
-	{
-		return std::async(showDialog, title_, message_, type_, icon_, parent);
+		case MessageDialogIcon::info:
+			uType |= MB_ICONINFORMATION;
+			break;
+
+		case MessageDialogIcon::question:
+			uType |= MB_ICONQUESTION;
+			break;
+
+		case MessageDialogIcon::warning:
+			uType |= MB_ICONWARNING;
+			break;
+
+		case MessageDialogIcon::error:
+			uType |= MB_ICONERROR;
+			break;
+
+		default:
+			assert(!"Unknown dialog icon");
+			break;
+		}
+
+		const auto button = ::MessageBoxW(
+			hWnd,
+			Encoding::toWide(message_).c_str(),
+			Encoding::toWide(title_).c_str(),
+			uType);
+
+		switch (button)
+		{
+		case IDOK:
+			return MessageDialogButton::ok;
+
+		case IDCANCEL:
+			return MessageDialogButton::cancel;
+
+		case IDYES:
+			return MessageDialogButton::yes;
+
+		case IDNO:
+			return MessageDialogButton::no;
+
+		default:
+			return MessageDialogButton::none;
+		}
 	}
 }
 

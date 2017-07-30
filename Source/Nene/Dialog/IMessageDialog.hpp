@@ -24,7 +24,6 @@
 #ifndef INCLUDE_NENE_DIALOG_IMESSAGEDIALOG_HPP
 #define INCLUDE_NENE_DIALOG_IMESSAGEDIALOG_HPP
 
-#include <future>
 #include <memory>
 #include <string>
 
@@ -90,7 +89,7 @@ namespace Nene
 		 * @return     The caption of the dialog.
 		 */
 		[[nodiscard]]
-		virtual const std::string& title() const noexcept =0;
+		virtual std::string title() const noexcept =0;
 
 		/**
 		 * @brief      Returns the dialog message.
@@ -98,7 +97,7 @@ namespace Nene
 		 * @return     The message message of the dialog.
 		 */
 		[[nodiscard]]
-		virtual const std::string& message() const noexcept =0;
+		virtual std::string message() const noexcept =0;
 
 		/**
 		 * @brief      Returns the dialog type.
@@ -155,20 +154,11 @@ namespace Nene
 		/**
 		 * @brief      Displays the message dialog.
 		 *
-		 * @param[in]  window  The parent window.
+		 * @param[in]  owner  The owner window.
 		 *
 		 * @return     The button selected.
 		 */
-		virtual MessageDialogButton show(const std::shared_ptr<const IWindow>& window = nullptr) const =0;
-
-		/**
-		 * @brief      Asynchronous showing the message dialog.
-		 *
-		 * @param[in]  window  The parent window.
-		 *
-		 * @return     The button selected.
-		 */
-		virtual std::future<MessageDialogButton> showAsync(const std::shared_ptr<const IWindow>& window = nullptr) const =0;
+		virtual MessageDialogButton show(const std::shared_ptr<const IWindow>& owner = nullptr) const =0;
 	};
 }
 

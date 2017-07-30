@@ -67,7 +67,7 @@ namespace Nene::Windows
 		 * @see        `Nene::IMessageDialog::title()`.
 		 */
 		[[nodiscard]]
-		const std::string& title() const noexcept override
+		std::string title() const noexcept override
 		{
 			return title_;
 		}
@@ -76,7 +76,7 @@ namespace Nene::Windows
 		 * @see        `Nene::IMessageDialog::message()`.
 		 */
 		[[nodiscard]]
-		const std::string& message() const noexcept override
+		std::string message() const noexcept override
 		{
 			return message_;
 		}
@@ -142,12 +142,7 @@ namespace Nene::Windows
 		/**
 		 * @see        `Nene::IMessageDialog::show()`.
 		 */
-		MessageDialogButton show(const std::shared_ptr<const IWindow>& window = nullptr) const override;
-
-		/**
-		 * @see        `Nene::IMessageDialog::showAsync()`.
-		 */
-		std::future<MessageDialogButton> showAsync(const std::shared_ptr<const IWindow>& window = nullptr) const override;
+		MessageDialogButton show(const std::shared_ptr<const IWindow>& owner = nullptr) const override;
 	};
 }
 
