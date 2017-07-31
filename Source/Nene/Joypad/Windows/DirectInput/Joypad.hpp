@@ -39,7 +39,7 @@
 namespace Nene::Windows::DirectInput
 {
 	/**
-	 * @brief      DirectInput joypad implementation.
+	 * @brief      DirectInput joypad device implementation.
 	 */
 	class Joypad final
 		: public  IJoypad
@@ -72,12 +72,12 @@ namespace Nene::Windows::DirectInput
 		}
 
 		/**
-		 * @see        `Nene::IJoypad::isDisconnected()`.
+		 * @see        `Nene::IJoypad::isConnected()`.
 		 */
 		[[nodiscard]]
-		bool isDisconnected() const override
+		bool isConnected() const override
 		{
-			return !connected_;
+			return connected_;
 		}
 	};
 }

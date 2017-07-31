@@ -21,46 +21,43 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_JOYPAD_IJOYPAD_HPP
-#define INCLUDE_NENE_JOYPAD_IJOYPAD_HPP
+#ifndef INCLUDE_NENE_JOYPAD_WINDOWS_XINPUT_JOYPADINPUT_HPP
+#define INCLUDE_NENE_JOYPAD_WINDOWS_XINPUT_JOYPADINPUT_HPP
 
-#include <memory>
-#include "../ArrayView.hpp"
+#include "../../../Platform.hpp"
+#if defined(NENE_OS_WINDOWS)
 
-namespace Nene
+#include "../../../Uncopyable.hpp"
+#include "../../IJoypadInput.hpp"
+
+namespace Nene::Windows::XInput
 {
 	/**
-	 * @brief      Joypad interface.
+	 * @brief      XInput joypad input implementation.
 	 */
-	class IJoypad
+	class JoypadInput
+		: public  IJoypadInput
+		, private Uncopyable
 	{
 	public:
 		/**
 		 * @brief      Constructor.
 		 */
-		IJoypad() noexcept =default;
+		explicit JoypadInput();
 
 		/**
 		 * @brief      Destructor.
 		 */
-		virtual ~IJoypad() =default;
+		~JoypadInput() =default;
 
 		/**
-		 * @brief      Returns the joypad device name.
-		 *
-		 * @return     The name of the joypad device.
+		 * @see        `Nene::IJoypadInput::joypads()`.
 		 */
 		[[nodiscard]]
-		virtual std::string name() const =0;
-
-		/**
-		 * @brief      Determines if the joypad is connected.
-		 *
-		 * @return     `true` if the joypad is connected, `false` otherwise.
-		 */
-		[[nodiscard]]
-		virtual bool isConnected() const =0;
+		std::vector<std::unique_ptr<IJoypad>> joypads() override;
 	};
 }
 
-#endif  // #ifndef INCLUDE_NENE_JOYPAD_IJOYPAD_HPP
+#endif
+
+#endif  // #ifndef INCLUDE_NENE_JOYPAD_WINDOWS_XINPUT_JOYPADINPUT_HPP

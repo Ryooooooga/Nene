@@ -21,46 +21,43 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_JOYPAD_IJOYPAD_HPP
-#define INCLUDE_NENE_JOYPAD_IJOYPAD_HPP
+#include "../../../Platform.hpp"
+#if defined(NENE_OS_WINDOWS)
 
-#include <memory>
-#include "../ArrayView.hpp"
+#if defined(NENE_COMPILER_MSVC)
+#  pragma comment(lib, "xinput.lib")
+#endif
 
-namespace Nene
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+
+#include <Windows.h>
+#include <Xinput.h>
+#include "JoypadInput.hpp"
+#include "Joypad.hpp"
+
+namespace Nene::Windows::XInput
 {
-	/**
-	 * @brief      Joypad interface.
-	 */
-	class IJoypad
+	JoypadInput::JoypadInput()
 	{
-	public:
-		/**
-		 * @brief      Constructor.
-		 */
-		IJoypad() noexcept =default;
+	}
 
-		/**
-		 * @brief      Destructor.
-		 */
-		virtual ~IJoypad() =default;
+	std::vector<std::unique_ptr<IJoypad>> JoypadInput::joypads()
+	{
+		auto list = std::vector<std::unique_ptr<IJoypad>> {};
 
-		/**
-		 * @brief      Returns the joypad device name.
-		 *
-		 * @return     The name of the joypad device.
-		 */
-		[[nodiscard]]
-		virtual std::string name() const =0;
+		for (DWORD index = 0; index < 4; index++)
+		{
+			XINPUT_STATE state;
 
-		/**
-		 * @brief      Determines if the joypad is connected.
-		 *
-		 * @return     `true` if the joypad is connected, `false` otherwise.
-		 */
-		[[nodiscard]]
-		virtual bool isConnected() const =0;
-	};
+			if (::XInputGetState(index, &state) == ERROR_SUCCESS)
+			{
+				list.emplace_back(std::make_unique<Joypad>(index));
+			}
+		}
+
+		return list;
+	}
 }
 
-#endif  // #ifndef INCLUDE_NENE_JOYPAD_IJOYPAD_HPP
+#endif
