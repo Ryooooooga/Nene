@@ -21,8 +21,8 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_INPUT_WINDOWS_DIRECTINPUT_JOYPAD_HPP
-#define INCLUDE_NENE_INPUT_WINDOWS_DIRECTINPUT_JOYPAD_HPP
+#ifndef INCLUDE_NENE_JOYPAD_WINDOWS_DIRECTINPUT_JOYPAD_HPP
+#define INCLUDE_NENE_JOYPAD_WINDOWS_DIRECTINPUT_JOYPAD_HPP
 
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
@@ -84,4 +84,4 @@ namespace Nene::Windows::DirectInput
 
 #endif
 
-#endif  // #ifndef INCLUDE_NENE_INPUT_WINDOWS_DIRECTINPUT_JOYPAD_HPP
+#endif  // #ifndef INCLUDE_NENE_JOYPAD_WINDOWS_DIRECTINPUT_JOYPAD_HPP

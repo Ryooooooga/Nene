@@ -21,8 +21,8 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
-#ifndef INCLUDE_NENE_INPUT_IJOYPADINPUT_HPP
-#define INCLUDE_NENE_INPUT_IJOYPADINPUT_HPP
+#ifndef INCLUDE_NENE_JOYPAD_IJOYPADINPUT_HPP
+#define INCLUDE_NENE_JOYPAD_IJOYPADINPUT_HPP
 
 #include <memory>
 #include <vector>
@@ -58,4 +58,4 @@ namespace Nene
 	};
 }
 
-#endif  // #ifndef INCLUDE_NENE_INPUT_IJOYPADINPUT_HPP
+#endif  // #ifndef INCLUDE_NENE_JOYPAD_IJOYPADINPUT_HPP
