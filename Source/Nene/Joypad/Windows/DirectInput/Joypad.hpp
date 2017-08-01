@@ -31,6 +31,7 @@
 #define WIN32_LEAN_AND_MEAN
 #define DIRECTINPUT_VERSION 0x0800
 
+#include <vector>
 #include <dinput.h>
 #include <wrl/client.h>
 #include "../../../Uncopyable.hpp"
@@ -46,6 +47,10 @@ namespace Nene::Windows::DirectInput
 		, private Uncopyable
 	{
 		Microsoft::WRL::ComPtr<IDirectInputDevice8W> device_;
+
+		std::vector<std::unique_ptr<IButton>> buttons_;
+		std::vector<std::unique_ptr<IAxis>>   axes_;
+
 		std::string name_;
 		bool connected_;
 

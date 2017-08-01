@@ -54,7 +54,7 @@ namespace Nene::Windows::DirectInput
 		auto pair = std::make_pair(this, &list);
 
 		// Enumeration callback.
-		auto onEnumJoypad = [](const DIDEVICEINSTANCEW* instance, VOID* context)
+		const auto onEnumJoypad = [](const DIDEVICEINSTANCEW* instance, VOID* context)
 		{
 			const auto p    = static_cast<decltype(&pair)>(context);
 			const auto self = p->first;

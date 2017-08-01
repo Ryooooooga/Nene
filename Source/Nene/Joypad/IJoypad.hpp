@@ -25,7 +25,7 @@
 #define INCLUDE_NENE_JOYPAD_IJOYPAD_HPP
 
 #include <memory>
-#include "../ArrayView.hpp"
+#include "../Types.hpp"
 
 namespace Nene
 {
@@ -35,6 +35,56 @@ namespace Nene
 	class IJoypad
 	{
 	public:
+		/**
+		 * @brief      Joypad button interface.
+		 */
+		class IButton
+		{
+		public:
+			/**
+			 * @brief      Constructor.
+			 */
+			IButton() noexcept =default;
+
+			/**
+			 * @brief      Destructor.
+			 */
+			virtual ~IButton() =default;
+
+			/**
+			 * @brief      Returns the button name.
+			 *
+			 * @return     The button name.
+			 */
+			[[nodiscard]]
+			virtual std::string name() const =0;
+		};
+
+		/**
+		 * @brief      Joypad axis interface.
+		 */
+		class IAxis
+		{
+		public:
+			/**
+			 * @brief      Constructor.
+			 */
+			IAxis() noexcept =default;
+
+			/**
+			 * @brief      Destructor.
+			 */
+			virtual ~IAxis() =default;
+
+			/**
+			 * @brief      Returns the axis name.
+			 *
+			 * @return     The axis name.
+			 */
+			[[nodiscard]]
+			virtual std::string name() const =0;
+		};
+
 		/**
 		 * @brief      Constructor.
 		 */
