@@ -39,9 +39,15 @@ namespace Nene::Windows::XInput
 		: public  IJoypad
 		, private Uncopyable
 	{
-		UInt32 index_;
+		class Button;
+		class Axis;
+
+		std::vector<std::unique_ptr<Button>> buttons_;
+		std::vector<std::unique_ptr<Axis>>   axes_;
+
 		std::string name_;
-		bool connected_;
+		UInt32      index_;
+		bool        connected_;
 
 	public:
 		/**
@@ -54,7 +60,12 @@ namespace Nene::Windows::XInput
 		/**
 		 * @brief      Destructor.
 		 */
-		~Joypad() =default;
+		~Joypad();
+
+		/**
+		 * @see        `Nene::IJoypad::update()`.
+		 */
+		void update() override;
 
 		/**
 		 * @see        `Nene::IJoypad::name()`.

@@ -46,10 +46,15 @@ namespace Nene::Windows::DirectInput
 		: public  IJoypad
 		, private Uncopyable
 	{
+		class ButtonBase;
+		class Button;
+		class POV;
+		class Axis;
+
 		Microsoft::WRL::ComPtr<IDirectInputDevice8W> device_;
 
-		std::vector<std::unique_ptr<IButton>> buttons_;
-		std::vector<std::unique_ptr<IAxis>>   axes_;
+		std::vector<std::unique_ptr<ButtonBase>> buttons_;
+		std::vector<std::unique_ptr<Axis>>       axes_;
 
 		std::string name_;
 		bool connected_;
@@ -65,7 +70,12 @@ namespace Nene::Windows::DirectInput
 		/**
 		 * @brief      Destructor.
 		 */
-		~Joypad() =default;
+		~Joypad();
+
+		/**
+		 * @see        `Nene::IJoypad::update()`.
+		 */
+		void update() override;
 
 		/**
 		 * @see        `Nene::IJoypad::name()`.

@@ -33,77 +33,114 @@ namespace Nene::Windows::DirectInput
 	namespace
 	{
 		constexpr UInt32 maxNumButtons = 24;
-
-		// Button object implementation.
-		class Button final
-			: public  IJoypad::IButton
-			, private Uncopyable
-		{
-			std::string name_;
-			UInt32      index_;
-
-		public:
-			explicit Button(UInt32 index)
-				: name_(fmt::format(u8"Button-{}", index))
-				, index_(index)
-			{
-				assert(index < 128);
-			}
-
-			~Button() =default;
-
-			[[nodiscard]]
-			std::string name() const override
-			{
-				return name_;
-			}
-		};
-
-		// POV button object implementation.
-		class POV final
-			: public  IJoypad::IButton
-			, private Uncopyable
-		{
-			std::string name_;
-			UInt32      angle_;
-
-		public:
-			explicit POV(std::string&& name, UInt32 angle) noexcept
-				: name_(std::move(name)), angle_(angle) {}
-
-			~POV() =default;
-
-			[[nodiscard]]
-			std::string name() const override
-			{
-				return name_;
-			}
-		};
-
-		// Axis object implementation.
-		struct Axis final
-			: public  IJoypad::IAxis
-			, private Uncopyable
-		{
-			std::string name_;
-			LONG DIJOYSTATE2::*data_;
-
-		public:
-			explicit Axis(std::string&& name, LONG DIJOYSTATE2::*data) noexcept
-				: name_(std::move(name)), data_(data)
-			{
-				assert(data);
-			}
-
-			~Axis() =default;
-
-			[[nodiscard]]
-			std::string name() const override
-			{
-				return name_;
-			}
-		};
+		constexpr Int32  axisMagnitude = 1024;
 	}
+
+	// Joypad button base.
+	class Joypad::ButtonBase
+		: public IJoypad::IButton
+		, private Uncopyable
+	{
+		std::string name_;
+
+	public:
+		explicit ButtonBase(std::string&& name)
+			: name_(std::move(name)) {}
+
+		~ButtonBase() =default;
+
+		// Update state.
+		virtual void update(const DIJOYSTATE2& state) =0;
+
+		[[nodiscard]]
+		std::string name() const override final
+		{
+			return name_;
+		}
+	};
+
+	// Button object implementation.
+	class Joypad::Button final
+		: public ButtonBase
+	{
+		UInt32 index_;
+		UInt8  history_;
+
+	public:
+		explicit Button(UInt32 index)
+			: ButtonBase(fmt::format(u8"Button-{}", index))
+			, index_(index)
+			, history_(0)
+		{
+			assert(index < 128);
+		}
+
+		~Button() =default;
+
+		void update(const DIJOYSTATE2& state)
+		{
+			history_ <<= 1;
+			history_  |= state.rgbButtons[index_] ? 1 : 0;
+		}
+	};
+
+	// POV button object implementation.
+	class Joypad::POV final
+		: public ButtonBase
+	{
+		std::string name_;
+		UInt32      angle_;
+		UInt8       history_;
+
+	public:
+		explicit POV(std::string&& name, UInt32 angle) noexcept
+			: ButtonBase(std::move(name))
+			, angle_(angle)
+			, history_(0) {}
+
+		~POV() =default;
+
+		void update(const DIJOYSTATE2& state)
+		{
+			history_ <<= 1;
+			history_  |= (state.rgdwPOV[0] == angle_) ? 1 : 0;
+		}
+	};
+
+	// Axis object implementation.
+	class Joypad::Axis final
+		: public  IJoypad::IAxis
+		, private Uncopyable
+	{
+		std::string         name_;
+		LONG DIJOYSTATE2::* data_;
+		Float32             value_;
+		Float32             prev_;
+
+	public:
+		explicit Axis(std::string&& name, LONG DIJOYSTATE2::*data) noexcept
+			: name_(std::move(name))
+			, data_(data)
+			, value_(0.f)
+			, prev_(0.f)
+		{
+			assert(data);
+		}
+
+		~Axis() =default;
+
+		void update(const DIJOYSTATE2& state)
+		{
+			prev_  = value_;
+			value_ = static_cast<Float32>(state.*data_) / axisMagnitude;
+		}
+
+		[[nodiscard]]
+		std::string name() const override
+		{
+			return name_;
+		}
+	};
 
 	Joypad::Joypad(const Microsoft::WRL::ComPtr<IDirectInputDevice8W>& device)
 		: device_(device)
@@ -152,8 +189,8 @@ namespace Nene::Windows::DirectInput
 			propRange.diph.dwHeaderSize = sizeof(DIPROPHEADER);
 			propRange.diph.dwHow        = DIPH_BYID;
 			propRange.diph.dwObj        = instance->dwType;
-			propRange.lMin              = -1024;
-			propRange.lMax              = +1024;
+			propRange.lMin              = -axisMagnitude;
+			propRange.lMax              = +axisMagnitude;
 
 			throwIfFailed(
 				self->device_->SetProperty(DIPROP_RANGE, &propRange.diph),
@@ -174,9 +211,9 @@ namespace Nene::Windows::DirectInput
 
 		// Register POV objects.
 		buttons_.emplace_back(std::make_unique<POV>(u8"POV-left",  27000));
-		buttons_.emplace_back(std::make_unique<POV>(u8"POV-up",        0));
 		buttons_.emplace_back(std::make_unique<POV>(u8"POV-down",  18000));
 		buttons_.emplace_back(std::make_unique<POV>(u8"POV-right",  9000));
+		buttons_.emplace_back(std::make_unique<POV>(u8"POV-up",        0));
 
 		// Register axis objects.
 		axes_.emplace_back(std::make_unique<Axis>(u8"X-axis",     &DIJOYSTATE2::lX));
@@ -185,6 +222,41 @@ namespace Nene::Windows::DirectInput
 		axes_.emplace_back(std::make_unique<Axis>(u8"X-rotation", &DIJOYSTATE2::lRx));
 		axes_.emplace_back(std::make_unique<Axis>(u8"Y-rotation", &DIJOYSTATE2::lRy));
 		axes_.emplace_back(std::make_unique<Axis>(u8"Z-rotation", &DIJOYSTATE2::lRz));
+	}
+
+	Joypad::~Joypad() =default;
+
+	void Joypad::update()
+	{
+		if (FAILED(device_->Poll()))
+		{
+			device_->Acquire();
+		}
+
+		// Get joypad state.
+		DIJOYSTATE2 state;
+
+		if (FAILED(device_->GetDeviceState(sizeof(state), &state)))
+		{
+			// Input lost.
+			connected_ = false;
+
+			return;
+		}
+
+		connected_ = true;
+
+		// Update buttons.
+		for (const auto& button : buttons_)
+		{
+			button->update(state);
+		}
+
+		// Update axes.
+		for (const auto& axis : axes_)
+		{
+			axis->update(state);
+		}
 	}
 }
 

@@ -96,6 +96,11 @@ namespace Nene
 		virtual ~IJoypad() =default;
 
 		/**
+		 * @brief      Updates joypad data.
+		 */
+		virtual void update() =0;
+
+		/**
 		 * @brief      Returns the joypad device name.
 		 *
 		 * @return     The name of the joypad device.
