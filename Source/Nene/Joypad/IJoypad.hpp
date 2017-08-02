@@ -58,6 +58,30 @@ namespace Nene
 			 */
 			[[nodiscard]]
 			virtual std::string name() const =0;
+
+			/**
+			 * @brief      Determines if the button is pressed.
+			 *
+			 * @return     `true` if pressed, `false` otherwise.
+			 */
+			[[nodiscard]]
+			virtual bool isPressed() const =0;
+
+			/**
+			 * @brief      Determines if the button is clicked.
+			 *
+			 * @return     `true` if clicked, `false` otherwise.
+			 */
+			[[nodiscard]]
+			virtual bool isClicked() const =0;
+
+			/**
+			 * @brief      Determines if the button is released.
+			 *
+			 * @return     `true` if released, `false` otherwise.
+			 */
+			[[nodiscard]]
+			virtual bool isReleased() const =0;
 		};
 
 		/**
@@ -83,6 +107,14 @@ namespace Nene
 			 */
 			[[nodiscard]]
 			virtual std::string name() const =0;
+
+			/**
+			 * @brief      Returns the axis state.
+			 *
+			 * @return     The state of the axis.
+			 */
+			[[nodiscard]]
+			virtual Float32 state() const =0;
 		};
 
 		/**
@@ -115,6 +147,48 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		virtual bool isConnected() const =0;
+
+		/**
+		 * @brief      Returns number of buttons.
+		 *
+		 * @return     Number of buttons.
+		 */
+		[[nodiscard]]
+		virtual UInt32 numButtons() const =0;
+
+		/**
+		 * @brief      Returns number of axes.
+		 *
+		 * @return     Number of axes.
+		 */
+		[[nodiscard]]
+		virtual UInt32 numAxes() const =0;
+
+		/**
+		 * @brief      Returns reference to the button.
+		 *
+		 * @param[in]  index  The index of the button to get.
+		 *
+		 * @return     Reference to the button.
+		 */
+		[[nodiscard]]
+		virtual IButton& button(UInt32 index) =0;
+
+		[[nodiscard]]
+		virtual const IButton& button(UInt32 index) const =0;
+
+		/**
+		 * @brief      Returns reference to the axis.
+		 *
+		 * @param[in]  index  The index of the axis to get.
+		 *
+		 * @return     Reference to the axis.
+		 */
+		[[nodiscard]]
+		virtual IAxis& axis(UInt32 index) =0;
+
+		[[nodiscard]]
+		virtual const IAxis& axis(UInt32 index) const =0;
 	};
 }
 

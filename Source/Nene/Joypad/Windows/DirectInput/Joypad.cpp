@@ -41,11 +41,14 @@ namespace Nene::Windows::DirectInput
 		: public IJoypad::IButton
 		, private Uncopyable
 	{
+	protected:
 		std::string name_;
+		UInt8       history_;
 
 	public:
 		explicit ButtonBase(std::string&& name)
-			: name_(std::move(name)) {}
+			: name_(std::move(name))
+			, history_(0) {}
 
 		~ButtonBase() =default;
 
@@ -57,6 +60,24 @@ namespace Nene::Windows::DirectInput
 		{
 			return name_;
 		}
+
+		[[nodiscard]]
+		bool isPressed() const override final
+		{
+			return (history_ & 0b01) == 0b01;
+		}
+
+		[[nodiscard]]
+		bool isClicked() const override final
+		{
+			return (history_ & 0b11) == 0b01;
+		}
+
+		[[nodiscard]]
+		bool isReleased() const override final
+		{
+			return (history_ & 0b11) == 0b10;
+		}
 	};
 
 	// Button object implementation.
@@ -64,13 +85,11 @@ namespace Nene::Windows::DirectInput
 		: public ButtonBase
 	{
 		UInt32 index_;
-		UInt8  history_;
 
 	public:
 		explicit Button(UInt32 index)
 			: ButtonBase(fmt::format(u8"Button-{}", index))
 			, index_(index)
-			, history_(0)
 		{
 			assert(index < 128);
 		}
@@ -90,13 +109,11 @@ namespace Nene::Windows::DirectInput
 	{
 		std::string name_;
 		UInt32      angle_;
-		UInt8       history_;
 
 	public:
 		explicit POV(std::string&& name, UInt32 angle) noexcept
 			: ButtonBase(std::move(name))
-			, angle_(angle)
-			, history_(0) {}
+			, angle_(angle) {}
 
 		~POV() =default;
 
@@ -114,14 +131,14 @@ namespace Nene::Windows::DirectInput
 	{
 		std::string         name_;
 		LONG DIJOYSTATE2::* data_;
-		Float32             value_;
+		Float32             state_;
 		Float32             prev_;
 
 	public:
 		explicit Axis(std::string&& name, LONG DIJOYSTATE2::*data) noexcept
 			: name_(std::move(name))
 			, data_(data)
-			, value_(0.f)
+			, state_(0.f)
 			, prev_(0.f)
 		{
 			assert(data);
@@ -131,14 +148,20 @@ namespace Nene::Windows::DirectInput
 
 		void update(const DIJOYSTATE2& state)
 		{
-			prev_  = value_;
-			value_ = static_cast<Float32>(state.*data_) / axisMagnitude;
+			prev_  = state_;
+			state_ = static_cast<Float32>(state.*data_) / axisMagnitude;
 		}
 
 		[[nodiscard]]
 		std::string name() const override
 		{
 			return name_;
+		}
+
+		[[nodiscard]]
+		Float32 state() const override
+		{
+			return state_;
 		}
 	};
 
@@ -257,6 +280,62 @@ namespace Nene::Windows::DirectInput
 		{
 			axis->update(state);
 		}
+	}
+
+	[[nodiscard]]
+	std::string Joypad::name() const
+	{
+		return name_;
+	}
+
+	[[nodiscard]]
+	bool Joypad::isConnected() const
+	{
+		return connected_;
+	}
+
+	[[nodiscard]]
+	UInt32 Joypad::numButtons() const
+	{
+		return static_cast<UInt32>(buttons_.size());
+	}
+
+	[[nodiscard]]
+	UInt32 Joypad::numAxes() const
+	{
+		return static_cast<UInt32>(axes_.size());
+	}
+
+	[[nodiscard]]
+	IJoypad::IButton& Joypad::button(UInt32 index)
+	{
+		assert(index < numButtons());
+
+		return *buttons_[index];
+	}
+
+	[[nodiscard]]
+	const IJoypad::IButton& Joypad::button(UInt32 index) const
+	{
+		assert(index < numButtons());
+
+		return *buttons_[index];
+	}
+
+	[[nodiscard]]
+	IJoypad::IAxis& Joypad::axis(UInt32 index)
+	{
+		assert(index < numAxes());
+
+		return *axes_[index];
+	}
+
+	[[nodiscard]]
+	const IJoypad::IAxis& Joypad::axis(UInt32 index) const
+	{
+		assert(index < numAxes());
+
+		return *axes_[index];
 	}
 }
 

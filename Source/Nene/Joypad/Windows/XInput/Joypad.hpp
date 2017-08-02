@@ -71,19 +71,43 @@ namespace Nene::Windows::XInput
 		 * @see        `Nene::IJoypad::name()`.
 		 */
 		[[nodiscard]]
-		std::string name() const override
-		{
-			return name_;
-		}
+		std::string name() const override;
 
 		/**
 		 * @see        `Nene::IJoypad::isConnected()`.
 		 */
 		[[nodiscard]]
-		bool isConnected() const override
-		{
-			return connected_;
-		}
+		bool isConnected() const override;
+
+		/**
+		 * @see        `Nene::IJoypad::numButtons()`.
+		 */
+		[[nodiscard]]
+		UInt32 numButtons() const override;
+
+		/**
+		 * @see        `Nene::IJoypad::numAxes()`.
+		 */
+		[[nodiscard]]
+		UInt32 numAxes() const override;
+
+		/**
+		 * @see        `Nene::IJoypad::button()`.
+		 */
+		[[nodiscard]]
+		IButton& button(UInt32 index) override;
+
+		[[nodiscard]]
+		const IButton& button(UInt32 index) const override;
+
+		/**
+		 * @see        `Nene::IJoypad::axis()`.
+		 */
+		[[nodiscard]]
+		IAxis& axis(UInt32 index) override;
+
+		[[nodiscard]]
+		const IAxis& axis(UInt32 index) const override;
 	};
 }
 

@@ -62,6 +62,24 @@ namespace Nene::Windows::XInput
 		{
 			return name_;
 		}
+
+		[[nodiscard]]
+		bool isPressed() const override final
+		{
+			return (history_ & 0b01) == 0b01;
+		}
+
+		[[nodiscard]]
+		bool isClicked() const override final
+		{
+			return (history_ & 0b11) == 0b01;
+		}
+
+		[[nodiscard]]
+		bool isReleased() const override final
+		{
+			return (history_ & 0b11) == 0b10;
+		}
 	};
 
 	// Axis object implementation.
@@ -83,46 +101,46 @@ namespace Nene::Windows::XInput
 	private:
 		std::string name_;
 		Type        type_;
-		Float32     value_;
+		Float32     state_;
 		Float32     prev_;
 
 	public:
 		explicit Axis(std::string&& name, Type type) noexcept
 			: name_(std::move(name))
 			, type_(type)
-			, value_(0.f)
+			, state_(0.f)
 			, prev_(0.f) {}
 
 		~Axis() =default;
 
 		void update(const XINPUT_STATE& state)
 		{
-			prev_ = value_;
+			prev_ = state_;
 
 			switch (type_)
 			{
 				case Type::leftX:
-					value_ = static_cast<Float32>(state.Gamepad.sThumbLX) / 32768;
+					state_ = static_cast<Float32>(state.Gamepad.sThumbLX) / 32768;
 					break;
 
 				case Type::leftY:
-					value_ = static_cast<Float32>(state.Gamepad.sThumbLY) / 32768;
+					state_ = static_cast<Float32>(state.Gamepad.sThumbLY) / 32768;
 					break;
 
 				case Type::rightX:
-					value_ = static_cast<Float32>(state.Gamepad.sThumbRX) / 32768;
+					state_ = static_cast<Float32>(state.Gamepad.sThumbRX) / 32768;
 					break;
 
 				case Type::rightY:
-					value_ = static_cast<Float32>(state.Gamepad.sThumbRY) / 32768;
+					state_ = static_cast<Float32>(state.Gamepad.sThumbRY) / 32768;
 					break;
 
 				case Type::leftTrigger:
-					value_ = static_cast<Float32>(state.Gamepad.bLeftTrigger) / 255;
+					state_ = static_cast<Float32>(state.Gamepad.bLeftTrigger) / 255;
 					break;
 
 				case Type::rightTrigger:
-					value_ = static_cast<Float32>(state.Gamepad.bRightTrigger) / 255;
+					state_ = static_cast<Float32>(state.Gamepad.bRightTrigger) / 255;
 					break;
 			}
 		}
@@ -131,6 +149,12 @@ namespace Nene::Windows::XInput
 		std::string name() const override
 		{
 			return name_;
+		}
+
+		[[nodiscard]]
+		Float32 state() const override
+		{
+			return state_;
 		}
 	};
 
@@ -178,8 +202,8 @@ namespace Nene::Windows::XInput
 	void Joypad::update()
 	{
 		XINPUT_STATE state;
-
-		if (FAILED(::XInputGetState(index_, &state)))
+		
+		if (::XInputGetState(index_, &state) != ERROR_SUCCESS)
 		{
 			// Lost input
 			connected_ = false;
@@ -198,6 +222,62 @@ namespace Nene::Windows::XInput
 		{
 			axis->update(state);
 		}
+	}
+
+	[[nodiscard]]
+	std::string Joypad::name() const
+	{
+		return name_;
+	}
+
+	[[nodiscard]]
+	bool Joypad::isConnected() const
+	{
+		return connected_;
+	}
+
+	[[nodiscard]]
+	UInt32 Joypad::numButtons() const
+	{
+		return static_cast<UInt32>(buttons_.size());
+	}
+
+	[[nodiscard]]
+	UInt32 Joypad::numAxes() const
+	{
+		return static_cast<UInt32>(axes_.size());
+	}
+
+	[[nodiscard]]
+	IJoypad::IButton& Joypad::button(UInt32 index)
+	{
+		assert(index < numButtons());
+
+		return *buttons_[index];
+	}
+
+	[[nodiscard]]
+	const IJoypad::IButton& Joypad::button(UInt32 index) const
+	{
+		assert(index < numButtons());
+
+		return *buttons_[index];
+	}
+
+	[[nodiscard]]
+	IJoypad::IAxis& Joypad::axis(UInt32 index)
+	{
+		assert(index < numAxes());
+
+		return *axes_[index];
+	}
+
+	[[nodiscard]]
+	const IJoypad::IAxis& Joypad::axis(UInt32 index) const
+	{
+		assert(index < numAxes());
+
+		return *axes_[index];
 	}
 }
 
