@@ -63,9 +63,10 @@ namespace Nene::Windows::DirectInput
 		/**
 		 * @brief      Constructor.
 		 *
-		 * @param[in]  device  DirectInput device.
+		 * @param[in]  input     DirectInput object.
+		 * @param[in]  instance  The joypad device instance.
 		 */
-		explicit Joypad(const Microsoft::WRL::ComPtr<IDirectInputDevice8W>& device);
+		explicit Joypad(const Microsoft::WRL::ComPtr<IDirectInput8W>& input, const DIDEVICEINSTANCEW* instance);
 
 		/**
 		 * @brief      Destructor.

@@ -29,12 +29,12 @@
 #endif
 
 #include "../../../Exceptions/Windows/DirectXException.hpp"
-#include "JoypadInput.hpp"
-#include "Joypad.hpp"
+#include "KeyboardInput.hpp"
+#include "Keyboard.hpp"
 
 namespace Nene::Windows::DirectInput
 {
-	JoypadInput::JoypadInput()
+	KeyboardInput::KeyboardInput()
 		: input_()
 	{
 		// Create factory.
@@ -48,34 +48,9 @@ namespace Nene::Windows::DirectInput
 			u8"Failed to create DirectInput device.");
 	}
 
-	std::vector<std::unique_ptr<IJoypad>> JoypadInput::joypads()
+	std::unique_ptr<IKeyboard> KeyboardInput::keyboard()
 	{
-		auto list = std::vector<std::unique_ptr<IJoypad>> {};
-		auto pair = std::make_pair(this, &list);
-
-		// Enumeration callback.
-		const auto onEnumJoypad = [](const DIDEVICEINSTANCEW* instance, VOID* context)
-		{
-			const auto p    = static_cast<decltype(&pair)>(context);
-			const auto self = p->first;
-			const auto list = p->second;
-
-			try
-			{
-				list->emplace_back(std::make_unique<Joypad>(self->input_, instance));
-			}
-			catch ([[maybe_unused]] const DirectXException& e)
-			{
-				// Do nothing.
-			}
-
-			return DIENUM_CONTINUE;
-		};
-
-		// Enumerate joypads.
-		input_->EnumDevices(DI8DEVCLASS_GAMECTRL, onEnumJoypad, &pair, DIEDFL_ATTACHEDONLY);
-
-		return list;
+		return std::make_unique<Keyboard>(input_);
 	}
 }
 

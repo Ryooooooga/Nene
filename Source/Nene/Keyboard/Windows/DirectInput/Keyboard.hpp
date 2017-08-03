@@ -21,62 +21,73 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //=============================================================================
 
+#ifndef INCLUDE_NENE_KEYBOARD_WINDOWS_DIRECTINPUT_KEYBOARD_HPP
+#define INCLUDE_NENE_KEYBOARD_WINDOWS_DIRECTINPUT_KEYBOARD_HPP
+
 #include "../../../Platform.hpp"
 #if defined(NENE_OS_WINDOWS)
 
-#if defined(NENE_COMPILER_MSVC)
-#  pragma comment(lib, "dinput8.lib")
-#endif
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#define DIRECTINPUT_VERSION 0x0800
 
-#include "../../../Exceptions/Windows/DirectXException.hpp"
-#include "JoypadInput.hpp"
-#include "Joypad.hpp"
+#include <array>
+#include <memory>
+#include <dinput.h>
+#include <wrl/client.h>
+#include "../../../Uncopyable.hpp"
+#include "../../IKeyboard.hpp"
 
 namespace Nene::Windows::DirectInput
 {
-	JoypadInput::JoypadInput()
-		: input_()
+	/**
+	 * @brief      DirectInput keyboard device implementation.
+	 */
+	class Keyboard final
+		: public  IKeyboard
+		, private Uncopyable
 	{
-		// Create factory.
-		throwIfFailed(
-			::DirectInput8Create(
-				::GetModuleHandleW(nullptr),
-				DIRECTINPUT_VERSION,
-				IID_IDirectInput8W,
-				reinterpret_cast<void**>(input_.GetAddressOf()),
-				nullptr),
-			u8"Failed to create DirectInput device.");
-	}
+		class Key;
 
-	std::vector<std::unique_ptr<IJoypad>> JoypadInput::joypads()
-	{
-		auto list = std::vector<std::unique_ptr<IJoypad>> {};
-		auto pair = std::make_pair(this, &list);
+		Microsoft::WRL::ComPtr<IDirectInputDevice8W> device_;
 
-		// Enumeration callback.
-		const auto onEnumJoypad = [](const DIDEVICEINSTANCEW* instance, VOID* context)
-		{
-			const auto p    = static_cast<decltype(&pair)>(context);
-			const auto self = p->first;
-			const auto list = p->second;
+		std::array<std::unique_ptr<Key>, 256> keys_;
 
-			try
-			{
-				list->emplace_back(std::make_unique<Joypad>(self->input_, instance));
-			}
-			catch ([[maybe_unused]] const DirectXException& e)
-			{
-				// Do nothing.
-			}
+	public:
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  input  DirectInput object.
+		 */
+		explicit Keyboard(const Microsoft::WRL::ComPtr<IDirectInput8W>& input);
 
-			return DIENUM_CONTINUE;
-		};
+		/**
+		 * @brief      Destructor.
+		 */
+		~Keyboard();
 
-		// Enumerate joypads.
-		input_->EnumDevices(DI8DEVCLASS_GAMECTRL, onEnumJoypad, &pair, DIEDFL_ATTACHEDONLY);
+		/**
+		 * @see        `Nene::IKeyboard::update()`.
+		 */
+		void update() override;
 
-		return list;
-	}
+		/**
+		 * @see        `Nene::IKeyboard::key()`.
+		 */
+		[[nodiscard]]
+		IKey& key(UInt8 code) override;
+
+		[[nodiscard]]
+		const IKey& key(UInt8 code) const override;
+
+		[[nodiscard]]
+		IKey& key(KeyCode code) override;
+
+		[[nodiscard]]
+		const IKey& key(KeyCode code) const override;
+	};
 }
 
 #endif
+
+#endif  // #ifndef INCLUDE_NENE_KEYBOARD_WINDOWS_DIRECTINPUT_KEYBOARD_HPP
