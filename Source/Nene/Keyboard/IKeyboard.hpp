@@ -94,12 +94,23 @@ namespace Nene
 		virtual ~IKeyboard() =default;
 
 		/**
+		 * @brief      Updates keyboard data.
+		 */
+		virtual void update() =0;
+
+		/**
 		 * @brief      Returns reference to the key object.
 		 *
 		 * @param[in]  code  Key code to get.
 		 *
 		 * @return     Reference to the key.
 		 */
+		[[nodiscard]]
+		virtual IKey& key(UInt8 code) =0;
+
+		[[nodiscard]]
+		virtual const IKey& key(UInt8 code) const =0;
+
 		[[nodiscard]]
 		virtual IKey& key(KeyCode code) =0;
 
