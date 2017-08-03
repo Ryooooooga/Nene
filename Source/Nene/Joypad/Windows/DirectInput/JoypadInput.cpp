@@ -60,12 +60,13 @@ namespace Nene::Windows::DirectInput
 			const auto self = p->first;
 			const auto list = p->second;
 
-			// Create device.
-			Microsoft::WRL::ComPtr<IDirectInputDevice8W> device;
-
-			if (SUCCEEDED(self->input_->CreateDevice(instance->guidInstance, device.GetAddressOf(), nullptr)))
+			try
 			{
-				list->emplace_back(std::make_unique<Joypad>(device));
+				list->emplace_back(std::make_unique<Joypad>(self->input_, instance));
+			}
+			catch ([[maybe_unused]] const DirectXException& e)
+			{
+				// Do nothing.
 			}
 
 			return DIENUM_CONTINUE;

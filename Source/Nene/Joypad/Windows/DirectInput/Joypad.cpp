@@ -165,24 +165,22 @@ namespace Nene::Windows::DirectInput
 		}
 	};
 
-	Joypad::Joypad(const Microsoft::WRL::ComPtr<IDirectInputDevice8W>& device)
-		: device_(device)
+	Joypad::Joypad(const Microsoft::WRL::ComPtr<IDirectInput8W>& input, const DIDEVICEINSTANCEW* instance)
+		: device_()
 		, buttons_()
 		, axes_()
 		, name_()
 		, connected_(true)
 	{
-		assert(device);
+		assert(input);
+		assert(instance);
 
-		// Get device info.
-		DIDEVICEINSTANCEW info;
-		info.dwSize = sizeof(info);
-
+		// Create device.
 		throwIfFailed(
-			device_->GetDeviceInfo(&info),
-			u8"Failed to get DirectInput device information.");
+			input->CreateDevice(instance->guidInstance, device_.GetAddressOf(), nullptr),
+			u8"Failed to create DirectInput joypad device.");
 
-		name_ = Encoding::toUtf8(info.tszInstanceName);
+		name_ = Encoding::toUtf8(instance->tszInstanceName);
 
 		// Set data format.
 		throwIfFailed(
