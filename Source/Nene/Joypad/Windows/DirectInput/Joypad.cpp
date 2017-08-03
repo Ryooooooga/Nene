@@ -32,8 +32,7 @@ namespace Nene::Windows::DirectInput
 {
 	namespace
 	{
-		constexpr UInt32 maxNumButtons = 24;
-		constexpr Int32  axisMagnitude = 1024;
+		constexpr Int32 axisMagnitude = 1024;
 	}
 
 	// Joypad button base.
@@ -225,7 +224,7 @@ namespace Nene::Windows::DirectInput
 			u8"Failed to enumerate DirectInput joypad axes.");
 
 		// Register button objects.
-		for (UInt32 i = 0; i < maxNumButtons; i++)
+		for (UInt32 i = 0; i < capability.dwButtons; i++)
 		{
 			buttons_.emplace_back(std::make_unique<Button>(i));
 		}
