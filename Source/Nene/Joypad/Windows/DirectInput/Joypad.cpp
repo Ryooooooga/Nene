@@ -248,23 +248,14 @@ namespace Nene::Windows::DirectInput
 
 	void Joypad::update()
 	{
-		if (FAILED(device_->Poll()))
+		if (device_->Poll() != ERROR_SUCCESS)
 		{
 			device_->Acquire();
 		}
 
 		// Get joypad state.
 		DIJOYSTATE2 state;
-
-		if (FAILED(device_->GetDeviceState(sizeof(state), &state)))
-		{
-			// Input lost.
-			connected_ = false;
-
-			return;
-		}
-
-		connected_ = true;
+		connected_ = device_->GetDeviceState(sizeof(state), &state) != ERROR_SUCCESS;
 
 		// Update buttons.
 		for (const auto& button : buttons_)
