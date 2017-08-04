@@ -115,6 +115,12 @@ namespace Nene::Windows
 		Rectanglei area() const override;
 
 		/**
+		 * @see        `Nene::IWindow::position()`.
+		 */
+		[[nodiscard]]
+		Vector2Di position() const override;
+
+		/**
 		 * @see        `Nene::IWindow::width()`.
 		 */
 		[[nodiscard]]
@@ -139,10 +145,10 @@ namespace Nene::Windows
 		Rectanglei frame() const override;
 
 		/**
-		 * @see        `Nene::IWindow::position()`.
+		 * @see        `Nene::IWindow::framePosition()`.
 		 */
 		[[nodiscard]]
-		Vector2Di position() const override;
+		Vector2Di framePosition() const override;
 
 		/**
 		 * @see        `Nene::IWindow::frameWidth()`.
@@ -226,6 +232,16 @@ namespace Nene::Windows
 		 * @see        `Nene::IWindow::title()`.
 		 */
 		Window& title(const std::string& newTitle) override;
+
+		/**
+		 * @see        `Nene::IWindow::area()`.
+		 */
+		Window& area(const Rectanglei& newClientArea) override;
+
+		/**
+		 * @see        `Nene::IWindow::size()`.
+		 */
+		Window& size(const Size2Di& newSize) override;
 
 		/**
 		 * @see        `Nene::IWindow::maximizeBox()`.

@@ -110,6 +110,14 @@ namespace Nene
 		virtual Rectanglei area() const =0;
 
 		/**
+		 * @brief      Returns the client area left top location.
+		 *
+		 * @return     The client area left top location.
+		 */
+		[[nodiscard]]
+		virtual Vector2Di position() const =0;
+
+		/**
 		 * @brief      Returns the width of the window client area.
 		 *
 		 * @return     The width of the window client area.
@@ -147,7 +155,7 @@ namespace Nene
 		 * @return     The window position.
 		 */
 		[[nodiscard]]
-		virtual Vector2Di position() const =0;
+		virtual Vector2Di framePosition() const =0;
 
 		/**
 		 * @brief      Returns the width of the window.
@@ -261,6 +269,33 @@ namespace Nene
 		 * @return     `*this`.
 		 */
 		virtual IWindow& title(const std::string& newTitle) =0;
+
+		/**
+		 * @brief      Sets the window client area coordinate.
+		 *
+		 * @param[in]  newClientArea  The new window client coordinate.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IWindow& area(const Rectanglei& newClientArea) =0;
+
+		/**
+		 * @brief      Sets the window client area position.
+		 *
+		 * @param[in]  newPosition  The new window client position.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IWindow& position(const Vector2Di& newPosition) =0;
+
+		/**
+		 * @brief      Sets the window client area size.
+		 *
+		 * @param[in]  newSize  The new window client size.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IWindow& size(const Size2Di& newSize) =0;
 
 		/**
 		 * @brief      Sets the maximize box enabled flag.

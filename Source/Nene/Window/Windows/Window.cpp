@@ -347,6 +347,11 @@ namespace Nene::Windows
 		return client_;
 	}
 
+	Vector2Di Window::position() const
+	{
+		return client_.position;
+	}
+
 	Int32 Window::width() const
 	{
 		return client_.width();
@@ -367,7 +372,7 @@ namespace Nene::Windows
 		return frame_;
 	}
 
-	Vector2Di Window::position() const
+	Vector2Di Window::framePosition() const
 	{
 		return frame_.position;
 	}
@@ -445,6 +450,76 @@ namespace Nene::Windows
 	Window& Window::title(const std::string& newTitle)
 	{
 		::SetWindowTextW(handle_, Encoding::toWide(newTitle).c_str());
+
+		return *this;
+	}
+
+	Window& Window::area(const Rectanglei& newClientArea)
+	{
+		RECT rect =
+		{
+			static_cast<LONG>(newClientArea.position.x),
+			static_cast<LONG>(newClientArea.position.y),
+			static_cast<LONG>(newClientArea.size.width),
+			static_cast<LONG>(newClientArea.size.height),
+		};
+
+		if (fullscreen_)
+		{
+			::AdjustWindowRect(&rect, styleWindowed_, false);
+
+			frameWindowed_.position.x  = static_cast<Int32>(rect.left);
+			frameWindowed_.position.y  = static_cast<Int32>(rect.top);
+			frameWindowed_.size.width  = static_cast<Int32>(rect.right - rect.left);
+			frameWindowed_.size.height = static_cast<Int32>(rect.bottom - rect.top);
+		}
+		else
+		{
+			::AdjustWindowRect(&rect, style_, false);
+
+			::SetWindowPos(
+				handle_,
+				nullptr,
+				rect.left,
+				rect.top,
+				rect.right - rect.left,
+				rect.bottom - rect.top,
+				SWP_NOACTIVATE | SWP_NOZORDER);
+		}
+
+		return *this;
+	}
+
+	Window& Window::size(const Size2Di& newSize)
+	{
+		RECT rect =
+		{
+			0,
+			0,
+			static_cast<LONG>(newSize.width),
+			static_cast<LONG>(newSize.height),
+		};
+
+		if (fullscreen_)
+		{
+			::AdjustWindowRect(&rect, styleWindowed_, false);
+
+			frameWindowed_.size.width  = static_cast<Int32>(rect.right - rect.left);
+			frameWindowed_.size.height = static_cast<Int32>(rect.bottom - rect.top);
+		}
+		else
+		{
+			::AdjustWindowRect(&rect, style_, false);
+
+			::SetWindowPos(
+				handle_,
+				nullptr,
+				0,
+				0,
+				rect.right - rect.left,
+				rect.bottom - rect.top,
+				SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOZORDER);
+		}
 
 		return *this;
 	}
