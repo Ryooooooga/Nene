@@ -32,8 +32,7 @@ namespace Nene::Windows::DirectInput
 {
 	namespace
 	{
-		constexpr UInt32 maxNumButtons = 24;
-		constexpr Int32  axisMagnitude = 1024;
+		constexpr Int32 axisMagnitude = 1024;
 	}
 
 	// Joypad button base.
@@ -225,7 +224,7 @@ namespace Nene::Windows::DirectInput
 			u8"Failed to enumerate DirectInput joypad axes.");
 
 		// Register button objects.
-		for (UInt32 i = 0; i < maxNumButtons; i++)
+		for (UInt32 i = 0; i < capability.dwButtons; i++)
 		{
 			buttons_.emplace_back(std::make_unique<Button>(i));
 		}
@@ -249,23 +248,14 @@ namespace Nene::Windows::DirectInput
 
 	void Joypad::update()
 	{
-		if (FAILED(device_->Poll()))
+		if (device_->Poll() != ERROR_SUCCESS)
 		{
 			device_->Acquire();
 		}
 
 		// Get joypad state.
 		DIJOYSTATE2 state;
-
-		if (FAILED(device_->GetDeviceState(sizeof(state), &state)))
-		{
-			// Input lost.
-			connected_ = false;
-
-			return;
-		}
-
-		connected_ = true;
+		connected_ = device_->GetDeviceState(sizeof(state), &state) != ERROR_SUCCESS;
 
 		// Update buttons.
 		for (const auto& button : buttons_)
