@@ -33,22 +33,18 @@
 #include <memory>
 #include <d3d11.h>
 #include <wrl/client.h>
-#include "../../../Uncopyable.hpp"
 #include "../../IDynamicTexture.hpp"
+#include "Texture.hpp"
 
 namespace Nene::Windows::Direct3D11
 {
-	// Forward declaration.
-	class Texture;
-
 	/**
 	 * @brief      Direct3D11 dynamic texture implementation.
 	 */
 	class DynamicTexture final
-		: public  IDynamicTexture
-		, private Uncopyable
+		: public TextureBase
+		, public IDynamicTexture
 	{
-		std::unique_ptr<Texture> texture_;
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTarget_;
 
 	public:
@@ -78,37 +74,34 @@ namespace Nene::Windows::Direct3D11
 		/**
 		 * @brief      Destructor.
 		 */
-		~DynamicTexture();
+		~DynamicTexture() =default;
 
 		/**
 		 * @see        `Nene::ITexture::width()`.
 		 */
 		[[nodiscard]]
-		Int32 width() const noexcept override;
+		Int32 width() const noexcept override
+		{
+			return size_.width;
+		}
 
 		/**
 		 * @see        `Nene::ITexture::height()`.
 		 */
 		[[nodiscard]]
-		Int32 height() const noexcept override;
+		Int32 height() const noexcept override
+		{
+			return size_.height;
+		}
 
 		/**
 		 * @see        `Nene::ITexture::size()`.
 		 */
 		[[nodiscard]]
-		Size2Di size() const noexcept override;
-
-		/**
-		 * @see        `Nene::Texture::texture2D()`.
-		 */
-		[[nodiscard]]
-		Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2D() const noexcept;
-
-		/**
-		 * @see        `Nene::Texture::shaderResourceView()`.
-		 */
-		[[nodiscard]]
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView() const noexcept;
+		Size2Di size() const noexcept override
+		{
+			return size_;
+		}
 
 		/**
 		 * @brief      Returns Direct3D11 render target view.
@@ -116,7 +109,10 @@ namespace Nene::Windows::Direct3D11
 		 * @return     Direct3D11 render target view.
 		 */
 		[[nodiscard]]
-		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView() const noexcept;
+		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView() const noexcept
+		{
+			return renderTarget_;
+		}
 	};
 }
 

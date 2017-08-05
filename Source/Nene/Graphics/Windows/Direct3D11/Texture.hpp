@@ -39,24 +39,23 @@
 namespace Nene::Windows::Direct3D11
 {
 	/**
-	 * @brief      Direct3D11 texture implementation.
+	 * @brief      Direct3D11 texture base.
 	 */
-	class Texture final
+	class TextureBase
 		: public  ITexture
 		, private Uncopyable
 	{
-		Microsoft::WRL::ComPtr<ID3D11Texture2D>          texture_;
+	protected:
+		Microsoft::WRL::ComPtr<ID3D11Texture2D> texture_;
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResource_;
-
 		Size2Di size_;
 
-	public:
 		/**
 		 * @brief      Constructor.
 		 *
 		 * @param[in]  texture  Direct3D11 texture.
 		 */
-		explicit Texture(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture);
+		explicit TextureBase(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture);
 
 		/**
 		 * @brief      Constructor.
@@ -65,7 +64,7 @@ namespace Nene::Windows::Direct3D11
 		 * @param[in]  size     The texture size.
 		 * @param[in]  dynamic  `true` if using as a render target texture.
 		 */
-		explicit Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, bool dynamic);
+		explicit TextureBase(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, bool dynamic);
 
 		/**
 		 * @brief      Constructor.
@@ -74,7 +73,62 @@ namespace Nene::Windows::Direct3D11
 		 * @param[in]  image    The source image.
 		 * @param[in]  dynamic  `true` if using as a render target texture.
 		 */
-		explicit Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Image& image, bool dynamic);
+		explicit TextureBase(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Image& image, bool dynamic);
+
+	public:
+		/**
+		 * @brief      Destructor.
+		 */
+		~TextureBase() =default;
+
+		/**
+		 * @brief      Returns Direct3D11 texture.
+		 *
+		 * @return     Direct3D11 texture;
+		 */
+		[[nodiscard]]
+		Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2D() const noexcept
+		{
+			return texture_;
+		}
+
+		/**
+		 * @brief      Returns Direct3D11 shader resource view.
+		 *
+		 * @return     Direct3D11 shader resource view.
+		 */
+		[[nodiscard]]
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView() const noexcept
+		{
+			return shaderResource_;
+		}
+	};
+
+	/**
+	 * @brief      Direct3D11 texture implementation.
+	 */
+	class Texture final
+		: public TextureBase
+	{
+	public:
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  device   Direct3D11 device.
+		 * @param[in]  size     The texture size.
+		 */
+		explicit Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size)
+			: TextureBase(device, size, false) {}
+
+		/**
+		 * @brief      Constructor.
+		 *
+		 * @param[in]  device   Direct3D11 device.
+		 * @param[in]  image    The source image.
+		 * @param[in]  dynamic  `true` if using as a render target texture.
+		 */
+		explicit Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Image& image)
+			: TextureBase(device, image, false) {}
 
 		/**
 		 * @brief      Destructor.
@@ -106,28 +160,6 @@ namespace Nene::Windows::Direct3D11
 		Size2Di size() const noexcept override
 		{
 			return size_;
-		}
-
-		/**
-		 * @brief      Returns Direct3D11 texture.
-		 *
-		 * @return     Direct3D11 texture;
-		 */
-		[[nodiscard]]
-		Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2D() const noexcept
-		{
-			return texture_;
-		}
-
-		/**
-		 * @brief      Returns Direct3D11 shader resource view.
-		 *
-		 * @return     Direct3D11 shader resource view.
-		 */
-		[[nodiscard]]
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView() const noexcept
-		{
-			return shaderResource_;
 		}
 	};
 }

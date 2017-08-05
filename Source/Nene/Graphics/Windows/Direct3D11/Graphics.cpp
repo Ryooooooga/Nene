@@ -257,7 +257,7 @@ namespace Nene::Windows::Direct3D11
 
 	std::shared_ptr<ITexture> Graphics::texture(const Image& image)
 	{
-		return std::make_shared<Texture>(device_, image, false);
+		return std::make_shared<Texture>(device_, image);
 	}
 
 	std::shared_ptr<IDynamicTexture> Graphics::dynamicTexture(const Size2Di& size)

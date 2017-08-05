@@ -56,48 +56,16 @@ namespace Nene::Windows::Direct3D11
 	}
 
 	DynamicTexture::DynamicTexture(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture)
-		: texture_(std::make_unique<Texture>(texture))
-		, renderTarget_(createRenderTargetView(texture_->texture2D())) {}
+		: TextureBase(texture)
+		, renderTarget_(createRenderTargetView(texture2D())) {}
 
 	DynamicTexture::DynamicTexture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size)
-		: texture_(std::make_unique<Texture>(device, size, true))
-		, renderTarget_(createRenderTargetView(texture_->texture2D())) {}
+		: TextureBase(device, size, true)
+		, renderTarget_(createRenderTargetView(texture2D())) {}
 
 	DynamicTexture::DynamicTexture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Image& image)
-		: texture_(std::make_unique<Texture>(device, image, true))
-		, renderTarget_(createRenderTargetView(texture_->texture2D())) {}
-
-	DynamicTexture::~DynamicTexture() =default;
-
-	Int32 DynamicTexture::width() const noexcept
-	{
-		return texture_->width();
-	}
-
-	Int32 DynamicTexture::height() const noexcept
-	{
-		return texture_->height();
-	}
-
-	Size2Di DynamicTexture::size() const noexcept
-	{
-		return texture_->size();
-	}
-
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> DynamicTexture::texture2D() const noexcept
-	{
-		return texture_->texture2D();
-	}
-
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> DynamicTexture::shaderResourceView() const noexcept
-	{
-		return texture_->shaderResourceView();
-	}
-
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> DynamicTexture::renderTargetView() const noexcept
-	{
-		return renderTarget_;
-	}
+		: TextureBase(device, image, true)
+		, renderTarget_(createRenderTargetView(texture2D())) {}
 }
 
 #endif

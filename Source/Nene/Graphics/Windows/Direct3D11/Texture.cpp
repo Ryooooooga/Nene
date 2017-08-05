@@ -57,7 +57,7 @@ namespace Nene::Windows::Direct3D11
 		}
 	}
 
-	Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture)
+	TextureBase::TextureBase(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture)
 		: texture_(texture)
 		, shaderResource_()
 		, size_()
@@ -75,7 +75,7 @@ namespace Nene::Windows::Direct3D11
 		shaderResource_ = createShaderResourceView(texture_);
 	}
 
-	Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, bool dynamic)
+	TextureBase::TextureBase(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Size2Di& size, bool dynamic)
 		: texture_()
 		, shaderResource_()
 		, size_(size)
@@ -110,7 +110,7 @@ namespace Nene::Windows::Direct3D11
 		shaderResource_ = createShaderResourceView(texture_);
 	}
 
-	Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Image& image, bool dynamic)
+	TextureBase::TextureBase(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Image& image, bool dynamic)
 		: texture_()
 		, shaderResource_()
 		, size_(image.size())
