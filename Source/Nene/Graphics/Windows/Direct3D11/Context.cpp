@@ -42,6 +42,7 @@ namespace Nene::Windows::Direct3D11
 		, commandList_      ()
 		, spriteBatch_      ()
 		, renderTarget_     ()
+		, texture_          ()
 		, vertexShader_     ()
 		, pixelShader_      ()
 		, viewport_         ()
@@ -101,6 +102,16 @@ namespace Nene::Windows::Direct3D11
 		};
 
 		immediateContext_->RSSetViewports(std::extent_v<decltype(viewports)>, viewports);
+	}
+
+	void Context::executeCommand(const CommandSetTexture& command)
+	{
+		ID3D11ShaderResourceView* shaderResources[] =
+		{
+			command.shaderResource.Get(),
+		};
+
+		immediateContext_->PSGetShaderResources(0, std::extent_v<decltype(shaderResources)>, shaderResources);
 	}
 
 	void Context::executeCommand(const CommandSetVertexShader& command)
@@ -248,6 +259,32 @@ namespace Nene::Windows::Direct3D11
 		return *this;
 	}
 
+	Context& Context::texture(const std::shared_ptr<ITexture>& nextTexture)
+	{
+		// Type check.
+		const auto texture_Direct3D11 = std::dynamic_pointer_cast<TextureBase>(nextTexture);
+
+		if (!texture_Direct3D11)
+		{
+			throw InvalidTypeException { u8"Argument must be a Direct3D11 texture type." };
+		}
+
+		if (texture_Direct3D11 == texture_)
+		{
+			return *this;
+		}
+
+		// Push command.
+		commandList_->overwriteLastOrPush(CommandSetTexture
+		{
+			texture_Direct3D11->shaderResourceView(),
+		});
+
+		texture_ = texture_Direct3D11;
+
+		return *this;
+	}
+
 	Context& Context::vertexShader(const std::shared_ptr<IVertexShader>& nextVertexShader)
 	{
 		// Type check.
@@ -339,22 +376,27 @@ namespace Nene::Windows::Direct3D11
 		return *this;
 	}
 
-	std::shared_ptr<IDynamicTexture> Context::renderTarget() const noexcept
+	std::shared_ptr<IDynamicTexture> Context::renderTarget() const
 	{
 		return renderTarget_;
 	}
 
-	Rectanglef Context::viewport() const noexcept
+	Rectanglef Context::viewport() const
 	{
 		return viewport_;
 	}
 
-	std::shared_ptr<IVertexShader> Context::vertexShader() const noexcept
+	std::shared_ptr<ITexture> Context::texture() const
+	{
+		return texture_;
+	}
+
+	std::shared_ptr<IVertexShader> Context::vertexShader() const
 	{
 		return vertexShader_;
 	}
 
-	std::shared_ptr<IPixelShader> Context::pixelShader() const noexcept
+	std::shared_ptr<IPixelShader> Context::pixelShader() const
 	{
 		return pixelShader_;
 	}

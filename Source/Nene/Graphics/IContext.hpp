@@ -100,6 +100,15 @@ namespace Nene
 		virtual IContext& viewport(const Rectanglef& nextViewport) =0;
 
 		/**
+		 * @brief      Sets the current rendering texture.
+		 *
+		 * @param[in]  nextTexture  The next rendering texture.
+		 *
+		 * @return     `*this`.
+		 */
+		virtual IContext& texture(const std::shared_ptr<ITexture>& nextTexture) =0;
+
+		/**
 		 * @brief      Sets the current vertex shader.
 		 *
 		 * @param[in]  nextVertexShader  The vertex shader to set.
@@ -142,6 +151,14 @@ namespace Nene
 		 */
 		[[nodiscard]]
 		virtual Rectanglef viewport() const =0;
+
+		/**
+		 * @brief      Returns the current rendering texture.
+		 *
+		 * @return     The current rendering texture.
+		 */
+		[[nodiscard]]
+		virtual std::shared_ptr<ITexture> texture() const =0;
 
 		/**
 		 * @brief      Returns the current vertex shader.

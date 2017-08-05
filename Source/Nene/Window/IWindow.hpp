@@ -280,15 +280,6 @@ namespace Nene
 		virtual IWindow& area(const Rectanglei& newClientArea) =0;
 
 		/**
-		 * @brief      Sets the window client area position.
-		 *
-		 * @param[in]  newPosition  The new window client position.
-		 *
-		 * @return     `*this`.
-		 */
-		virtual IWindow& position(const Vector2Di& newPosition) =0;
-
-		/**
 		 * @brief      Sets the window client area size.
 		 *
 		 * @param[in]  newSize  The new window client size.

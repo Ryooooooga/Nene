@@ -55,6 +55,11 @@ namespace Nene::Windows::Direct3D11
 		Rectanglef viewport;
 	};
 
+	struct CommandSetTexture
+	{
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResource;
+	};
+
 	struct CommandSetVertexShader
 	{
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
@@ -81,6 +86,7 @@ namespace Nene::Windows::Direct3D11
 		CommandSetRenderTarget,
 		CommandClearRenderTarget,
 		CommandSetViewport,
+		CommandSetTexture,
 		CommandSetVertexShader,
 		CommandSetPixelShader,
 		CommandDraw,
