@@ -34,7 +34,7 @@ namespace Nene
 {
 	namespace
 	{
-		struct BITMAPFILEHEADER
+		struct BitmapFileHeader
 		{
 			UInt16 signature;
 			UInt32 size;
@@ -43,7 +43,7 @@ namespace Nene
 			UInt32 offset;
 		};
 
-		struct BITMAPINFOHEADER
+		struct BitmapInfoHeader
 		{
 			UInt32 headerSize;
 			Int32  width;
@@ -58,7 +58,7 @@ namespace Nene
 			UInt32 colorImportant;
 		};
 
-		void load(Serialization::BinaryDeserializer& archive, BITMAPFILEHEADER& header)
+		void load(Serialization::BinaryDeserializer& archive, BitmapFileHeader& header)
 		{
 			archive
 				.serialize(header.signature)
@@ -69,7 +69,7 @@ namespace Nene
 			;
 		}
 
-		void save(Serialization::BinarySerializer& archive, const BITMAPFILEHEADER& header)
+		void save(Serialization::BinarySerializer& archive, const BitmapFileHeader& header)
 		{
 			archive
 				.serialize(header.signature)
@@ -80,7 +80,7 @@ namespace Nene
 			;
 		}
 
-		void load(Serialization::BinaryDeserializer& archive, BITMAPINFOHEADER& header)
+		void load(Serialization::BinaryDeserializer& archive, BitmapInfoHeader& header)
 		{
 			archive
 				.serialize(header.headerSize)
@@ -97,7 +97,7 @@ namespace Nene
 			;
 		}
 
-		void save(Serialization::BinarySerializer& archive, const BITMAPINFOHEADER& header)
+		void save(Serialization::BinarySerializer& archive, const BitmapInfoHeader& header)
 		{
 			archive
 				.serialize(header.headerSize)
@@ -148,7 +148,7 @@ namespace Nene
 		Serialization::BinaryDeserializer archive { reader, Endian::Order::little };
 
 		// Read file header.
-		BITMAPFILEHEADER fileHeader;
+		BitmapFileHeader fileHeader;
 		archive.serialize(fileHeader);
 
 		if (fileHeader.signature != 0x4d42)
@@ -157,7 +157,7 @@ namespace Nene
 		}
 
 		// Read information header.
-		BITMAPINFOHEADER infoHeader;
+		BitmapInfoHeader infoHeader;
 		archive.serialize(infoHeader);
 
 		if (infoHeader.headerSize != 40)
@@ -254,7 +254,7 @@ namespace Nene
 	{
 		Serialization::BinarySerializer archive { writer, Endian::Order::little };
 
-		archive.serialize(BITMAPFILEHEADER
+		archive.serialize(BitmapFileHeader
 		{
 			/*.signature =*/0x4d42,
 			/*.size      =*/static_cast<UInt32>(54 + 4 * image.size().area()),
@@ -263,7 +263,7 @@ namespace Nene
 			/*.offset    =*/54,
 		});
 
-		archive.serialize(BITMAPINFOHEADER
+		archive.serialize(BitmapInfoHeader
 		{
 			/*.headerSize     =*/40,
 			/*.width          =*/image.width(),
