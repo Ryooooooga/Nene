@@ -61,7 +61,7 @@ namespace Nene
 
 	bool FileReader::eof() const noexcept
 	{
-		return !!std::feof(file_.get());
+		return position() >= size();
 	}
 
 	std::size_t FileReader::size() const noexcept
