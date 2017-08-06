@@ -24,6 +24,8 @@
 #ifndef INCLUDE_NENE_WRITER_IWRITER_HPP
 #define INCLUDE_NENE_WRITER_IWRITER_HPP
 
+#include <cstddef>
+
 namespace Nene
 {
 	/**

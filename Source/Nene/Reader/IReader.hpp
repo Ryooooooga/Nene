@@ -24,6 +24,8 @@
 #ifndef INCLUDE_NENE_READER_IREADER_HPP
 #define INCLUDE_NENE_READER_IREADER_HPP
 
+#include <cstddef>
+
 namespace Nene
 {
 	/**
