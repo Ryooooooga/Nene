@@ -42,6 +42,11 @@ namespace Nene
 
 	public:
 		/**
+		 * @brief      Default constructor.
+		 */
+		Image() =delete;
+
+		/**
 		 * @brief      Copy constructor.
 		 */
 		Image(const Image&) =delete;
